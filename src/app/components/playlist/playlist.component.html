@@ -1,0 +1,114 @@
+<div class="playlist">
+    <div class="description-wrap">
+        <div class="description">
+            <div class="img">
+                <img #imageElement src="../../../assets/imgs/bg.png" alt="Your Image">
+                <canvas #canvas style="display: none;"></canvas>
+            </div>
+            <div class="descr">
+                <p class="type">Плейліст</p>
+                <h2 class="title">Улюблені треки</h2>
+                <p class="author">laoef - 354 треки</p>
+            </div>
+        </div>
+    </div>
+    <div class="tracks">
+        <div class="actions">
+            <span class="toggleplay">
+                <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    xmlns:svgjs="http://svgjs.com/svgjs" width="20" height="20" x="0" y="0"
+                    viewBox="0 0 552.611 552.611" style="enable-background:new 0 0 512 512" xml:space="preserve"
+                    class="">
+                    <g>
+                        <path
+                            d="M486.413 221.412 122.347 12.916c-52.938-30.318-95.852-5.44-95.852 55.563v415.652c0 61.004 42.914 85.882 95.852 55.563l364.066-208.49c52.938-30.317 52.938-79.473 0-109.792z"
+                            fill="#fff" data-original="#000000" class="svg"></path>
+                    </g>
+                </svg>
+            </span>
+            <span class="dots">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </span>
+        </div>
+        <div class="track">
+            <table class="track-table">
+                <tbody>
+                    <tr>
+                        <td class="number">
+                            #
+                        </td>
+                        <td>
+                            Назва
+                        </td>
+                        <td class="album">
+                            Альбом
+                        </td>
+                        <td class="date">
+                            Дата додавання
+                        </td>
+                        <td class="like">
+
+                        </td>
+                        <td class="time"><svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs"
+                                width="25" height="25" x="0" y="0" viewBox="0 0 359.286 359.286"
+                                style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
+                                <g>
+                                    <path
+                                        d="M179.643 359.286c99.043 0 179.643-80.6 179.643-179.643S278.687 0 179.643 0 0 80.6 0 179.643s80.6 179.643 179.643 179.643zm0-335.334c85.869 0 155.691 69.821 155.691 155.691s-69.821 155.691-155.691 155.691S23.952 265.513 23.952 179.643 93.774 23.952 179.643 23.952z"
+                                        fill="#fff" data-original="#000000" class=""></path>
+                                    <path
+                                        d="M232.039 236.89c2.216 1.796 4.85 2.635 7.485 2.635a11.91 11.91 0 0 0 9.341-4.491c4.132-5.15 3.293-12.695-1.856-16.827l-55.39-44.312V83.834c0-6.587-5.389-11.976-11.976-11.976s-11.976 5.389-11.976 11.976v95.81c0 3.653 1.677 7.066 4.491 9.341z"
+                                        fill="#fff" data-original="#000000" class=""></path>
+                                </g>
+                            </svg>
+                        </td>
+                    </tr>
+                    @for (item of items; track item; let i = $index) {
+                    <tr>
+                        <td class="number">
+                            {{i + 1}}
+                        </td>
+                        <td>
+                            <div class="wrap-img">
+                                <img src="https://i1.sndcdn.com/artworks-G2bkaNgmNxcsH4wb-j3DmYw-t500x500.jpg">
+                            </div>
+                            <div class="name">
+                                <div class="title">
+                                    Сидативи
+                                </div>
+                                <div class="subtitle">
+                                    Структура щастя
+                                </div>
+                            </div>
+                        </td>
+                        <td class="album">
+                            Смуга
+                        </td>
+                        <td class="date">
+                            03.09.2023
+                        </td>
+                        <td class="like">
+                            <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs"
+                                width="25" height="25" x="0" y="0" viewBox="0 0 512.001 512"
+                                style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
+                                <g>
+                                    <path
+                                        d="M256 455.516c-7.29 0-14.316-2.641-19.793-7.438-20.684-18.086-40.625-35.082-58.219-50.074l-.09-.078c-51.582-43.957-96.125-81.918-127.117-119.313C16.137 236.81 0 197.172 0 153.871c0-42.07 14.426-80.883 40.617-109.293C67.121 15.832 103.488 0 143.031 0c29.555 0 56.621 9.344 80.446 27.77C235.5 37.07 246.398 48.453 256 61.73c9.605-13.277 20.5-24.66 32.527-33.96C312.352 9.344 339.418 0 368.973 0c39.539 0 75.91 15.832 102.414 44.578C497.578 72.988 512 111.801 512 153.871c0 43.3-16.133 82.938-50.777 124.738-30.993 37.399-75.532 75.356-127.106 119.309-17.625 15.016-37.597 32.039-58.328 50.168a30.046 30.046 0 0 1-19.789 7.43zM143.031 29.992c-31.066 0-59.605 12.399-80.367 34.914-21.07 22.856-32.676 54.45-32.676 88.965 0 36.418 13.535 68.988 43.883 105.606 29.332 35.394 72.961 72.574 123.477 115.625l.093.078c17.66 15.05 37.68 32.113 58.516 50.332 20.961-18.254 41.012-35.344 58.707-50.418 50.512-43.051 94.137-80.223 123.469-115.617 30.344-36.618 43.879-69.188 43.879-105.606 0-34.516-11.606-66.11-32.676-88.965-20.758-22.515-49.3-34.914-80.363-34.914-22.758 0-43.653 7.235-62.102 21.5-16.441 12.719-27.894 28.797-34.61 40.047-3.452 5.785-9.53 9.238-16.261 9.238s-12.809-3.453-16.262-9.238c-6.71-11.25-18.164-27.328-34.61-40.047-18.448-14.265-39.343-21.5-62.097-21.5zm0 0"
+                                        fill="#fff" data-original="#000000" class="svg"></path>
+                                </g>
+                            </svg>
+                        </td>
+                        <td class="time">
+                            2:20
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

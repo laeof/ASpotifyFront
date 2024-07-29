@@ -1,0 +1,231 @@
+.playlist {
+    overflow-y: auto;
+    height: 100%;
+    background-color: rgb(40, 40, 40);
+    border-radius: 12px;
+    position: relative;
+
+    &::-webkit-scrollbar {
+        background: transparent;
+        width: 12px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(233, 250, 255, 0.1);
+    }
+
+    .description-wrap {
+        width: 100%;
+        height: 300px;
+        background-color: var(--custom-bg-color);
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+
+        .description {
+            display: flex;
+            padding-left: 30px;
+            padding-bottom: 15px;
+            align-items: center;
+
+            .img {
+                height: 250px;
+                width: 250px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                img {
+                    height: 230px;
+                    width: 230px;
+                }
+            }
+
+            .descr {
+                margin-left: 30px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                height: 90%;
+                margin-bottom: 5px;
+            }
+        }
+    }
+
+    .tracks {
+        height: calc(100% - 300px);
+        background: linear-gradient(180deg, var(--custom-bg-color) 0%, rgb(40, 40, 40) 40%);
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+
+        .actions {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding-left: 40px;
+            padding-top: 15px;
+
+            .toggleplay {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                width: 60px;
+                height: 60px;
+                cursor: pointer;
+                background: linear-gradient(150deg, #8A41C3 0%, #A62673 100%);
+                transition: transform 0.6s;
+                margin-right: 25px;
+
+                svg {
+                    margin-left: 3px;
+
+                    .svg {
+                        transition: fill 0.6s;
+                        fill: rgba(255, 255, 255, 0.7);
+                    }
+                }
+
+                &:hover {
+                    transform: scale(1.05);
+
+                    svg {
+                        .svg {
+                            fill: rgba(255, 255, 255, 0.8);
+                        }
+                    }
+                }
+            }
+
+            .dots {
+                display: flex;
+                cursor: pointer;
+
+                &:hover {
+                    .dot {
+                        transform: scale(1.1);
+                    }
+                }
+
+                .dot {
+                    transition: transform 0.6s;
+                    height: 7px;
+                    width: 7px;
+                    border-radius: 50%;
+                    background: gray;
+                    margin-left: 5px;
+                }
+            }
+        }
+
+        .track {
+            width: 95%;
+
+            .track-table {
+                margin-top: 10px;
+                width: 100%;
+
+                tbody {
+                    tr {
+                        padding-bottom: 10px;
+                        padding-top: 10px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-around;
+
+                        &:first-child {
+                            border-bottom: 1px solid rgb(90, 90, 90);
+
+                            .like {
+                                margin-left: 15px;
+                            }
+                        }
+
+                        td {
+                            display: flex;
+                            width: 100%;
+
+                            .wrap-img {
+                                width: 50px;
+                                height: 50px;
+
+                                img {
+                                    width: 50px;
+                                    height: 50px;
+                                }
+                            }
+
+                            .name {
+                                padding-left: 12px;
+
+                                .title {
+                                    font-size: 18px;
+                                    font-weight: 300;
+                                    margin: 0;
+                                    padding-bottom: 3px;
+                                }
+
+                                .subtitle {
+                                    font-size: 14px;
+                                    font-weight: 300;
+                                    color: rgba(255, 255, 255, 0.7);
+                                }
+                            }
+                        }
+
+                        .number {
+                            width: 70px;
+                            padding: 0px 30px 0px 30px;
+                        }
+
+                        .like {
+                            width: 30px;
+                            margin-right: 30px;
+
+                            svg {
+                                cursor: pointer;
+
+                                .svg {
+                                    transition: fill 0.6s;
+                                    fill: rgba(255, 255, 255, 0.8);
+                                }
+                            }
+
+                            &:hover {
+                                svg {
+                                    .svg {
+                                        fill: rgba(255, 255, 255, 1);
+                                    }
+                                }
+                            }
+                        }
+
+                        .time {
+                            max-width: 60px;
+                        }
+
+                        &:not(:first-child) {
+
+                            &:hover {
+                                background: rgba(255, 255, 255, 0.1)
+                            }
+
+                            .album,
+                            .date,
+                            .time {
+                                font-size: 16px;
+                                color: rgba(255, 255, 255, 0.7);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

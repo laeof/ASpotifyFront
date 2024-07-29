@@ -1,0 +1,174 @@
+$transition: 0.6s;
+$hovercolor: rgba(255, 255, 255, 1);
+$backcolor: rgba(255, 255, 255, 0.8);
+$maincolor: #D66EDE;
+
+@mixin sidebar-style {
+    background-color: #282828;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+}
+
+.sidebar {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .top {
+        @include sidebar-style();
+        margin-bottom: 10px;
+        flex: 0;
+    }
+
+    .bottom {
+        @include sidebar-style();
+        flex: 1;
+        overflow-y: auto;
+
+        .nav-btn {
+            padding: 20px 30px 20px 30px;
+        }
+
+        padding: 0;
+
+        .playlists {
+            overflow-y: auto;
+
+            &::-webkit-scrollbar {
+                background: transparent;
+                width: 12px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background-color: rgba(233, 250, 255, 0.1);
+            }
+
+            .playlist {
+                display: flex;
+                align-items: center;
+                padding: 10px 20px 10px 20px;
+                margin: 0 10px 5px 10px;
+                border-radius: 12px;
+                justify-content: space-between;
+                cursor: pointer;
+
+                &.selected {
+                    background: rgba(255, 255, 255, 0.08);
+                }
+
+                &.playing {
+                    .play-name {
+                        .name {
+                            .title {
+                                color: $maincolor;
+                            }
+                        }
+                    }
+                }
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.05);
+                }
+
+                .play-name {
+                    display: flex;
+
+                    .wrap-img {
+                        width: 55px;
+                        height: 55px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        img {
+                            height: 50px;
+                            width: 50px;
+                        }
+                    }
+
+                    .name {
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        margin-left: 10px;
+
+                        .title {
+                            font-size: 18px;
+                            font-weight: 300;
+                            margin: 0 0 5px 0;
+                        }
+
+                        .subtitle {
+                            font-size: 14px;
+                            color: $backcolor;
+                        }
+                    }
+                }
+
+                .wrap-playing {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    svg {
+                        .svg {
+                            fill: $maincolor;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .nav-btn {
+        color: $backcolor;
+        display: flex;
+        align-items: center;
+        padding: 10px 20px 10px 20px;
+        width: 100%;
+        justify-content: space-between;
+
+        .item {
+            display: flex;
+            align-items: center;
+            transition: color $transition;
+            cursor: pointer;
+            width: 100%;
+
+            &:hover:not(.create) {
+                color: $hovercolor;
+
+                .svg {
+                    fill: $hovercolor;
+                }
+            }
+        }
+
+        rect {
+            transition: fill $transition;
+        }
+
+        .create {
+            &:hover {
+                cursor: pointer;
+
+                rect {
+                    fill: $hovercolor;
+                }
+            }
+        }
+
+        .svg {
+            transition: fill $transition;
+        }
+
+        svg {
+            &:first-child {
+                margin-right: 15px;
+            }
+
+        }
+    }
+}
