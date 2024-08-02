@@ -49,20 +49,22 @@
             </svg>
         </span>
         <div class="playlists">
-            <span class="playlist selected playing">
+            @for (item of items; track item; let i = $index) {
+            <span class="playlist" [ngClass]="{'selected': isActive(item.Id)}" (click)='redirectToPlaylist(item.Id)'>
                 <div class="play-name">
                     <div class="wrap-img">
-                        <img src="../../../assets/imgs/bg.png">
+                        <img src={{item.Image}}>
                     </div>
                     <div class="name">
                         <p class="title">
-                            Улюблені треки
+                            {{item.Name}}
                         </p>
                         <p class="subtitle">
-                            Плейліст - 354 треки
+                            Плейліст - {{item.Tracks.length}} треки
                         </p>
                     </div>
                 </div>
+                @if (playing) {
                 <div class="wrap-playing">
                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                         xmlns:svgjs="http://svgjs.com/svgjs" width="50" height="50" x="0" y="0" viewBox="0 0 256 256"
@@ -76,22 +78,7 @@
                         </g>
                     </svg>
                 </div>
-            </span>
-            @for (item of items; track item; let i = $index) {
-            <span class="playlist">
-                <div class="play-name">
-                    <div class="wrap-img">
-                        <img src="../../../assets/imgs/bg.png">
-                    </div>
-                    <div class="name">
-                        <p class="title">
-                            Улюблені треки
-                        </p>
-                        <p class="subtitle">
-                            Плейліст - 354 треки
-                        </p>
-                    </div>
-                </div>
+                }
             </span>
             }
         </div>

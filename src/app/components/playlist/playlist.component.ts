@@ -1,74 +1,90 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, input, ViewChild } from '@angular/core';
+import { ITrack } from '../../dtos/track';
+import { ColorService } from '../../services/colorService';
+import { TrackService } from '../../services/trackservice';
+import { IPlaylist } from '../../dtos/playlist';
+import { PlaylistService } from '../../services/playlistservice';
+import { UserService } from '../../services/userservice';
+import { IUser } from '../../dtos/user';
+import { ActivatedRoute, Router } from '@angular/router';
+import { delay } from 'rxjs/internal/operators/delay';
+import { ArtistService } from '../../services/artistservice';
+import { IArtist } from '../../dtos/artist';
+import { AlbumService } from '../../services/albumservice';
 
 @Component({
-  selector: 'app-playlist',
-  standalone: true,
-  imports: [],
-  templateUrl: './playlist.component.html',
-  styleUrl: './playlist.component.scss'
+    selector: 'app-playlist',
+    standalone: true,
+    imports: [],
+    templateUrl: './playlist.component.html',
+    styleUrl: './playlist.component.scss'
 })
 export class PlaylistComponent implements AfterViewInit {
-  @ViewChild('imageElement', { static: false })
-  imageElement!: ElementRef;
-  items: any[] = new Array(20);
+    user: IUser;
 
-  ngAfterViewInit() {
-    this.extractColor();
-  }
+    @ViewChild('imageElement', { static: false }) imageElement!: ElementRef;
 
-  extractColor() {
-    const image = this.imageElement.nativeElement;
+    playlist: IPlaylist | undefined;
 
-    // Создаем изображение и загружаем изображение в него
-    const img = new Image();
-    img.src = image.src;
-
-    // Ожидаем загрузки изображения
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const context = canvas.getContext('2d');
-      context?.drawImage(img, 0, 0);
-
-      const imageData = context?.getImageData(0, 0, canvas.width, canvas.height);
-      const pixelData = imageData?.data;
-
-      // Создаем объект для отслеживания цветов и их частот
-      const colorFrequency: { [key: string]: number } = {};
-
-      // Проходим по пикселям и считаем цвета
-      if (pixelData != null) {
-        for (let i = 0; i < pixelData.length; i += 4) {
-          // Извлекаем цвет каждого пикселя (каждый пиксель содержит 4 компоненты: R, G, B, и Alpha)
-          var color: string = `rgb(${pixelData[i]}, ${pixelData[i + 1]}, ${pixelData[i + 2]})`;
-
-          // Увеличиваем частоту цвета
-          if (color in colorFrequency) {
-            colorFrequency[color] += 1;
-          } else {
-            colorFrequency[color] = 1;
-          }
-        }
-      }
-
-      // Находим самый частый цвет
-      let mostFrequentColor = '';
-      let maxFrequency = 0;
-
-      for (const color in colorFrequency) {
-        if (colorFrequency[color] > maxFrequency) {
-          mostFrequentColor = color;
-          maxFrequency = colorFrequency[color];
-        }
-      }
-
-      if (pixelData != null) {
-        var darkenedColor = `rgba(${pixelData[0]}, ${pixelData[1]}, ${pixelData[2]}, 0.6)`;
-        document.documentElement.style.setProperty('--custom-bg-color', darkenedColor);
-      }
+    constructor(private colorService: ColorService,
+        private trackService: TrackService,
+        private playlistService: PlaylistService,
+        private userService: UserService,
+        private route: ActivatedRoute,
+        private artistService: ArtistService,
+        private albumService: AlbumService
+    ) {
+        this.user = userService.getCurrentUserInfo();
     }
-  };
+    ngAfterViewInit(): void {
+        this.extractColor();
+    }
+    ngOnInit() {
+        this.route.paramMap.subscribe(params => {
+            this.playlist = this.playlistService.getPlaylistById(params.get('id') || "");
+            setTimeout(() => this.extractColor(), 1);
+        });
+    }
 
+    getAlbumName(id: string) {
+        return this.albumService.getAlbumNameById(id);
+    }
+
+    getArtistName(id: string) {
+        return this.artistService.getArtistNameById(id);
+    }
+
+    getDuration(duration: number): string {
+        const hours = Math.floor(duration / 3600);
+        const minutes = Math.floor((duration % 3600) / 60);
+        const secs = duration % 60;
+
+        const minutesStr = minutes.toString().padStart(2, '0');
+        const secondsStr = secs.toString().padStart(2, '0');
+
+        if (hours > 0) {
+            const hoursStr = hours.toString().padStart(2, '0');
+            return `${hoursStr}:${minutesStr}:${secondsStr}`;
+        } else {
+            return `${minutesStr}:${secondsStr}`;
+        }
+    }
+
+    extractColor() {
+        const image = this.imageElement.nativeElement;
+        this.colorService.extractColor(image).then(mostFrequentColor => {
+            // Обработка результата
+            console.log('Most Frequent Color:', mostFrequentColor);
+
+            // Пример: установка пользовательского фона
+            const rgb = mostFrequentColor.match(/\d+/g)?.map(Number);
+            if (rgb && rgb.length === 3) {
+                const darkenedColor = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+                document.documentElement.style.setProperty('--custom-bg-color', darkenedColor);
+            }
+        }).catch(error => {
+            console.error('Error extracting color:', error);
+        });
+    }
 }
 

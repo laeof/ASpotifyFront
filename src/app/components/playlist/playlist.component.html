@@ -2,13 +2,13 @@
     <div class="description-wrap">
         <div class="description">
             <div class="img">
-                <img #imageElement src="../../../assets/imgs/bg.png" alt="Your Image">
+                <img #imageElement src="{{playlist?.Image}}" alt="Your Image">
                 <canvas #canvas style="display: none;"></canvas>
             </div>
             <div class="descr">
                 <p class="type">Плейліст</p>
-                <h2 class="title">Улюблені треки</h2>
-                <p class="author">laoef - 354 треки</p>
+                <h2 class="title">{{playlist?.Name}}</h2>
+                <p class="author">{{user.UserName}} - {{playlist?.Tracks?.length}} треки</p>
             </div>
         </div>
     </div>
@@ -66,29 +66,29 @@
                             </svg>
                         </td>
                     </tr>
-                    @for (item of items; track item; let i = $index) {
+                    @for (item of playlist?.Tracks; track item; let i = $index) {
                     <tr>
                         <td class="number">
                             {{i + 1}}
                         </td>
                         <td>
                             <div class="wrap-img">
-                                <img src="https://i1.sndcdn.com/artworks-G2bkaNgmNxcsH4wb-j3DmYw-t500x500.jpg">
+                                <img src={{item.Image}}>
                             </div>
                             <div class="name">
                                 <div class="title">
-                                    Сидативи
+                                    {{item.Name}}
                                 </div>
                                 <div class="subtitle">
-                                    Структура щастя
+                                    {{this.getArtistName(item.ArtistId)}}
                                 </div>
                             </div>
                         </td>
                         <td class="album">
-                            Смуга
+                            {{this.getAlbumName(item.AlbumId)}}
                         </td>
                         <td class="date">
-                            03.09.2023
+                            {{item.Date.toLocaleDateString()}}
                         </td>
                         <td class="like">
                             <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
@@ -103,7 +103,7 @@
                             </svg>
                         </td>
                         <td class="time">
-                            2:20
+                            {{getDuration(item.Duration)}}
                         </td>
                     </tr>
                     }
