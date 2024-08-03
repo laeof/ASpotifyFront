@@ -26,11 +26,55 @@
                     </g>
                 </svg>
             </span>
-            <span class="dots">
+            <span class="dots" (click)="toggleContextMenu()" (click)="$event.stopPropagation()">
                 <span class="dot"></span>
                 <span class="dot"></span>
                 <span class="dot"></span>
             </span>
+            <div class="context-menu" [ngClass]="{'open': toggledContextMenu}" (click)="$event.stopPropagation()">
+                <ul class="context-menu-list">
+                    <li class="context-menu-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            xmlns:svgjs="http://svgjs.com/svgjs" width="20" height="20" x="0" y="0"
+                            viewBox="0 0 1086 1024" style="enable-background:new 0 0 512 512" xml:space="preserve"
+                            class="">
+                            <g>
+                                <path
+                                    d="M46.543 1023.938C20.838 1023.938 0 1003.1 0 977.395v-.065.003c0-25.705 20.838-46.543 46.543-46.543h372.341c25.705 0 46.543 20.838 46.543 46.543v.062c0 25.705-20.838 46.543-46.543 46.543zm682.625-11.481c-26.345-15.242-43.791-43.281-43.812-75.396V707.448c.021-32.118 17.467-60.157 43.395-75.176l.417-.223c12.355-7.172 27.184-11.409 43.003-11.418h.106c16.23 0 31.42 4.45 44.417 12.197l-.398-.22 194.548 114.805c25.751 15.378 42.733 43.093 42.757 74.775v.003c-.14 31.567-17.093 59.142-42.361 74.249l-.396.22-194.548 114.805c-12.623 7.565-27.85 12.039-44.122 12.039-.253.003-.552.004-.851.004-15.575 0-30.192-4.098-42.833-11.275l.43.225zm49.335-86.383 175.869-103.759-175.869-103.821zM46.791 713.654c-25.705 0-46.543-20.838-46.543-46.543 0-25.717 20.83-46.569 46.539-46.605h372.344c25.712.035 46.543 20.887 46.543 46.605 0 25.705-20.838 46.543-46.543 46.543zm0-310.285C21.079 403.334.248 382.482.248 356.764c0-25.705 20.838-46.543 46.543-46.543h992.91c25.705 0 46.543 20.838 46.543 46.543 0 25.717-20.83 46.569-46.539 46.605h-.003zm0-310.284C21.086 93.085.248 72.247.248 46.542v-.062C.248 20.775 21.086-.063 46.791-.063h992.91c25.705 0 46.543 20.838 46.543 46.543v.065-.003c0 25.705-20.838 46.543-46.543 46.543z"
+                                    fill="#fff" data-original="#000000" class="svg"></path>
+                            </g>
+                        </svg>
+                        <p>Add to queue</p>
+                    </li>
+                    <li class="context-menu-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            xmlns:svgjs="http://svgjs.com/svgjs" width="20" height="20" x="0" y="0"
+                            viewBox="0 0 512.001 512.001" style="enable-background:new 0 0 512 512" xml:space="preserve"
+                            class="">
+                            <g>
+                                <path
+                                    d="m496.063 62.299-46.396-46.4c-21.199-21.199-55.689-21.198-76.888 0L27.591 361.113c-2.17 2.17-3.624 5.054-4.142 7.875L.251 494.268a15.002 15.002 0 0 0 17.48 17.482L143 488.549c2.895-.54 5.741-2.008 7.875-4.143l345.188-345.214c21.248-21.248 21.251-55.642 0-76.893zM33.721 478.276l14.033-75.784 61.746 61.75-75.779 14.034zm106.548-25.691L59.41 371.721 354.62 76.488l80.859 80.865-295.21 295.232zM474.85 117.979l-18.159 18.161-80.859-80.865 18.159-18.161c9.501-9.502 24.96-9.503 34.463 0l46.396 46.4c9.525 9.525 9.525 24.939 0 34.465z"
+                                    fill="#fff" data-original="#000000" class="svg"></path>
+                            </g>
+                        </svg>
+                        <p>Edit playlist</p>
+                    </li>
+                    <li class="context-menu-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            width="20" height="20" x="0" y="0" viewBox="0 0 64 64"
+                            style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
+                            <g>
+                                <path
+                                    d="M32 60C16.5 60 4 47.5 4 32S16.5 4 32 4s28 12.5 28 28-12.5 28-28 28zm0-50c-12.2 0-22 9.8-22 22s9.8 22 22 22 22-9.8 22-22c0-12.1-9.9-22-22-22z"
+                                    fill="#fff" opacity="1" data-original="#000000" class=""></path>
+                                <path d="M42 35H22c-1.7 0-3-1.3-3-3s1.3-3 3-3h20c1.7 0 3 1.3 3 3s-1.3 3-3 3z"
+                                    fill="#fff" opacity="1" data-original="#000000" class=""></path>
+                            </g>
+                        </svg>
+                        <p>Remove playlist</p>
+                    </li>
+                </ul>
+            </div>
         </div>
         <div class="track">
             <table class="track-table">
@@ -39,7 +83,7 @@
                         <td class="number">
                             #
                         </td>
-                        <td>
+                        <td class="tdname">
                             Назва
                         </td>
                         <td class="album">
@@ -69,9 +113,33 @@
                     @for (item of playlist?.Tracks; track item; let i = $index) {
                     <tr>
                         <td class="number">
-                            {{i + 1}}
+                            <p id="number">{{i + 1}}</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18" x="0" y="0"
+                                viewBox="0 0 163.861 163.861" style="enable-background:new 0 0 512 512"
+                                xml:space="preserve" class="play">
+                                <g>
+                                    <path
+                                        d="M34.857 3.613C20.084-4.861 8.107 2.081 8.107 19.106v125.637c0 17.042 11.977 23.975 26.75 15.509L144.67 97.275c14.778-8.477 14.778-22.211 0-30.686L34.857 3.613z"
+                                        fill="rgba(255,255,255, 0.5)" opacity="1" data-original="#000000" class="">
+                                    </path>
+                                </g>
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18" x="0" y="0"
+                                viewBox="0 0 101.08 116.43" style="enable-background:new 0 0 512 512"
+                                xml:space="preserve" class="pause">
+                                <g>
+                                    <g data-name="Layer 2">
+                                        <path
+                                            d="M23.33 0h-7.78A15.53 15.53 0 0 0 0 15.52v85.38a15.54 15.54 0 0 0 15.55 15.53h7.78a15.54 15.54 0 0 0 15.55-15.53V15.52A15.54 15.54 0 0 0 23.33 0zm62.2 0h-7.78A15.54 15.54 0 0 0 62.2 15.52v85.38a15.54 15.54 0 0 0 15.55 15.53h7.78a15.54 15.54 0 0 0 15.55-15.53V15.52A15.53 15.53 0 0 0 85.53 0z"
+                                            data-name="Layer 1" fill="rgba(255,255,255, 0.5)" opacity="1"
+                                            data-original="#000000" class=""></path>
+                                    </g>
+                                </g>
+                            </svg>
                         </td>
-                        <td>
+                        <td class="tdname">
                             <div class="wrap-img">
                                 <img src={{item.Image}}>
                             </div>

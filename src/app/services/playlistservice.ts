@@ -12,4 +12,8 @@ export class PlaylistService {
     getAllPlaylists(id: string): IPlaylist[] {
         return this.playlist.filter(playlist => playlist.UserId === id);
     }
+
+    createNewPlaylist(playlist: IPlaylist) {
+        this.playlist.push(playlist);
+    }
 }

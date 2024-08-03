@@ -18,6 +18,7 @@ export class LeftsidebarComponent {
     user: IUser | undefined;
     playing: boolean = false;
     activeId: string | null = null;
+
     constructor(private playlistService: PlaylistService,
         private userService: UserService,
         private router: Router
@@ -32,7 +33,19 @@ export class LeftsidebarComponent {
     }
 
     isActive(id: string): boolean {
-        console.log(this.activeId);
         return this.activeId === id;
+    }
+
+    createNewPlaylist() {
+        var id = this.items.length + 1;
+        var newPlaylist: IPlaylist = {
+            Id: id.toString(),
+            UserId: this.user?.Id || "",
+            Image: '../assets/imgs/image.png',
+            Name: 'Playlist ' + id,
+            Tracks: []
+        }
+        this.items.push(newPlaylist);
+        this.playlistService.createNewPlaylist(newPlaylist);
     }
 }
