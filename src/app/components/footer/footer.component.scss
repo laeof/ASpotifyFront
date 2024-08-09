@@ -114,29 +114,32 @@ $backcolor: rgba(255, 255, 255, 0.8);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-left: 20px;
-        width: 290px;
+        padding-left: 10px;
+        width: 300px;
 
         .song {
             display: flex;
             align-items: center;
-            width: 210px;
+            width: 220px;
 
             .wrap-img {
-                width: 60px;
-                height: 60px;
+                min-width: 60px;
+                min-height: 60px;
+                max-width: 60px;
+                max-height: 60px;
 
                 img {
-                    width: 60px;
-                    height: 60px;
+                    min-width: 60px;
+                    min-height: 60px;
+                    max-width: 60px;
+                    max-height: 60px;
                 }
             }
 
             .name {
                 padding-left: 12px;
-
                 .title {
-                    font-size: 18px;
+                    font-size: 1rem;
                     font-weight: 300;
                     margin: 0;
                     padding-bottom: 3px;

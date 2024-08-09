@@ -124,24 +124,137 @@ export const TRACKS: ITrack[] = [
         Duration: 110,
         Image: "../assets/imgs/webp/apfs.webp",
         Url: "davaypopravimsyaapfs.mp3"
-    }
+    },
+    {
+        Id: "track13",
+        Name: "Демоны",
+        ArtistId: "artist4",
+        Date: new Date('2023-04-25'),
+        AlbumId: "album4",
+        Duration: 204,
+        Image: "/assets/imgs/loveaddiction.jpg",
+        Url: "01. Демоны.mp3"
+    },
+    {
+        Id: "track14",
+        Name: "Малышка рок-н-ролл",
+        ArtistId: "artist4",
+        Date: new Date('2023-04-25'),
+        AlbumId: "album4",
+        Duration: 209,
+        Image: "/assets/imgs/loveaddiction.jpg",
+        Url: "02. Малышка рок-н-ролл.mp3"
+    },
+    {
+        Id: "track15",
+        Name: "Про любовь",
+        ArtistId: "artist4",
+        Date: new Date('2023-04-25'),
+        AlbumId: "album4",
+        Duration: 136,
+        Image: "/assets/imgs/loveaddiction.jpg",
+        Url: "03. Про любовь.mp3"
+    },
+    // {
+    //     Id: "track12",
+    //     Name: "Давай поправимся",
+    //     ArtistId: "artist3",
+    //     Date: new Date('2023-04-25'),
+    //     AlbumId: "album3",
+    //     Duration: 110,
+    //     Image: "../assets/imgs/webp/apfs.webp",
+    //     Url: "davaypopravimsyaapfs.mp3"
+    // },
+    // {
+    //     Id: "track12",
+    //     Name: "Давай поправимся",
+    //     ArtistId: "artist3",
+    //     Date: new Date('2023-04-25'),
+    //     AlbumId: "album3",
+    //     Duration: 110,
+    //     Image: "../assets/imgs/webp/apfs.webp",
+    //     Url: "davaypopravimsyaapfs.mp3"
+    // },
+    // {
+    //     Id: "track12",
+    //     Name: "Давай поправимся",
+    //     ArtistId: "artist3",
+    //     Date: new Date('2023-04-25'),
+    //     AlbumId: "album3",
+    //     Duration: 110,
+    //     Image: "../assets/imgs/webp/apfs.webp",
+    //     Url: "davaypopravimsyaapfs.mp3"
+    // },
+    // {
+    //     Id: "track12",
+    //     Name: "Давай поправимся",
+    //     ArtistId: "artist3",
+    //     Date: new Date('2023-04-25'),
+    //     AlbumId: "album3",
+    //     Duration: 110,
+    //     Image: "../assets/imgs/webp/apfs.webp",
+    //     Url: "davaypopravimsyaapfs.mp3"
+    // },
+    // {
+    //     Id: "track12",
+    //     Name: "Давай поправимся",
+    //     ArtistId: "artist3",
+    //     Date: new Date('2023-04-25'),
+    //     AlbumId: "album3",
+    //     Duration: 110,
+    //     Image: "../assets/imgs/webp/apfs.webp",
+    //     Url: "davaypopravimsyaapfs.mp3"
+    // },
+    // {
+    //     Id: "track12",
+    //     Name: "Давай поправимся",
+    //     ArtistId: "artist3",
+    //     Date: new Date('2023-04-25'),
+    //     AlbumId: "album3",
+    //     Duration: 110,
+    //     Image: "../assets/imgs/webp/apfs.webp",
+    //     Url: "davaypopravimsyaapfs.mp3"
+    // },
+    // {
+    //     Id: "track12",
+    //     Name: "Давай поправимся",
+    //     ArtistId: "artist3",
+    //     Date: new Date('2023-04-25'),
+    //     AlbumId: "album3",
+    //     Duration: 110,
+    //     Image: "../assets/imgs/webp/apfs.webp",
+    //     Url: "davaypopravimsyaapfs.mp3"
+    // },
+    // {
+    //     Id: "track12",
+    //     Name: "Давай поправимся",
+    //     ArtistId: "artist3",
+    //     Date: new Date('2023-04-25'),
+    //     AlbumId: "album3",
+    //     Duration: 110,
+    //     Image: "../assets/imgs/webp/apfs.webp",
+    //     Url: "davaypopravimsyaapfs.mp3"
+    // },
 ];
 
 export const ALBUMS: IAlbum[] = [
     { Id: "album1", ArtistId: 'artist1', Name: "album1", Tracks: TRACKS.slice(0, 2) },
     { Id: "album2", ArtistId: 'artist2', Name: "album2", Tracks: TRACKS.slice(2, 4) },
-    { Id: "album3", ArtistId: 'artist3', Name: "Опианариум", Tracks: TRACKS.slice(4) }
+    { Id: "album3", ArtistId: 'artist3', Name: "Опианариум", Tracks: TRACKS.slice(4) },
+    { Id: "album4", ArtistId: 'artist4', Name: "Любовь, аддикция и марафоны", Tracks: TRACKS.slice(5) }
 ];
 
 export const ARTISTS: IArtist[] = [
     { Id: "artist1", FirstName: 'John', LastName: 'Doe', NickName: "nickname1", UserId: '2', Tracks: TRACKS.slice(0, 2), Albums: ALBUMS.slice(0, 1) },
     { Id: "artist2", FirstName: 'Jane', LastName: 'Smith', NickName: "nickname2", UserId: '1', Tracks: TRACKS.slice(2, 4), Albums: ALBUMS.slice(1, 2) },
-    { Id: "artist3", FirstName: 'Jane', LastName: 'Smith', NickName: "Автостопом по фазе сна", UserId: '1', Tracks: TRACKS.slice(5), Albums: ALBUMS.slice(1, 2) }
+    { Id: "artist3", FirstName: 'Jane', LastName: 'Smith', NickName: "Автостопом по фазе сна", UserId: '1', Tracks: TRACKS.slice(5), Albums: ALBUMS.slice(1, 2) },
+    { Id: "artist4", FirstName: 'Jane', LastName: 'Smith', NickName: "Три дня дождя", UserId: '1', Tracks: TRACKS.slice(5), Albums: ALBUMS.slice(1, 2) }
 ];
 
 export const PLAYLISTS: IPlaylist[] = [
-    { Id: "1", UserId: '1', Image: "/assets/imgs/bg.png", Name: "Liked songs", Tracks: [TRACKS[0], TRACKS[2], TRACKS[1], TRACKS[3]] },
-    { Id: "2", UserId: '1', Image: "/assets/imgs/webp/apfs.webp", Name: "Опианариум", Tracks: TRACKS.slice(4, 12) }
+    { Id: "1", UserId: '1', Image: "/assets/imgs/bg.png", Name: "Liked songs", Tracks: TRACKS.slice(4, 24) },
+    { Id: "2", UserId: '1', Image: "/assets/imgs/webp/apfs.webp", Name: "Опианариум", Tracks: TRACKS.slice(4, 12) },
+    { Id: "3", UserId: '1', Image: "/assets/imgs/loveaddiction.jpg", Name: "Любовь, аддикция и марафоны", Tracks: TRACKS.slice(12, 24) }
 ];
 
 export const USERS: IUser[] = [
