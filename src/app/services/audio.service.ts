@@ -28,24 +28,18 @@ export class AudioService {
         Name: '',
         Tracks: []
     };
-
     private trackPosition = new BehaviorSubject<number>(0);
     private volume = new BehaviorSubject<number>(1);
     private trackId = new BehaviorSubject<string>("");
-    trackid: string | undefined;
+    private playlistId = new BehaviorSubject<string>("");
+    private isPaused = new BehaviorSubject<boolean>(false);
+    private index: number = 0;
+    trackid: string = "";
     constructor(private http: HttpClient) {
         this.audio = new Audio();
     }
 
-    playAudio(item: ITrack) {
-        this.trackId.next(item.Id);
-        this.setCurrentTrack(item);
-        this.streamAudio(item.Url).subscribe(blob => {
-            this.audio.src = URL.createObjectURL(blob);
-            this.audio.volume = this.volume.value;
-            this.audio.play();
-        });
-    }
+    private intervalId: any;
 
     playPlaylist(index: number = 0) {
         if (!this.playlist || this.playlist.Tracks.length === 0) {
@@ -57,23 +51,86 @@ export class AudioService {
             index = 0;
         }
 
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
+
         this.playAudio(this.playlist.Tracks[index]);
         this.trackId.next(this.playlist.Tracks[index].Id);
-        // Обновляем позицию трека каждую секунду
-        let i = 0;
-        const intervalId = setInterval(() => {
-            i = this.audio.currentTime;
-            if (i > this.playlist.Tracks[index].Duration) {
-                clearInterval(intervalId);
-                this.trackId.next("");
+        this.trackid = this.playlist.Tracks[index].Id;
+        this.playlistId.next(this.playlist.Id);
+        this.setTrackPositionTracking(0);
+
+        let wait = false;
+
+        this.intervalId = setInterval(() => {
+            let currentTime = Math.round(this.audio.currentTime);
+            console.log("currenttime: ", currentTime)
+            this.setTrackPositionTracking(currentTime);
+            if (wait) {
+                wait = false;
                 this.playPlaylist(index + 1);
+            }
+            if (Math.round(currentTime) === this.playlist.Tracks[index].Duration) {
+                wait = true;
             }
         }, 1000);
     }
 
+    toggleAudio(item: ITrack, index: number = this.index, playlist: IPlaylist = this.playlist) {
+        // if (this.isActive(item.Id)) {
+        //     this.trackId = ""
+        //     this.audioService.stopAudio(item);
+        // }
+        // else {
+        //     this.trackId = this.playlist.Tracks[index].Id;
+        //     this.audioService.setPlaylist(this.playlist);
+        //     this.audioService.playPlaylist(index);
+        // }
+        if (this.trackid == item.Id && !this.audio.paused) {
+            this.stopAudio(item);
+            console.log(1)
+        }
+        else if (this.audio.src != "" && item.Id == this.trackid && this.audio.paused) {
+            this.resumeAudio();
+            console.log(2)
+        }
+        else {
+            this.setPlaylist(playlist);
+            this.playPlaylist(index);
+            console.log(3)
+            this.index = index;
+        }
+    }
+
+    playAudio(item: ITrack) {
+        this.trackId.next(item.Id);
+        this.trackid = item.Id;
+        this.setCurrentTrack(item);
+        this.isPaused.next(false);
+        this.streamAudio(item.Url).subscribe(blob => {
+            this.audio.src = URL.createObjectURL(blob);
+            this.audio.volume = this.volume.value;
+            this.audio.play();
+        });
+    }
+
     stopAudio(item: ITrack) {
-        this.trackId.next("");
+        //this.trackId.next("");
+        //this.playlistId.next("");
         this.audio.pause();
+        this.isPaused.next(true);
+    }
+
+    resumeAudio() {
+        let time = this.audio.currentTime;
+        this.audio.play();
+        this.audio.currentTime = time;
+        this.isPaused.next(false);
+    }
+
+    isTrackPaused(): Observable<boolean> {
+        return this.isPaused;
     }
 
     getCurrentTrack(): Observable<ITrack> {
@@ -82,6 +139,10 @@ export class AudioService {
 
     setCurrentTrack(track: ITrack) {
         this.currentTrack.next(track);
+    }
+
+    setTrackPositionTracking(position: number) {
+        this.trackPosition.next(position);
     }
 
     setTrackPosition(position: number) {
@@ -104,6 +165,10 @@ export class AudioService {
 
     setPlaylist(playlist: IPlaylist) {
         this.playlist = playlist;
+    }
+
+    getPlaylistId(): Observable<string> {
+        return this.playlistId;
     }
 
     streamAudioFromServer(path: string): Observable<Blob> {

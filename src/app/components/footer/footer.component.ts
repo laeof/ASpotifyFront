@@ -3,11 +3,13 @@ import { ITrack } from '../../dtos/track';
 import { ArtistService } from '../../services/artist.service';
 import { AudioService } from '../../services/audio.service';
 import { map, Observable } from 'rxjs';
+import { IPlaylist } from '../../dtos/playlist';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-footer',
     standalone: true,
-    imports: [],
+    imports: [CommonModule],
     templateUrl: './footer.component.html',
     styleUrl: './footer.component.scss'
 })
@@ -22,8 +24,18 @@ export class FooterComponent {
         Image: '',
         Url: ''
     };
+    playlist: IPlaylist = {
+        Id: '',
+        UserId: '',
+        Image: '',
+        Name: '',
+        Tracks: []
+    }
     volume: number = 0;
     trackPosition: number = 0;
+    paused: boolean = true;
+    trackId: string = "";
+
     //trackStringPosition$: Observable<string>;
 
     constructor(private artistService: ArtistService,
@@ -40,8 +52,29 @@ export class FooterComponent {
             this.volume = volume * 100;
         });
 
-        
+        this.audioService.getCurrentTrack().subscribe((trackid) => {
+            this.trackId = trackid.Id
+        });
+
+        this.audioService.isTrackPaused().subscribe((ispaused) => {
+            this.paused = ispaused
+        })
+
+        console.log(this.paused)
     }
+
+    isActive(): boolean {
+        return this.trackId != "";
+    } 
+    
+    isPaused(): any {
+        return this.paused
+    }
+
+    toggleAudio() {
+        this.audioService.toggleAudio(this.track);
+    }
+
     onPositionChange(event: Event) {
         const input = event.target as HTMLInputElement;
         const position = +input.value;

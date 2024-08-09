@@ -67,6 +67,16 @@ $maincolor: #D66EDE;
                             }
                         }
                     }
+
+                    .wrap-playing {
+                        &.playing {
+                            g {
+                                path {
+                                    fill: $maincolor
+                                }
+                            }
+                        }
+                    }
                 }
 
                 &:hover {
@@ -109,13 +119,18 @@ $maincolor: #D66EDE;
                 }
 
                 .wrap-playing {
-                    display: flex;
+                    display: none;
                     align-items: center;
                     justify-content: center;
+
                     svg {
                         .svg {
-                            fill: $maincolor;
+                            fill: var($maincolor);
                         }
+                    }
+
+                    &.playing {
+                        display: flex;
                     }
                 }
             }

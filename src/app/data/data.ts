@@ -81,7 +81,7 @@ export const TRACKS: ITrack[] = [
         ArtistId: "artist3",
         Date: new Date('2023-04-25'),
         AlbumId: "album3",
-        Duration: 160,
+        Duration: 161,
         Image: "../assets/imgs/webp/apfs.webp",
         Url: "afapfs.mp3"
     },

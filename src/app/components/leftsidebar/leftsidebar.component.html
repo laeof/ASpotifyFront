@@ -43,14 +43,18 @@
                 </svg>
                 <p class="text">Моя медіатека</p>
             </div>
-            <svg (click)="createNewPlaylist()" width="35" height="35" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="create">
+            <svg (click)="createNewPlaylist()" width="35" height="35" viewBox="0 0 100 100"
+                xmlns="http://www.w3.org/2000/svg" class="create">
                 <rect x="45" y="20" width="10" height="60" fill="rgba(255,255,255,0.8)" rx="5" ry="5" />
                 <rect x="20" y="45" width="60" height="10" fill="rgba(255,255,255,0.8)" rx="5" ry="5" />
             </svg>
         </span>
         <div class="playlists">
             @for (item of items; track item; let i = $index) {
-            <span class="playlist" [ngClass]="{'selected': isActive(item.Id)}" (click)='redirectToPlaylist(item.Id)'>
+            <span class="playlist" [ngClass]="{
+                'selected': isActive(item.Id),
+                'playing': isPlaying(item.Id),
+              }" (click)='redirectToPlaylist(item.Id)'>
                 <div class="play-name">
                     <div class="wrap-img">
                         <img src={{item.Image}}>
@@ -64,8 +68,7 @@
                         </p>
                     </div>
                 </div>
-                @if (playing) {
-                <div class="wrap-playing">
+                <div class="wrap-playing" [ngClass]="{'playing': isPlaying(item.Id)}">
                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                         xmlns:svgjs="http://svgjs.com/svgjs" width="50" height="50" x="0" y="0" viewBox="0 0 256 256"
                         style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
@@ -78,7 +81,6 @@
                         </g>
                     </svg>
                 </div>
-                }
             </span>
             }
         </div>

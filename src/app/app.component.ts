@@ -10,6 +10,8 @@ import { ArtistService } from './services/artist.service';
 import { AlbumService } from './services/album.service';
 import { HttpClientModule } from '@angular/common/http';
 import { AudioService } from './services/audio.service';
+import { UrlService } from './services/url.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-root',
@@ -28,10 +30,15 @@ import { AudioService } from './services/audio.service';
         ArtistService,
         AlbumService,
         AudioService,
+        UrlService
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
 })
 export class AppComponent {
     title = 'ASpotifyFront';
+    constructor(private route: ActivatedRoute, private urlParamService: UrlService) {
+        
+    }
+
 }

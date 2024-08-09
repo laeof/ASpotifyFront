@@ -248,6 +248,18 @@
                                     display: flex;
                                     cursor: pointer;
                                 }
+
+                                &.paused {
+                                    .play {
+                                        display: flex;
+                                        cursor: pointer;
+                                    }
+
+                                    .pause {
+                                        display: none;
+                                        cursor: pointer;
+                                    }
+                                }
                             }
                         }
 
@@ -305,6 +317,18 @@
 
                                     .pause {
                                         display: flex;
+                                        cursor: pointer;
+                                    }
+                                }
+
+                                &.paused {
+                                    .play {
+                                        display: flex;
+                                        cursor: pointer;
+                                    }
+
+                                    .pause {
+                                        display: none;
                                         cursor: pointer;
                                     }
                                 }

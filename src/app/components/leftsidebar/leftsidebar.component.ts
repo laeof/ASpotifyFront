@@ -3,8 +3,10 @@ import { IPlaylist } from '../../dtos/playlist';
 import { PlaylistService } from '../../services/playlist.service';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { UrlService } from '../../services/url.service';
+import { AudioService } from '../../services/audio.service';
 
 @Component({
     selector: 'app-leftsidebar',
@@ -16,13 +18,20 @@ import { CommonModule } from '@angular/common';
 export class LeftsidebarComponent {
     items: IPlaylist[];
     user: IUser | undefined;
-    playing: boolean = false;
     activeId: string | null = null;
-
+    playingId: string | null = null;
     constructor(private playlistService: PlaylistService,
         private userService: UserService,
-        private router: Router
+        private urlService: UrlService,
+        private router: Router,
+        private audioService: AudioService,
     ) {
+        this.urlService.getActiveId().subscribe(id => {
+            this.activeId = id;
+        });
+        this.audioService.getPlaylistId().subscribe(play => {
+            this.playingId = play;
+        })
         this.user = this.userService.getCurrentUserInfo();
         this.items = playlistService.getAllPlaylists(this.user.Id);
     }
@@ -34,6 +43,10 @@ export class LeftsidebarComponent {
 
     isActive(id: string): boolean {
         return this.activeId === id;
+    }
+
+    isPlaying(id: string): boolean {
+        return this.playingId === id;
     }
 
     createNewPlaylist() {
