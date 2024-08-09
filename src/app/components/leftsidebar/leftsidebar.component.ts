@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IPlaylist } from '../../dtos/playlist';
-import { PlaylistService } from '../../services/playlistservice';
-import { UserService } from '../../services/userservice';
+import { PlaylistService } from '../../services/playlist.service';
+import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';

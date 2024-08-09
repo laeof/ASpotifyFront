@@ -6,4 +6,5 @@ export interface ITrack {
     AlbumId: string,
     Duration: number,
     Image: string,
+    Url: string,
 }

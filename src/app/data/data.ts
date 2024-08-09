@@ -12,7 +12,8 @@ export const TRACKS: ITrack[] = [
         Date: new Date('2023-01-01'),
         AlbumId: "album1",
         Duration: 180,
-        Image: "assets/imgs/bg1.png"
+        Image: "assets/imgs/bg1.png",
+        Url: ""
     },
     {
         Id: "track2",
@@ -21,7 +22,8 @@ export const TRACKS: ITrack[] = [
         Date: new Date('2023-02-15'),
         AlbumId: "album1",
         Duration: 200,
-        Image: "assets/imgs/bg1.png"
+        Image: "assets/imgs/bg1.png",
+        Url: ""
     },
     {
         Id: "track3",
@@ -30,7 +32,8 @@ export const TRACKS: ITrack[] = [
         Date: new Date('2023-03-10'),
         AlbumId: "album2",
         Duration: 210,
-        Image: "assets/imgs/bg1.png"
+        Image: "assets/imgs/bg1.png",
+        Url: ""
     },
     {
         Id: "track4",
@@ -39,7 +42,8 @@ export const TRACKS: ITrack[] = [
         Date: new Date('2023-04-25'),
         AlbumId: "album2",
         Duration: 240,
-        Image: "assets/imgs/bg1.png"
+        Image: "assets/imgs/bg1.png",
+        Url: ""
     },
     {
         Id: "track5",
@@ -48,7 +52,8 @@ export const TRACKS: ITrack[] = [
         Date: new Date('2023-04-25'),
         AlbumId: "album3",
         Duration: 188,
-        Image: "../assets/imgs/webp/apfs.webp"
+        Image: "../assets/imgs/webp/apfs.webp",
+        Url: "devochkaapfs.mp3"
     },
     {
         Id: "track6",
@@ -56,8 +61,9 @@ export const TRACKS: ITrack[] = [
         ArtistId: "artist3",
         Date: new Date('2023-04-25'),
         AlbumId: "album3",
-        Duration: 188,
-        Image: "../assets/imgs/webp/apfs.webp"
+        Duration: 192,
+        Image: "../assets/imgs/webp/apfs.webp",
+        Url: "opiatyapfs.mp3"
     },
     {
         Id: "track7",
@@ -65,8 +71,9 @@ export const TRACKS: ITrack[] = [
         ArtistId: "artist3",
         Date: new Date('2023-04-25'),
         AlbumId: "album3",
-        Duration: 188,
-        Image: "../assets/imgs/webp/apfs.webp"
+        Duration: 122,
+        Image: "../assets/imgs/webp/apfs.webp",
+        Url: "sonniyapfs.mp3"
     },
     {
         Id: "track8",
@@ -74,8 +81,9 @@ export const TRACKS: ITrack[] = [
         ArtistId: "artist3",
         Date: new Date('2023-04-25'),
         AlbumId: "album3",
-        Duration: 188,
-        Image: "../assets/imgs/webp/apfs.webp"
+        Duration: 160,
+        Image: "../assets/imgs/webp/apfs.webp",
+        Url: "afapfs.mp3"
     },
     {
         Id: "track9",
@@ -83,8 +91,9 @@ export const TRACKS: ITrack[] = [
         ArtistId: "artist3",
         Date: new Date('2023-04-25'),
         AlbumId: "album3",
-        Duration: 188,
-        Image: "../assets/imgs/webp/apfs.webp"
+        Duration: 158,
+        Image: "../assets/imgs/webp/apfs.webp",
+        Url: "pornoapfs.mp3"
     },
     {
         Id: "track10",
@@ -92,8 +101,9 @@ export const TRACKS: ITrack[] = [
         ArtistId: "artist3",
         Date: new Date('2023-04-25'),
         AlbumId: "album3",
-        Duration: 188,
-        Image: "../assets/imgs/webp/apfs.webp"
+        Duration: 166,
+        Image: "../assets/imgs/webp/apfs.webp",
+        Url: "metadonapfs.mp3"
     },
     {
         Id: "track11",
@@ -101,8 +111,19 @@ export const TRACKS: ITrack[] = [
         ArtistId: "artist3",
         Date: new Date('2023-04-25'),
         AlbumId: "album3",
-        Duration: 188,
-        Image: "../assets/imgs/webp/apfs.webp"
+        Duration: 102,
+        Image: "../assets/imgs/webp/apfs.webp",
+        Url: "tabletkiafps.mp3"
+    },
+    {
+        Id: "track12",
+        Name: "Давай поправимся",
+        ArtistId: "artist3",
+        Date: new Date('2023-04-25'),
+        AlbumId: "album3",
+        Duration: 110,
+        Image: "../assets/imgs/webp/apfs.webp",
+        Url: "davaypopravimsyaapfs.mp3"
     }
 ];
 
@@ -120,7 +141,7 @@ export const ARTISTS: IArtist[] = [
 
 export const PLAYLISTS: IPlaylist[] = [
     { Id: "1", UserId: '1', Image: "/assets/imgs/bg.png", Name: "Liked songs", Tracks: [TRACKS[0], TRACKS[2], TRACKS[1], TRACKS[3]] },
-    { Id: "2", UserId: '1', Image: "/assets/imgs/webp/apfs.webp", Name: "Опианариум", Tracks: TRACKS.slice(4, 11) }
+    { Id: "2", UserId: '1', Image: "/assets/imgs/webp/apfs.webp", Name: "Опианариум", Tracks: TRACKS.slice(4, 12) }
 ];
 
 export const USERS: IUser[] = [

@@ -2,14 +2,14 @@
     <div class="songname">
         <div class="song">
             <div class="wrap-img">
-                <img src="../../../assets/imgs/toler.png">
+                <img src={{track.Image}}>
             </div>
             <div class="name">
                 <p class="title">
-                    Толер
+                    {{track.Name}}
                 </p>
                 <p class="subtitle">
-                    Кишлак
+                    {{getArtistById(track.ArtistId)}}
                 </p>
             </div>
         </div>
@@ -93,9 +93,9 @@
             </svg>
         </div>
         <div class="slider">
-            <label class="time">0:00</label>
-            <input type="range" class="sound-slider" min="0" max="100" value="20">
-            <label class="time">1:46</label>
+            <label class="time">{{getDuration(trackPosition)}}</label>
+            <input type="range" class="sound-slider" min="0" max="{{track.Duration}}" [value]="trackPosition" (input)="onPositionChange($event)">
+            <label class="time">{{getDuration(track.Duration)}}</label>
         </div>
     </div>
     <div class="songfeatures">
@@ -142,7 +142,7 @@
                         fill="#fff" data-original="#000000" class="svg"></path>
                 </g>
             </svg>
-            <input type="range" class="sound-slider" min="0" max="100" value="50">
+            <input type="range" class="sound-slider" min="0" max="100" [value]="volume" (input)="onVolumeChange($event)">
         </div>
     </div>
 </div>

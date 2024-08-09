@@ -1,17 +1,18 @@
 import { AfterViewInit, Component, ElementRef, HostListener, Input, input, ViewChild } from '@angular/core';
 import { ITrack } from '../../dtos/track';
-import { ColorService } from '../../services/colorService';
-import { TrackService } from '../../services/trackservice';
+import { ColorService } from '../../services/color.service';
+import { TrackService } from '../../services/track.service';
 import { IPlaylist } from '../../dtos/playlist';
-import { PlaylistService } from '../../services/playlistservice';
-import { UserService } from '../../services/userservice';
+import { PlaylistService } from '../../services/playlist.service';
+import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
 import { ActivatedRoute, Router } from '@angular/router';
 import { delay } from 'rxjs/internal/operators/delay';
-import { ArtistService } from '../../services/artistservice';
+import { ArtistService } from '../../services/artist.service';
 import { IArtist } from '../../dtos/artist';
-import { AlbumService } from '../../services/albumservice';
+import { AlbumService } from '../../services/album.service';
 import { CommonModule } from '@angular/common';
+import { AudioService } from '../../services/audio.service';
 
 @Component({
     selector: 'app-playlist',
@@ -21,25 +22,54 @@ import { CommonModule } from '@angular/common';
     styleUrl: './playlist.component.scss'
 })
 export class PlaylistComponent {
+
     user: IUser;
     toggledContextMenu: boolean = false;
     @ViewChild('imageElement', { static: false }) imageElement!: ElementRef;
 
-    playlist: IPlaylist | undefined;
+    playlist: IPlaylist = {
+        Id: '',
+        UserId: '',
+        Image: '',
+        Name: '',
+        Tracks: []
+    };
+
+    trackId: string | undefined;
+    trackDuration: number = 0;
 
     constructor(private colorService: ColorService,
-        private trackService: TrackService,
         private playlistService: PlaylistService,
         private userService: UserService,
         private route: ActivatedRoute,
         private artistService: ArtistService,
-        private albumService: AlbumService
+        private albumService: AlbumService,
+        private audioService: AudioService
     ) {
         this.user = userService.getCurrentUserInfo();
         this.route.paramMap.subscribe(params => {
             this.playlist = this.playlistService.getPlaylistById(params.get('id') || "");
             setTimeout(() => this.extractColor(), 1);
         });
+        this.audioService.getCurrentTrack().subscribe((trackid) => {
+            this.trackId = trackid.Id
+        });
+    }
+
+    isActive(item: string): boolean {
+        return item === this.trackId;
+    }
+
+    toggleAudio(item: ITrack, index: number) {
+        if (this.isActive(item.Id)) {
+            this.trackId = ""
+            this.audioService.stopAudio(item);
+        }
+        else {
+            this.trackId = this.playlist.Tracks[index].Id;
+            this.audioService.setPlaylist(this.playlist);
+            this.audioService.playPlaylist(index);
+        }
     }
 
     toggleContextMenu() {
@@ -61,22 +91,6 @@ export class PlaylistComponent {
         return this.artistService.getArtistNameById(id);
     }
 
-    getDuration(duration: number): string {
-        const hours = Math.floor(duration / 3600);
-        const minutes = Math.floor((duration % 3600) / 60);
-        const secs = duration % 60;
-
-        const minutesStr = minutes.toString().padStart(2, '0');
-        const secondsStr = secs.toString().padStart(2, '0');
-
-        if (hours > 0) {
-            const hoursStr = hours.toString().padStart(2, '0');
-            return `${hoursStr}:${minutesStr}:${secondsStr}`;
-        } else {
-            return `${minutesStr}:${secondsStr}`;
-        }
-    }
-
     extractColor() {
         const image = this.imageElement.nativeElement;
         this.colorService.extractColor(image).then(mostFrequentColor => {
@@ -92,6 +106,10 @@ export class PlaylistComponent {
         }).catch(error => {
             console.error('Error extracting color:', error);
         });
+    }
+
+    getDuration(duration: number) {
+        return this.audioService.getDuration(duration);
     }
 }
 
