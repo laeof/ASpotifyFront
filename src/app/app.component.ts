@@ -12,6 +12,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { AudioService } from './services/audio.service';
 import { UrlService } from './services/url.service';
 import { ActivatedRoute } from '@angular/router';
+import { ApiService } from './services/api.service';
+import { CommonModule } from '@angular/common';
+import { ITrack } from './dtos/track';
 
 @Component({
     selector: 'app-root',
@@ -20,7 +23,8 @@ import { ActivatedRoute } from '@angular/router';
         FooterComponent,
         LeftsidebarComponent,
         MainComponent,
-        HttpClientModule
+        HttpClientModule,
+        CommonModule
     ],
     providers: [
         ColorService,
@@ -30,15 +34,28 @@ import { ActivatedRoute } from '@angular/router';
         ArtistService,
         AlbumService,
         AudioService,
-        UrlService
+        UrlService,
+        ApiService
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
 })
 export class AppComponent {
     title = 'ASpotifyFront';
-    constructor(private route: ActivatedRoute, private urlParamService: UrlService) {
-        
+    track: ITrack = {
+        AlbumId: "",
+        Id: '',
+        Name: '',
+        ArtistId: '',
+        Date: new Date,
+        Duration: 0,
+        Image: '',
+        Url: ''
+    };
+    constructor(private audioService: AudioService) {
+        this.audioService.getCurrentTrack().subscribe(track => {
+            this.track = track;
+        });
     }
 
 }

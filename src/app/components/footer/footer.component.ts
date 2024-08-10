@@ -5,6 +5,7 @@ import { AudioService } from '../../services/audio.service';
 import { map, Observable } from 'rxjs';
 import { IPlaylist } from '../../dtos/playlist';
 import { CommonModule } from '@angular/common';
+import { PlaylistService } from '../../services/playlist.service';
 
 @Component({
     selector: 'app-footer',
@@ -30,13 +31,12 @@ export class FooterComponent {
         Image: '',
         Name: '',
         Tracks: []
-    }
+    };
     volume: number = 0;
     trackPosition: number = 0;
     paused: boolean = true;
     trackId: string = "";
-
-    //trackStringPosition$: Observable<string>;
+    random: boolean = true;
 
     constructor(private artistService: ArtistService,
         private audioService: AudioService
@@ -44,6 +44,7 @@ export class FooterComponent {
         this.audioService.getCurrentTrack().subscribe(track => {
             this.track = track;
         });
+
         this.audioService.getTrackPosition().subscribe(trackpos => {
             this.trackPosition = trackpos;
         });
@@ -79,13 +80,32 @@ export class FooterComponent {
         this.audioService.toggleAudio(this.track);
     }
 
-    nextAudio() {
-        this.audioService.playPlaylist(this.playlist.Tracks.findIndex(track => track.Id === this.track.Id) + 1)
+    toggleRandom(): any {
+        this.audioService.toggleRandom();
     }
+
+    getRandom() {
+        return this.audioService.getRandom();
+    }
+
+    toggleRepeat() {
+        this.audioService.toggleRepeat();
+    }
+
+    getRepeat() {
+        return this.audioService.getRepeat();
+    }
+
+    nextAudio() {
+        if(!this.audioService.getRandom())
+            this.audioService.playPlaylist(this.playlist.Tracks.findIndex(track => track.Id === this.track.Id) + 1)
+        else {
+            this.audioService.playRandom();
+        }
+    }
+
     prevAudio() {
-        let prevIndex = this.playlist.Tracks.findIndex(track => track.Id === this.track.Id) - 1
-        if(prevIndex == -1)
-            prevIndex = this.playlist.Tracks.length - 1;
+        let prevIndex = this.audioService.getPrevTrackIndex();
         this.audioService.playPlaylist(prevIndex)
     }
 

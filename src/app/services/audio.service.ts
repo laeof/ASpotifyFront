@@ -3,13 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ITrack } from '../dtos/track';
 import { IPlaylist } from '../dtos/playlist';
+import { ApiService } from './api.service';
+import { PlaylistService } from './playlist.service';
 
 @Injectable({
     providedIn: 'root'
 })
+
 export class AudioService {
-    private apiUrl = 'http://localhost:5283/Audio';
-    audio: any;
+    private musicApi = "";
+    private audio: any;
     private currentTrack = new BehaviorSubject<ITrack>({
         AlbumId: "",
         Id: '',
@@ -20,6 +23,7 @@ export class AudioService {
         Image: '',
         Url: ''
     });
+
     private currentPlaylist = new BehaviorSubject<IPlaylist>({
         Id: '',
         UserId: '',
@@ -28,7 +32,7 @@ export class AudioService {
         Tracks: []
     });
 
-    playlist: IPlaylist = {
+    private playlist: IPlaylist = {
         Id: '',
         UserId: '',
         Image: '',
@@ -36,14 +40,22 @@ export class AudioService {
         Tracks: []
     };
     private trackPosition = new BehaviorSubject<number>(0);
-    private volume = new BehaviorSubject<number>(1);
+    private volume = new BehaviorSubject<number>(0.05);
     private trackId = new BehaviorSubject<string>("");
     private playlistId = new BehaviorSubject<string>("");
     private isPaused = new BehaviorSubject<boolean>(false);
     private index: number = 0;
-    trackid: string = "";
-    constructor(private http: HttpClient) {
+    private trackid: string = "";
+    private repeat: boolean = false;
+    private random: boolean = false;
+    private prevTrackIndex: number[] = [];
+
+    constructor(private http: HttpClient,
+        private api: ApiService,
+        private playlistService: PlaylistService
+    ) {
         this.audio = new Audio();
+        this.musicApi = api.getMusicApi();
     }
 
     private intervalId: any;
@@ -62,6 +74,7 @@ export class AudioService {
             clearInterval(this.intervalId);
         }
 
+        this.prevTrackIndex.push(index);
         this.playAudio(this.playlist.Tracks[index]);
         this.trackId.next(this.playlist.Tracks[index].Id);
         this.trackid = this.playlist.Tracks[index].Id;
@@ -72,11 +85,20 @@ export class AudioService {
 
         this.intervalId = setInterval(() => {
             let currentTime = Math.round(this.audio.currentTime);
-            console.log("currenttime: ", currentTime)
+            //console.log("currenttime: ", currentTime)
             this.setTrackPositionTracking(currentTime);
             if (wait) {
                 wait = false;
-                this.playPlaylist(index + 1);
+
+                if (this.repeat) {
+                    this.playPlaylist(index);
+                }
+                else if (this.random) {
+                    this.playRandom();
+                }
+                else {
+                    this.playPlaylist(index + 1);
+                }
             }
             if (Math.round(currentTime) === this.playlist.Tracks[index].Duration) {
                 wait = true;
@@ -85,27 +107,19 @@ export class AudioService {
     }
 
     toggleAudio(item: ITrack, index: number = this.index, playlist: IPlaylist = this.playlist, currentPlaylist: IPlaylist = this.playlist) {
-        // if (this.isActive(item.Id)) {
-        //     this.trackId = ""
-        //     this.audioService.stopAudio(item);
-        // }
-        // else {
-        //     this.trackId = this.playlist.Tracks[index].Id;
-        //     this.audioService.setPlaylist(this.playlist);
-        //     this.audioService.playPlaylist(index);
-        // }
         if (this.trackid == item.Id && !this.audio.paused && playlist.Id === currentPlaylist.Id) {
             this.stopAudio(item);
-            console.log(1)
+            //console.log(1)
         }
         else if (this.audio.src != "" && item.Id == this.trackid && this.audio.paused && playlist.Id === currentPlaylist.Id) {
             this.resumeAudio();
-            console.log(2)
+            //console.log(2)
         }
         else {
             this.setPlaylist(playlist);
+            this.playlistService.setRandomTrack(this.playlist.Tracks)
             this.playPlaylist(index);
-            console.log(3)
+            //console.log(3)
             this.index = index;
         }
     }
@@ -123,8 +137,6 @@ export class AudioService {
     }
 
     stopAudio(item: ITrack) {
-        //this.trackId.next("");
-        //this.playlistId.next("");
         this.audio.pause();
         this.isPaused.next(true);
     }
@@ -136,8 +148,24 @@ export class AudioService {
         this.isPaused.next(false);
     }
 
+    playRandom() {
+        let track = this.playlistService.getRandomTrack();
+        if (track != null)
+            this.playPlaylist(this.playlist.Tracks.findIndex(index => index.Id === track?.Id))
+        else {
+            this.playlistService.resetPlaylist();
+            track = this.playlistService.getRandomTrack();
+            this.playPlaylist(this.playlist.Tracks.findIndex(index => index.Id === track?.Id))
+        }
+    }
+
     isTrackPaused(): Observable<boolean> {
         return this.isPaused;
+    }
+
+    getPrevTrackIndex() {
+        this.prevTrackIndex.pop();
+        return this.prevTrackIndex.pop();
     }
 
     getCurrentTrack(): Observable<ITrack> {
@@ -183,8 +211,24 @@ export class AudioService {
         return this.currentPlaylist;
     }
 
+    getRepeat(): boolean {
+        return this.repeat;
+    }
+
+    toggleRepeat() {
+        this.repeat = !this.repeat;
+    }
+
+    getRandom() {
+        return this.random;
+    }
+
+    toggleRandom() {
+        this.random = !this.random;
+    }
+
     streamAudioFromServer(path: string): Observable<Blob> {
-        return this.http.get(`${this.apiUrl}/stream/` + path, { responseType: 'blob' });
+        return this.http.get(`${this.musicApi}/stream/` + path, { responseType: 'blob' });
     }
 
     streamAudio(path: string): Observable<Blob> {
@@ -199,7 +243,7 @@ export class AudioService {
                 .then(blob => observer.next(blob))
                 .catch(error => {
                     console.error('Ошибка при загрузке файла:', error);
-                    observer.next(new Blob()); // Возвращаем пустой Blob в случае ошибки
+                    observer.next(new Blob());
                 })
                 .finally(() => observer.complete());
         });

@@ -87,16 +87,17 @@ $backcolor: rgba(255, 255, 255, 0.8);
 }
 
 .footer {
-    &.visible{
-        visibility: visible;
+    &.visible {
+        display: flex;
     }
-    visibility: hidden;
+
+    // visibility: hidden;
     // visibility: visible;
-    
+
     padding-top: 30px;
     margin-top: auto;
     height: 60px;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: space-between;
 
@@ -144,6 +145,7 @@ $backcolor: rgba(255, 255, 255, 0.8);
 
             .name {
                 padding-left: 12px;
+
                 .title {
                     font-size: 1rem;
                     font-weight: 300;
@@ -180,6 +182,19 @@ $backcolor: rgba(255, 255, 255, 0.8);
             display: flex;
             align-items: center;
 
+            .show {
+                display: none;
+            }
+
+            svg {
+                .svg{
+                    &.random {
+                        fill: $hovercolor
+                    }
+                }
+                
+            }
+
             .pause {
                 display: none;
             }
@@ -201,7 +216,7 @@ $backcolor: rgba(255, 255, 255, 0.8);
                     .pause {
                         display: none;
                     }
-    
+
                     .play {
                         display: flex;
                     }
