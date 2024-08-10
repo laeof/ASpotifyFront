@@ -20,6 +20,13 @@ export class AudioService {
         Image: '',
         Url: ''
     });
+    private currentPlaylist = new BehaviorSubject<IPlaylist>({
+        Id: '',
+        UserId: '',
+        Image: '',
+        Name: '',
+        Tracks: []
+    });
 
     playlist: IPlaylist = {
         Id: '',
@@ -77,7 +84,7 @@ export class AudioService {
         }, 1000);
     }
 
-    toggleAudio(item: ITrack, index: number = this.index, playlist: IPlaylist = this.playlist) {
+    toggleAudio(item: ITrack, index: number = this.index, playlist: IPlaylist = this.playlist, currentPlaylist: IPlaylist = this.playlist) {
         // if (this.isActive(item.Id)) {
         //     this.trackId = ""
         //     this.audioService.stopAudio(item);
@@ -87,11 +94,11 @@ export class AudioService {
         //     this.audioService.setPlaylist(this.playlist);
         //     this.audioService.playPlaylist(index);
         // }
-        if (this.trackid == item.Id && !this.audio.paused) {
+        if (this.trackid == item.Id && !this.audio.paused && playlist.Id === currentPlaylist.Id) {
             this.stopAudio(item);
             console.log(1)
         }
-        else if (this.audio.src != "" && item.Id == this.trackid && this.audio.paused) {
+        else if (this.audio.src != "" && item.Id == this.trackid && this.audio.paused && playlist.Id === currentPlaylist.Id) {
             this.resumeAudio();
             console.log(2)
         }
@@ -165,10 +172,15 @@ export class AudioService {
 
     setPlaylist(playlist: IPlaylist) {
         this.playlist = playlist;
+        this.currentPlaylist.next(this.playlist)
     }
 
     getPlaylistId(): Observable<string> {
         return this.playlistId;
+    }
+
+    getPlaylist(): Observable<IPlaylist> {
+        return this.currentPlaylist;
     }
 
     streamAudioFromServer(path: string): Observable<Blob> {

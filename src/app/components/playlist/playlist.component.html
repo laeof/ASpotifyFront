@@ -14,7 +14,7 @@
     </div>
     <div class="tracks">
         <div class="actions">
-            <span class="toggleplay" (click)="toggleAudio(playlist.Tracks[0], 0)">
+            <span class="toggleplay" (click)="toggleAudio(currentTrack || playlist.Tracks[0], currentIndex || 0)">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                     xmlns:svgjs="http://svgjs.com/svgjs" width="20" height="20" x="0" y="0"
                     viewBox="0 0 552.611 552.611" style="enable-background:new 0 0 512 512" xml:space="preserve"

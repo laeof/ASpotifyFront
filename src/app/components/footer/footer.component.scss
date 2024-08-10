@@ -87,6 +87,10 @@ $backcolor: rgba(255, 255, 255, 0.8);
 }
 
 .footer {
+    &.visible{
+        visibility: visible;
+    }
+    visibility: hidden;
     padding-top: 30px;
     margin-top: auto;
     height: 60px;
@@ -115,7 +119,7 @@ $backcolor: rgba(255, 255, 255, 0.8);
         align-items: center;
         justify-content: space-between;
         padding-left: 10px;
-        width: 300px;
+        width: 350px;
 
         .song {
             display: flex;
@@ -234,7 +238,7 @@ $backcolor: rgba(255, 255, 255, 0.8);
         display: flex;
 
         .features {
-            width: 290px;
+            width: 350px;
             display: flex;
             justify-content: flex-end;
             align-items: center;

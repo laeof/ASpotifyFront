@@ -14,6 +14,7 @@ import { AlbumService } from '../../services/album.service';
 import { CommonModule } from '@angular/common';
 import { AudioService } from '../../services/audio.service';
 import { UrlService } from '../../services/url.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-playlist',
@@ -34,10 +35,20 @@ export class PlaylistComponent {
         Name: '',
         Tracks: []
     };
+    //playing
+    currentPlaylist: IPlaylist = {
+        Id: '',
+        UserId: '',
+        Image: '',
+        Name: '',
+        Tracks: []
+    };
 
     trackId: string | undefined;
     paused: boolean = false;
     trackDuration: number = 0;
+    currentTrack: ITrack | undefined;
+    currentIndex: number = 0;
 
     constructor(private colorService: ColorService,
         private playlistService: PlaylistService,
@@ -50,8 +61,9 @@ export class PlaylistComponent {
     ) {
         this.user = userService.getCurrentUserInfo();
         this.route.paramMap.subscribe(params => {
-            this.playlist = this.playlistService.getPlaylistById(params.get('id') || "");
-            this.urlParamService.setActiveId(params.get('id') || "");
+            let id = params.get('id') || "";
+            this.urlParamService.setActiveId(id);
+            this.playlist = this.playlistService.getPlaylistById(id)
             setTimeout(() => this.extractColor(), 1);
         });
         this.audioService.getCurrentTrack().subscribe((trackid) => {
@@ -60,10 +72,19 @@ export class PlaylistComponent {
         this.audioService.isTrackPaused().subscribe((ispaused) => {
             this.paused = ispaused
         })
+        this.audioService.getPlaylist().subscribe((playlist) => {
+            this.currentPlaylist = playlist
+        })
+        this.audioService.getCurrentTrack().subscribe((track) => {
+            if (this.playlist.Id == this.currentPlaylist.Id) {
+                this.currentTrack = track;
+                this.currentIndex = this.currentPlaylist.Tracks.findIndex(track => track.Id === track.Id)
+            }
+        });
     }
 
     isActive(item: string): boolean {
-        return item === this.trackId;
+        return item === this.trackId && this.playlist.Id == this.currentPlaylist.Id;
     }
 
     isPaused(item: string): any {
@@ -71,9 +92,6 @@ export class PlaylistComponent {
     }
 
     toggleAudio(item: ITrack, index: number) {
-        console.log(item)
-        console.log(index)
-        console.log(this.playlist)
         this.audioService.toggleAudio(item, index, this.playlist)
     }
 

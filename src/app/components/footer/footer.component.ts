@@ -60,19 +60,33 @@ export class FooterComponent {
             this.paused = ispaused
         })
 
+        this.audioService.getPlaylist().subscribe((playlist) => {
+            this.playlist = playlist
+        })
+
         console.log(this.paused)
     }
 
     isActive(): boolean {
         return this.trackId != "";
-    } 
-    
+    }
+
     isPaused(): any {
         return this.paused
     }
 
     toggleAudio() {
         this.audioService.toggleAudio(this.track);
+    }
+
+    nextAudio() {
+        this.audioService.playPlaylist(this.playlist.Tracks.findIndex(track => track.Id === this.track.Id) + 1)
+    }
+    prevAudio() {
+        let prevIndex = this.playlist.Tracks.findIndex(track => track.Id === this.track.Id) - 1
+        if(prevIndex == -1)
+            prevIndex = this.playlist.Tracks.length - 1;
+        this.audioService.playPlaylist(prevIndex)
     }
 
     onPositionChange(event: Event) {
