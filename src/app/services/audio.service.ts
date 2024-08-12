@@ -230,9 +230,10 @@ export class AudioService {
     streamAudioFromServer(path: string): Observable<Blob> {
         return this.http.get(`${this.musicApi}/stream/` + path, { responseType: 'blob' });
     }
-
     streamAudio(path: string): Observable<Blob> {
         return new Observable<Blob>(observer => {
+            let blob: Blob | null = null; // Инициализация переменной с типом Blob | null
+    
             fetch("../assets/music/" + path)
                 .then(response => {
                     if (!response.ok) {
@@ -240,7 +241,12 @@ export class AudioService {
                     }
                     return response.blob();
                 })
-                .then(blob => observer.next(blob))
+                .then(fetchedBlob => {
+                    blob = fetchedBlob;
+                    observer.next(blob);
+                    // Очищаем ссылку на Blob после использования
+                    blob = null;
+                })
                 .catch(error => {
                     console.error('Ошибка при загрузке файла:', error);
                     observer.next(new Blob());
@@ -248,6 +254,23 @@ export class AudioService {
                 .finally(() => observer.complete());
         });
     }
+    // streamAudio(path: string): Observable<Blob> {
+    //     return new Observable<Blob>(observer => {
+    //         fetch("../assets/music/" + path)
+    //             .then(response => {
+    //                 if (!response.ok) {
+    //                     throw new Error('Network response was not ok');
+    //                 }
+    //                 return response.blob();
+    //             })
+    //             .then(blob => observer.next(blob))
+    //             .catch(error => {
+    //                 console.error('Ошибка при загрузке файла:', error);
+    //                 observer.next(new Blob());
+    //             })
+    //             .finally(() => observer.complete());
+    //     });
+    // }
     getDuration(duration: number): string {
         const hours = Math.floor(duration / 3600);
         const minutes = Math.floor((duration % 3600) / 60);
