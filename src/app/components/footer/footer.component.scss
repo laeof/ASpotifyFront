@@ -12,8 +12,11 @@ $backcolor: rgba(255, 255, 255, 0.8);
         appearance: none;
         border-radius: 4px;
     }
-
-    &::-moz-range-track {}
+    &::-moz-range-track {
+        background: #404040;
+        height: var(--track-height);
+        border-radius: 4px;
+    }
 }
 
 @mixin thumb {
@@ -27,8 +30,18 @@ $backcolor: rgba(255, 255, 255, 0.8);
 
             filter: brightness(var(--brightness-hover));
             cursor: pointer;
-
             --box-fill: calc(-100vmax - var(--thumb-width, var(--thumb-height))) 0 0 100vmax var(--custom-bg-color);
+        }
+        &::-moz-range-thumb {
+            margin-top: -6px;
+            height: 15px;
+            width: 15px;
+
+            filter: brightness(var(--brightness-hover));
+            cursor: pointer;
+            background-color: white;
+            border-radius: 50%;
+            border: none;
         }
     }
 
@@ -44,14 +57,16 @@ $backcolor: rgba(255, 255, 255, 0.8);
         border-radius: var(--thumb-width, var(--thumb-height));
 
         filter: brightness(100%);
-        clip-path: polygon(100% -1px,
-                var(--clip-edges) -1px,
-                0 var(--clip-top),
-                -100vmax var(--clip-top),
-                -100vmax var(--clip-bottom),
-                0 var(--clip-bottom),
-                var(--clip-edges) 100%,
-                var(--clip-further) var(--clip-further));
+        clip-path: polygon(
+            100% -1px,
+            var(--clip-edges) -1px,
+            0 var(--clip-top),
+            -100vmax var(--clip-top),
+            -100vmax var(--clip-bottom),
+            0 var(--clip-bottom),
+            var(--clip-edges) 100%,
+            var(--clip-further) var(--clip-further)
+        );
 
         margin-top: -6px;
         height: 4px;
@@ -60,6 +75,19 @@ $backcolor: rgba(255, 255, 255, 0.8);
         -webkit-appearance: none;
         appearance: none;
         height: var(--thumb-height);
+    }
+    &::-moz-range-thumb {
+        background-color: white;
+        border-radius: 50%;
+        border: none;
+        height: var(--thumb-height);
+        width: var(--thumb-height);
+        cursor: pointer;
+        filter: brightness(100%);
+    }
+    &::-moz-range-progress {
+        appearance: none;
+        background: var(--custom-bg-color)
     }
 }
 
@@ -114,7 +142,6 @@ $backcolor: rgba(255, 255, 255, 0.8);
                 fill: $hovercolor;
             }
         }
-
     }
 
     .songname {
@@ -187,12 +214,11 @@ $backcolor: rgba(255, 255, 255, 0.8);
             }
 
             svg {
-                .svg{
+                .svg {
                     &.random {
-                        fill: $hovercolor
+                        fill: $hovercolor;
                     }
                 }
-                
             }
 
             .pause {
@@ -240,13 +266,10 @@ $backcolor: rgba(255, 255, 255, 0.8);
                 color: $backcolor;
             }
 
-
-
             .sound-slider {
                 width: 500px;
 
                 @include sound-slider();
-
             }
         }
     }
