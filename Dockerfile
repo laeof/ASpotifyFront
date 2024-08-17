@@ -1,17 +1,11 @@
-FROM node:20.16.0
+FROM node:alpine
 
-RUN apt-get update && apt-get install -y vim
+WORKDIR /usr/src/app
 
-EXPOSE 4200
+COPY . /usr/src/app
 
-USER node
+RUN npm install -g @angular/cli
 
-RUN mkdir /home/node/.npm-global
-ENV PATH=/home/node/.npm-global/bin:$PATH
-ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
+RUN npm install
 
-RUN npm install -g @angular/cli@17.3.6
-
-FROM nginx
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY --from=build /usr/src/app/dist/sample-app /usr/share/nginx/html
+CMD ["ng", "serve", "--host", "0.0.0.0"]
