@@ -252,7 +252,7 @@ export const ARTISTS: IArtist[] = [
 ];
 
 export const PLAYLISTS: IPlaylist[] = [
-    { Id: "1", UserId: '1', Image: "/assets/imgs/pxnguin.jfif", Name: "Liked songs", Tracks: TRACKS.slice(4, 24) },
+    { Id: "1", UserId: '1', Image: "/assets/imgs/bg1.png", Name: "Liked songs", Tracks: TRACKS.slice(4, 24) },
     { Id: "2", UserId: '1', Image: "/assets/imgs/webp/apfs.webp", Name: "Опианариум", Tracks: TRACKS.slice(4, 12) },
     { Id: "3", UserId: '1', Image: "/assets/imgs/loveaddiction.jpg", Name: "Любовь, аддикция и марафоны", Tracks: TRACKS.slice(12, 24) }
 ];
@@ -261,21 +261,25 @@ export const USERS: IUser[] = [
     {
         Id: "1",
         UserName: 'wandered thoughts',
-        Email: 'laoef@example.com'
+        Email: 'laoef@example.com',
+        Image: '/assets/imgs/bg.png'
     },
     {
         Id: "2",
         UserName: 'jane_smith',
-        Email: 'jane.smith@example.com'
+        Email: 'jane.smith@example.com',
+        Image: '/assets/imgs/image.png'
     },
     {
         Id: "3",
         UserName: 'alice_jones',
-        Email: 'alice.jones@example.com'
+        Email: 'alice.jones@example.com',
+        Image: '/assets/imgs/image.png'
     },
     {
         Id: "4",
         UserName: 'bob_brown',
-        Email: 'bob.brown@example.com'
+        Email: 'bob.brown@example.com',
+        Image: '/assets/imgs/image.png'
     }
 ];

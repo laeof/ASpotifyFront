@@ -16,7 +16,7 @@
 
     .description-wrap {
         width: 100%;
-        height: 325px;
+        max-height: 300px;
         background-color: var(--custom-bg-color);
         border-top-left-radius: 12px;
         border-top-right-radius: 12px;
@@ -26,13 +26,13 @@
 
         .description {
             display: flex;
-            padding-left: 30px;
+            padding: 30px;
             padding-bottom: 15px;
             align-items: center;
 
             .img {
+                min-width: 250px;
                 height: 250px;
-                width: 250px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -46,21 +46,28 @@
 
             .descr {
                 margin-left: 30px;
-                padding-top: 50px;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
-                height: 90%;
-                margin-bottom: 5px;
+                justify-content: flex-end;
+                height: 240px;
+                .type {
+                    font-weight: 600;
+                }
+
+                .author {
+                    font-weight: 400;
+                }
+
                 .title {
-                    font-size: 70px;
+                    line-height: clamp(30px, 4vw, 70px);
+                    font-size: clamp(30px, 4vw, 70px);
                 }
             }
         }
     }
 
     .tracks {
-        height: calc(100% - 325px);
+        height: calc(100% - 310px);
         background: linear-gradient(180deg, var(--custom-bg-color) 0%, rgb(40, 40, 40) 40%);
         border-bottom-left-radius: 12px;
         border-bottom-right-radius: 12px;
@@ -80,7 +87,7 @@
                 display: none;
             }
 
-            &.playing{
+            &.playing {
                 #play {
                     display: none;
                     cursor: pointer;
@@ -128,6 +135,7 @@
 
                 &:hover {
                     transform: scale(1.05);
+                    // transform: rotate(120deg);
 
                     svg {
                         .svg {
@@ -367,7 +375,6 @@
                         }
 
                         &:not(:first-child) {
-
                             border-radius: 12px;
 
                             &.active {
@@ -375,7 +382,7 @@
                             }
 
                             &:hover {
-                                background: rgba(255, 255, 255, 0.2)
+                                background: rgba(255, 255, 255, 0.2);
                             }
 
                             .album,

@@ -15,11 +15,13 @@ import { ActivatedRoute } from '@angular/router';
 import { ApiService } from './services/api.service';
 import { CommonModule } from '@angular/common';
 import { ITrack } from './dtos/track';
+import { HeaderComponent } from './components/header/header.component';
 
 @Component({
     selector: 'app-root',
     standalone: true,
     imports: [
+        HeaderComponent,
         FooterComponent,
         LeftsidebarComponent,
         MainComponent,
