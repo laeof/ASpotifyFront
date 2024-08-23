@@ -1,60 +1,131 @@
 export class ColorService {
-  extractColor(imageElement: HTMLImageElement): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      const img = new Image();
-      img.src = imageElement.src;
 
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const context = canvas.getContext('2d');
-        context?.drawImage(img, 0, 0);
+    extractColor(imageElement: HTMLImageElement): Promise<string> {
+        return new Promise((resolve, reject) => {
+            if (!imageElement.complete) {
+                imageElement.addEventListener('load', () => {
+                    try {
+                        resolve(this.calculateColor(imageElement));
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
 
-        const imageData = context?.getImageData(0, 0, canvas.width, canvas.height);
-        const pixelData = imageData?.data;
-
-        if (pixelData == null) {
-          reject('No pixel data');
-          return;
-        }
-
-        const colorFrequency: Map<number, number> = new Map();
-        const step = 4 * 3; // Обрабатывать каждый третий пиксель
-
-        for (let i = 0; i < pixelData.length; i += step) {
-          const r = pixelData[i] >> 2;  // Уменьшение точности до 6 бит
-          const g = pixelData[i + 1] >> 2; // Уменьшение точности до 6 бит
-          const b = pixelData[i + 2] >> 2; // Уменьшение точности до 6 бит
-
-          const color = (r << 12) | (g << 6) | b; // 18-битный ключ для цвета
-          colorFrequency.set(color, (colorFrequency.get(color) || 0) + 1);
-        }
-
-        let mostFrequentColor = 0;
-        let maxFrequency = 0;
-
-        colorFrequency.forEach((frequency, color) => {
-          if (frequency > maxFrequency) {
-            mostFrequentColor = color;
-            maxFrequency = frequency;
-          }
+                imageElement.addEventListener('error', () => {
+                    reject(new Error('Error picture loading.'));
+                });
+            } else {
+                try {
+                    resolve(this.calculateColor(imageElement));
+                } catch (error) {
+                    reject(error);
+                }
+            }
         });
+    }
 
-        const r = (mostFrequentColor >> 12) & 0x3F;
-        const g = (mostFrequentColor >> 6) & 0x3F;
-        const b = mostFrequentColor & 0x3F;
+    private calculateColor(imageElement: HTMLImageElement): string {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
 
-        // Коэффициент затемнения (0.7 делает цвет темнее)
-        const darkeningFactor = 0.7;
-        const darkR = Math.max(0, Math.min(255, Math.floor(r * 4 * darkeningFactor)));
-        const darkG = Math.max(0, Math.min(255, Math.floor(g * 4 * darkeningFactor)));
-        const darkB = Math.max(0, Math.min(255, Math.floor(b * 4 * darkeningFactor)));
+        if (!ctx) {
+            throw new Error('No canvas context');
+        }
 
-        resolve(`rgb(${darkR}, ${darkG}, ${darkB})`);
-      };
+        canvas.width = imageElement.width;
+        canvas.height = imageElement.height;
 
-      img.onerror = (error) => reject(error);
-    });
-  }
+        ctx.drawImage(imageElement, 0, 0, canvas.width, canvas.height);
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+
+        let rSum = 0, gSum = 0, bSum = 0;
+        const colorCount: { [key: string]: number } = {};
+        let totalPixels = 0;
+
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
+            const alpha = data[i + 3];
+
+            if (alpha == 0)
+                continue
+
+            if (r < 20 && g < 20 && b < 20)
+                continue
+
+            rSum += r;
+            gSum += g;
+            bSum += b;
+            totalPixels++;
+
+            const colorKey = `${r},${g},${b}`;
+            if (colorCount[colorKey]) {
+                colorCount[colorKey]++;
+            } else {
+                colorCount[colorKey] = 1;
+            }
+        }
+
+        // average color
+        let avgR = Math.round(rSum / totalPixels);
+        let avgG = Math.round(gSum / totalPixels);
+        let avgB = Math.round(bSum / totalPixels);
+
+        // most frequent color
+        let mostFrequentColor = "";
+        let maxCount = 0;
+
+        for (const color in colorCount) {
+            if (colorCount[color] > maxCount) {
+                maxCount = colorCount[color];
+                mostFrequentColor = color;
+            }
+        }
+
+        let [mostR, mostG, mostB] = mostFrequentColor.split(',').map(Number);
+
+        avgR = Math.max(mostR, Math.round(avgR)) - 25
+        avgG = Math.max(mostG, Math.round(avgG)) - 25
+        avgB = Math.max(mostB, Math.round(avgB)) - 25
+
+        // console.log("avgR: ", avgR);
+        // console.log("avgG: ", avgG);
+        // console.log("avgB: ", avgB);
+        //fixme
+        if (!(avgR < 40 && avgB < 40 && avgG < 40)) {
+            if (avgR > avgG + 5 && avgR > avgB + 5) {
+                avgR += 25;
+                if (avgR > 140)
+                    avgR -= 40;
+                avgB -= 50;
+                avgG -= 50;
+                //r
+            }
+            if (avgG > avgR + 5 && avgG > avgB + 5) {
+                avgG += 25;
+                if (avgG > 140)
+                    avgG -= 40;
+                avgR -= 50;
+                avgB -= 50;
+                //g
+            }
+            if (avgB > avgR + 5 && avgB > avgG + 5) {
+                avgB += 25;
+                if (avgB > 140)
+                    avgB -= 40;
+                avgR -= 50;
+                avgG -= 50;
+                //b
+            }
+        }
+
+        console.log("avgR: ", avgR);
+        console.log("avgG: ", avgG);
+        console.log("avgB: ", avgB);
+
+        return `rgb(${avgR},${avgG},${avgB})`;
+    }
 }

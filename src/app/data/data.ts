@@ -252,7 +252,7 @@ export const ARTISTS: IArtist[] = [
 ];
 
 export const PLAYLISTS: IPlaylist[] = [
-    { Id: "1", UserId: '1', Image: "/assets/imgs/bg.png", Name: "Liked songs", Tracks: TRACKS.slice(4, 24) },
+    { Id: "1", UserId: '1', Image: "/assets/imgs/pxnguin.jfif", Name: "Liked songs", Tracks: TRACKS.slice(4, 24) },
     { Id: "2", UserId: '1', Image: "/assets/imgs/webp/apfs.webp", Name: "Опианариум", Tracks: TRACKS.slice(4, 12) },
     { Id: "3", UserId: '1', Image: "/assets/imgs/loveaddiction.jpg", Name: "Любовь, аддикция и марафоны", Tracks: TRACKS.slice(12, 24) }
 ];
@@ -260,7 +260,7 @@ export const PLAYLISTS: IPlaylist[] = [
 export const USERS: IUser[] = [
     {
         Id: "1",
-        UserName: 'laoef',
+        UserName: 'wandered thoughts',
         Email: 'laoef@example.com'
     },
     {
