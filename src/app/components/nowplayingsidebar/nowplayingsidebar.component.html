@@ -1,0 +1,105 @@
+<div class="sidebar" [ngClass]="{'visible': nowPlayingVisible}">
+    <div class="bottom">
+        <div class="head">
+            <span class="nameandbutton">
+                Loved tracks
+            </span>
+            <span class="buttons">
+                <span class="dots" (click)="toggleContextMenu()" (click)="$event.stopPropagation()">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </span>
+                <span class="close" (click)="toggleSideBar()">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        width="15" height="15" x="0" y="0" viewBox="0 0 512 512"
+                        style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
+                        <g>
+                            <g data-name="02 User">
+                                <path
+                                    d="M25 512a25 25 0 0 1-17.68-42.68l462-462a25 25 0 0 1 35.36 35.36l-462 462A24.93 24.93 0 0 1 25 512z"
+                                    fill="rgba(255,255,255,0.8)" opacity="1" data-original="#000000" class=""></path>
+                                <path
+                                    d="M487 512a24.93 24.93 0 0 1-17.68-7.32l-462-462A25 25 0 0 1 42.68 7.32l462 462A25 25 0 0 1 487 512z"
+                                    fill="rgba(255,255,255,0.8)" opacity="1" data-original="#000000" class=""></path>
+                            </g>
+                        </g>
+                    </svg>
+                </span>
+            </span>
+        </div>
+        <div class="track">
+            <div class="wrap-img">
+                <img class="img" src="{{track.Image}}">
+            </div>
+            <div class="trackinfo">
+                <span class="trackname">
+                    <p class="name">{{track.Name}}</p>
+                    <p class="author">{{getArtistName(track.ArtistId)}}</p>
+                </span>
+                <span class="wrap-svg">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        xmlns:svgjs="http://svgjs.com/svgjs" width="25" height="25" x="0" y="0"
+                        viewBox="0 0 512.001 512" style="enable-background:new 0 0 512 512" xml:space="preserve"
+                        class="">
+                        <g>
+                            <path
+                                d="M256 455.516c-7.29 0-14.316-2.641-19.793-7.438-20.684-18.086-40.625-35.082-58.219-50.074l-.09-.078c-51.582-43.957-96.125-81.918-127.117-119.313C16.137 236.81 0 197.172 0 153.871c0-42.07 14.426-80.883 40.617-109.293C67.121 15.832 103.488 0 143.031 0c29.555 0 56.621 9.344 80.446 27.77C235.5 37.07 246.398 48.453 256 61.73c9.605-13.277 20.5-24.66 32.527-33.96C312.352 9.344 339.418 0 368.973 0c39.539 0 75.91 15.832 102.414 44.578C497.578 72.988 512 111.801 512 153.871c0 43.3-16.133 82.938-50.777 124.738-30.993 37.399-75.532 75.356-127.106 119.309-17.625 15.016-37.597 32.039-58.328 50.168a30.046 30.046 0 0 1-19.789 7.43zM143.031 29.992c-31.066 0-59.605 12.399-80.367 34.914-21.07 22.856-32.676 54.45-32.676 88.965 0 36.418 13.535 68.988 43.883 105.606 29.332 35.394 72.961 72.574 123.477 115.625l.093.078c17.66 15.05 37.68 32.113 58.516 50.332 20.961-18.254 41.012-35.344 58.707-50.418 50.512-43.051 94.137-80.223 123.469-115.617 30.344-36.618 43.879-69.188 43.879-105.606 0-34.516-11.606-66.11-32.676-88.965-20.758-22.515-49.3-34.914-80.363-34.914-22.758 0-43.653 7.235-62.102 21.5-16.441 12.719-27.894 28.797-34.61 40.047-3.452 5.785-9.53 9.238-16.261 9.238s-12.809-3.453-16.262-9.238c-6.71-11.25-18.164-27.328-34.61-40.047-18.448-14.265-39.343-21.5-62.097-21.5zm0 0"
+                                fill="rgba(255,255,255,0.8)" data-original="#000000" class="svg"></path>
+                        </g>
+                    </svg>
+                </span>
+            </div>
+        </div>
+        <div class="data">
+            <span class="nameandbutton">
+                <p>Information</p>
+                <p class="showbut">Show all</p>
+            </span>
+            <span class="artist-card">
+                <p style="font-size: 18px; margin-bottom: 2px">{{getArtistName(track.ArtistId)}}</p>
+                <p style="font-size: 16px; color: rgba(255, 255, 255, 0.7)">Main artist</p>
+            </span>
+        </div>
+        <div class="nextinquery">
+            <span class="nameandbutton">
+                <p>Next in queue</p>
+                <p class="showbut">Show all</p>
+            </span>
+            <span class="track-card">
+                <div class="controls">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        width="18" height="18" x="0" y="0" viewBox="0 0 415.963 415.963"
+                        style="enable-background:new 0 0 512 512" xml:space="preserve" class="note">
+                        <g>
+                            <path
+                                d="M328.712 264.539c12.928-21.632 21.504-48.992 23.168-76.064 1.056-17.376-2.816-35.616-11.2-52.768-13.152-26.944-35.744-42.08-57.568-56.704-16.288-10.912-31.68-21.216-42.56-35.936l-1.952-2.624c-6.432-8.64-13.696-18.432-14.848-26.656-1.152-8.32-8.704-14.24-16.96-13.76a15.957 15.957 0 0 0-14.88 15.936v285.12c-13.408-8.128-29.92-13.12-48-13.12-44.096 0-80 28.704-80 64s35.904 64 80 64 80-28.704 80-64V165.467c24.032 9.184 63.36 32.576 74.176 87.2-2.016 2.976-3.936 6.176-6.176 8.736-5.856 6.624-5.216 16.736 1.44 22.56 6.592 5.888 16.704 5.184 22.56-1.44 4.288-4.864 8.096-10.56 11.744-16.512.384-.448.737-.928 1.056-1.472z"
+                                fill="rgba(255,255,255, 0.5)" opacity="1" data-original="#000000"></path>
+                        </g>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                        width="18" height="18" x="0" y="0" viewBox="0 0 163.861 163.861"
+                        style="enable-background:new 0 0 512 512" xml:space="preserve" class="play">
+                        <g>
+                            <path
+                                d="M34.857 3.613C20.084-4.861 8.107 2.081 8.107 19.106v125.637c0 17.042 11.977 23.975 26.75 15.509L144.67 97.275c14.778-8.477 14.778-22.211 0-30.686L34.857 3.613z"
+                                fill="rgba(255,255,255, 0.5)" opacity="1" data-original="#000000" class="">
+                            </path>
+                        </g>
+                    </svg>
+                </div>
+                <div class="wrap-img">
+                    <img src={{track.Image}}>
+                </div>
+                <div class="name">
+                    <p class="title">
+                        {{track.Name}}
+                    </p>
+                    <p class="subtitle">
+                        {{getArtistName(track.ArtistId)}}
+                    </p>
+                </div>
+            </span>
+        </div>
+    </div>
+</div>

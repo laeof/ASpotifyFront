@@ -3,7 +3,7 @@ import { IPlaylist } from '../../dtos/playlist';
 import { PlaylistService } from '../../services/playlist.service';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UrlService } from '../../services/url.service';
 import { AudioService } from '../../services/audio.service';

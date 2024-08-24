@@ -46,6 +46,7 @@
 
             .descr {
                 margin-left: 30px;
+                margin-bottom: 10px;
                 display: flex;
                 flex-direction: column;
                 justify-content: flex-end;
@@ -310,7 +311,6 @@
                                 cursor: pointer;
 
                                 .svg {
-                                    transition: fill 0.6s;
                                     fill: rgba(255, 255, 255, 0.8);
                                 }
                             }

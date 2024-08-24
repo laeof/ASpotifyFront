@@ -1,0 +1,221 @@
+@import "../../shared/mixin.scss";
+
+.sidebar {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-left: 10px;
+
+    .bottom {
+        @include sidebar-style();
+        flex: 1;
+        overflow-y: auto;
+
+        .head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 10px;
+
+            .nameandbutton {
+                font-weight: 400;
+                font-size: 20px;
+            }
+
+            .buttons {
+                display: flex;
+                align-items: center;
+
+                .dots {
+                    display: flex;
+                    cursor: pointer;
+                    padding: 7px;
+                    margin-right: 10px;
+                    margin-top: -3px;
+
+                    &:hover {
+                        transform: scale(1.1);
+                    }
+
+                    .dot {
+                        transition: transform 0.6s;
+                        height: 3px;
+                        width: 3px;
+                        border-radius: 50%;
+                        background-color: rgb(232, 232, 232);
+                        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
+                        margin-left: 5px;
+                    }
+                }
+
+                .close {
+                    padding: 7px;
+
+                    &:hover {
+                        cursor: pointer;
+
+                        path {
+                            fill: rgba(255, 255, 255, 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        .track {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            .wrap-img {
+                width: 345px;
+                height: 345px;
+
+                .img {
+                    width: 345px;
+                    height: 345px;
+                }
+            }
+
+            .trackinfo {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                margin: 20px 0;
+
+                .trackname {
+                    .name {
+                        font-size: 18px;
+                        margin-bottom: 5px;
+                        font-weight: 400;
+                    }
+
+                    .author {
+                        font-size: 14px;
+                        color: rgba(255, 255, 255, 0.5);
+                    }
+                }
+
+                .wrap-svg {
+                    padding: 5px;
+
+                    &:hover {
+                        cursor: pointer;
+
+                        path {
+                            fill: rgba(255, 255, 255, 1);
+                        }
+                    }
+                }
+            }
+        }
+
+        .showbut {
+            font-size: 16px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+
+            &:hover {
+                transform: scale(1.03);
+            }
+        }
+
+        .data {
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            .nameandbutton {
+                padding: 5px 10px 5px 5px;
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 10px;
+                font-weight: 400;
+            }
+
+            .artist-card {
+                padding: 0px 5px 5px;
+                font-weight: 300;
+            }
+        }
+
+        .nextinquery {
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+
+            .nameandbutton {
+                padding: 5px 10px 5px 5px;
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 10px;
+                font-weight: 400;
+            }
+
+            .track-card {
+                display: flex;
+                align-items: center;
+
+                .controls {
+                    padding: 10px;
+
+                    .play {
+                        display: none;
+                    }
+
+                    &:hover {
+                        cursor: pointer;
+
+                        .play {
+                            display: flex;
+                        }
+
+                        .note {
+                            display: none;
+                        }
+                    }
+                }
+
+                .wrap-img {
+                    width: 50px;
+                    height: 50px;
+
+                    img {
+                        width: 50px;
+                        height: 50px;
+                    }
+                }
+
+                .name {
+                    padding-left: 12px;
+
+                    .title {
+                        font-size: 1rem;
+                        font-weight: 300;
+                        margin: 0;
+                        padding-bottom: 3px;
+                    }
+
+                    .subtitle {
+                        font-size: 12px;
+                        font-weight: 300;
+                        color: rgba(255, 255, 255, 0.7);
+                    }
+                }
+            }
+        }
+    }
+
+    &.visible {
+        display: none;
+    }
+}

@@ -107,6 +107,7 @@ export class AudioService {
     }
 
     toggleAudio(item: ITrack, index: number = this.index, playlist: IPlaylist = this.playlist, currentPlaylist: IPlaylist = this.playlist) {
+        //fixme
         if (this.trackid == item.Id && !this.audio.paused && playlist.Id === currentPlaylist.Id) {
             this.stopAudio(item);
             //console.log(1)
@@ -157,6 +158,11 @@ export class AudioService {
             track = this.playlistService.getRandomTrack();
             this.playPlaylist(this.playlist.Tracks.findIndex(index => index.Id === track?.Id))
         }
+    }
+
+    isActive() {
+        return this.trackid != "";
+        // return true;
     }
 
     isTrackPaused(): Observable<boolean> {

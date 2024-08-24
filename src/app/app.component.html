@@ -2,12 +2,15 @@
   <app-header>
     
   </app-header>
-  <div class="top" [ngClass]="{'play': track.Id != ''}">
+  <div class="top" [ngClass]="{'play': isActive()}">
     <app-leftsidebar>
 
     </app-leftsidebar>
     <app-main style=" flex: 1; padding-left: 10px;">
     </app-main>
+    <app-nowplayingsidebar>
+
+    </app-nowplayingsidebar>
   </div>
   <app-footer>
 

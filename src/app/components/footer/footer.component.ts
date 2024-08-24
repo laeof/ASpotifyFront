@@ -6,6 +6,7 @@ import { map, Observable } from 'rxjs';
 import { IPlaylist } from '../../dtos/playlist';
 import { CommonModule } from '@angular/common';
 import { PlaylistService } from '../../services/playlist.service';
+import { SidebarService } from '../../services/sidebar.service';
 
 @Component({
     selector: 'app-footer',
@@ -39,7 +40,8 @@ export class FooterComponent {
     random: boolean = true;
 
     constructor(private artistService: ArtistService,
-        private audioService: AudioService
+        private audioService: AudioService,
+        private sidebarService: SidebarService
     ) {
         this.audioService.getCurrentTrack().subscribe(track => {
             this.track = track;
@@ -64,12 +66,14 @@ export class FooterComponent {
         this.audioService.getPlaylist().subscribe((playlist) => {
             this.playlist = playlist
         })
+    }
 
-        console.log(this.paused)
+    toggleNowPlaying() {
+        this.sidebarService.toggleNowPlayingVisible();
     }
 
     isActive(): boolean {
-        return this.trackId != "";
+        return this.audioService.isActive();
     }
 
     isPaused(): any {

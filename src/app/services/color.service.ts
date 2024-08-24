@@ -122,6 +122,13 @@ export class ColorService {
             }
         }
 
+        if(avgR < 0)
+            avgR = 0;
+        if(avgG < 0)
+            avgG = 0;
+        if(avgB < 0)
+            avgB = 0;
+
         console.log("avgR: ", avgR);
         console.log("avgG: ", avgG);
         console.log("avgB: ", avgB);

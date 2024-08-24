@@ -11,23 +11,25 @@ import { AlbumService } from './services/album.service';
 import { HttpClientModule } from '@angular/common/http';
 import { AudioService } from './services/audio.service';
 import { UrlService } from './services/url.service';
-import { ActivatedRoute } from '@angular/router';
 import { ApiService } from './services/api.service';
 import { CommonModule } from '@angular/common';
 import { ITrack } from './dtos/track';
 import { HeaderComponent } from './components/header/header.component';
+import { SidebarService } from './services/sidebar.service';
+import { NowplayingsidebarComponent } from "./components/nowplayingsidebar/nowplayingsidebar.component";
 
 @Component({
     selector: 'app-root',
     standalone: true,
     imports: [
-        HeaderComponent,
-        FooterComponent,
-        LeftsidebarComponent,
-        MainComponent,
-        HttpClientModule,
-        CommonModule
-    ],
+    HeaderComponent,
+    FooterComponent,
+    LeftsidebarComponent,
+    MainComponent,
+    HttpClientModule,
+    CommonModule,
+    NowplayingsidebarComponent
+],
     providers: [
         ColorService,
         TrackService,
@@ -37,7 +39,8 @@ import { HeaderComponent } from './components/header/header.component';
         AlbumService,
         AudioService,
         UrlService,
-        ApiService
+        ApiService,
+        SidebarService
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
@@ -58,6 +61,10 @@ export class AppComponent {
         this.audioService.getCurrentTrack().subscribe(track => {
             this.track = track;
         });
+    }
+
+    isActive() {
+        return this.audioService.isActive();
     }
 
 }
