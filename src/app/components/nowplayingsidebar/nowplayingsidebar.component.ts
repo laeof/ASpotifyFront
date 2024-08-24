@@ -16,6 +16,7 @@ import { findIndex } from 'rxjs';
     styleUrl: './nowplayingsidebar.component.scss'
 })
 export class NowplayingsidebarComponent {
+
     nowPlayingVisible = false;
     toggledContextMenu: boolean = false;
     track: ITrack = {
@@ -59,17 +60,21 @@ export class NowplayingsidebarComponent {
         return this.artistService.getArtistNameById(id);
     }
 
+    getPlaylistName() {
+        return this.playlist.Name
+    }
+
     toggleSideBar() {
         this.sidebarService.toggleNowPlayingVisible();
     }
 
     getNextTrack() {
         console.log(this.playlist)
-        if(this.audioService.getRandom()) {
+        if (this.audioService.getRandom()) {
             //random track
         }
         else {
-            
+
         }
     }
 
