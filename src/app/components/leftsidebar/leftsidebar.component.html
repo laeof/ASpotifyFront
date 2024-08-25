@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="wrap-playing" [ngClass]="{'playing': isPlaying(item.Id)}">
-                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    <!-- <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                         xmlns:svgjs="http://svgjs.com/svgjs" width="50" height="50" x="0" y="0" viewBox="0 0 256 256"
                         style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
                         <g>
@@ -49,7 +49,14 @@
                                     fill="#fff" class="svg"></path>
                             </g>
                         </g>
-                    </svg>
+                    </svg> -->
+                    <div class="boxContainer">
+                        <div class="box box1" [ngClass]="{'pause': isPaused}"></div>
+                        <div class="box box2" [ngClass]="{'pause': isPaused}"></div>
+                        <div class="box box3" [ngClass]="{'pause': isPaused}"></div>
+                        <div class="box box4" [ngClass]="{'pause': isPaused}"></div>
+                        <div class="box box5" [ngClass]="{'pause': isPaused}"></div>
+                    </div>
                 </div>
             </span>
             }

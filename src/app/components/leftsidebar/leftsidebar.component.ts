@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { IPlaylist } from '../../dtos/playlist';
 import { PlaylistService } from '../../services/playlist.service';
 import { UserService } from '../../services/user.service';
@@ -18,6 +18,7 @@ import { AudioService } from '../../services/audio.service';
 export class LeftsidebarComponent {
     items: IPlaylist[];
     user: IUser | undefined;
+    isPaused: boolean = false;
     activeId: string | null = null;
     playingId: string | null = null;
     constructor(private playlistService: PlaylistService,
@@ -30,6 +31,9 @@ export class LeftsidebarComponent {
         });
         this.audioService.getPlaylistId().subscribe(play => {
             this.playingId = play;
+        })
+        this.audioService.isTrackPaused().subscribe(pause => {
+            this.isPaused = pause
         })
         this.user = this.userService.getCurrentUserInfo();
         this.items = playlistService.getAllPlaylists(this.user.Id);

@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ITrack } from '../../dtos/track';
 import { ColorService } from '../../services/color.service';
 import { IPlaylist } from '../../dtos/playlist';
@@ -11,6 +11,7 @@ import { AlbumService } from '../../services/album.service';
 import { CommonModule } from '@angular/common';
 import { AudioService } from '../../services/audio.service';
 import { UrlService } from '../../services/url.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-playlist',
@@ -21,7 +22,7 @@ import { UrlService } from '../../services/url.service';
     templateUrl: './playlist.component.html',
     styleUrl: './playlist.component.scss'
 })
-export class PlaylistComponent {
+export class PlaylistComponent implements OnDestroy {
 
     user: IUser;
     toggledContextMenu: boolean = false;
@@ -43,6 +44,8 @@ export class PlaylistComponent {
         Tracks: []
     };
 
+    sub: Subscription;
+
     trackId: string | undefined;
     paused: boolean = false;
     trackDuration: number = 0;
@@ -60,7 +63,7 @@ export class PlaylistComponent {
     ) {
         this.user = this.userService.getCurrentUserInfo();
 
-        this.route.paramMap.subscribe(params => {
+        this.sub = this.route.paramMap.subscribe(params => {
             let id = params.get('id') || "";
             this.urlParamService.setActiveId(id);
             this.playlist = this.playlistService.getPlaylistById(id)
@@ -83,6 +86,10 @@ export class PlaylistComponent {
         this.audioService.getPlaylist().subscribe((playlist) => {
             this.currentPlaylist = playlist
         })
+    }
+
+    ngOnDestroy(): void {
+        this.urlParamService.setActiveId("");
     }
 
     isActive(item: string): boolean {

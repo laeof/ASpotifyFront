@@ -32,7 +32,7 @@ export class HeaderComponent {
 
     redirectToHome() {
         let route = "/home";
-
+        
         this.urlService.redirect(route);
     }
 

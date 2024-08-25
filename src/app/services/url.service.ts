@@ -11,7 +11,6 @@ export class UrlService {
     private backRoute = new BehaviorSubject<boolean>(false);
     constructor(private route: Router
     ) {
-
     }
 
     lastroute: string = "";
@@ -95,13 +94,13 @@ export class UrlService {
         this.route.navigate([popped]);
     }
 
-    private activeIdSubject = new BehaviorSubject<string | null>(null);
+    private activeIdSubject = new BehaviorSubject<string>("");
 
-    setActiveId(id: string | null) {
+    setActiveId(id: string) {
         this.activeIdSubject.next(id);
     }
 
-    getActiveId() {
+    getActiveId(): Observable<string> {
         return this.activeIdSubject.asObservable();
     }
 
