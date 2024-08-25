@@ -89,7 +89,7 @@ export class FooterComponent {
     }
 
     getRandom() {
-        return this.audioService.getRandom();
+        return this.audioService.getRandomState();
     }
 
     toggleRepeat() {
@@ -101,7 +101,7 @@ export class FooterComponent {
     }
 
     nextAudio() {
-        if(!this.audioService.getRandom())
+        if(!this.audioService.getRandomState())
             this.audioService.playPlaylist(this.playlist.Tracks.findIndex(track => track.Id === this.track.Id) + 1)
         else {
             this.audioService.playRandom();

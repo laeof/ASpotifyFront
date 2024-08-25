@@ -24,6 +24,17 @@ export class AudioService {
         Url: ''
     });
 
+    private nextTrackObs = new BehaviorSubject<ITrack>({
+        AlbumId: "",
+        Id: '',
+        Name: '',
+        ArtistId: '',
+        Date: new Date,
+        Duration: 0,
+        Image: '',
+        Url: ''
+    });
+
     private currentPlaylist = new BehaviorSubject<IPlaylist>({
         Id: '',
         UserId: '',
@@ -75,6 +86,7 @@ export class AudioService {
         }
 
         this.prevTrackIndex.push(index);
+        this.genRandomTrack();
         this.playAudio(this.playlist.Tracks[index]);
         this.trackId.next(this.playlist.Tracks[index].Id);
         this.trackid = this.playlist.Tracks[index].Id;
@@ -149,15 +161,19 @@ export class AudioService {
         this.isPaused.next(false);
     }
 
+    randomTrack: ITrack = {
+        Id: '',
+        Name: '',
+        ArtistId: '',
+        Date: new Date(),
+        AlbumId: '',
+        Duration: 0,
+        Image: '',
+        Url: ''
+    }
+
     playRandom() {
-        let track = this.playlistService.getRandomTrack();
-        if (track != null)
-            this.playPlaylist(this.playlist.Tracks.findIndex(index => index.Id === track?.Id))
-        else {
-            this.playlistService.resetPlaylist();
-            track = this.playlistService.getRandomTrack();
-            this.playPlaylist(this.playlist.Tracks.findIndex(index => index.Id === track?.Id))
-        }
+        this.playPlaylist(this.playlist.Tracks.findIndex(index => index.Id === this.randomTrack.Id))
     }
 
     isActive() {
@@ -223,23 +239,65 @@ export class AudioService {
 
     toggleRepeat() {
         this.repeat = !this.repeat;
+        this.genNotRandomTrack();
     }
 
-    getRandom() {
+    genNotRandomTrack() {
+        if (!this.repeat)
+            this.nextTrackObs.next(this.playlist.Tracks[this.playlist.Tracks.findIndex(track => track.Id === this.trackid) + 1]);
+        else {
+            this.nextTrackObs.next(this.playlist.Tracks[this.playlist.Tracks.findIndex(track => track.Id === this.trackid)]);
+        }
+    }
+
+    genRandomTrack() {
+        this.randomTrack = this.playlistService.getRandomTrack() || this.randomTrack;
+
+        if (this.randomTrack.Id != '') {
+            this.nextTrackObs.next(this.randomTrack);
+            return
+        }
+
+        this.playlistService.resetPlaylist();
+        this.genRandomTrack();
+    }
+
+    getRandomTrack() {
+        return this.randomTrack;
+    }
+
+    getNextTrack(): Observable<ITrack> {
+        let track;
+        if (this.random)
+            track = this.getRandomTrack();
+        else
+            track = this.playlist.Tracks[this.playlist.Tracks.findIndex(track => track.Id === this.trackid) + 1]
+
+        this.nextTrackObs.next(track);
+
+        return this.nextTrackObs.asObservable();
+    }
+
+    getRandomState() {
         return this.random;
     }
 
     toggleRandom() {
         this.random = !this.random;
+        if (this.random)
+            this.genRandomTrack();
+        else 
+            this.genNotRandomTrack();
     }
 
     streamAudioFromServer(path: string): Observable<Blob> {
         return this.http.get(`${this.musicApi}/stream/` + path, { responseType: 'blob' });
     }
+
     streamAudio(path: string): Observable<Blob> {
         return new Observable<Blob>(observer => {
-            let blob: Blob | null = null; // Инициализация переменной с типом Blob | null
-    
+            let blob: Blob | null = null;
+
             fetch("../assets/music/" + path)
                 .then(response => {
                     if (!response.ok) {
@@ -250,33 +308,16 @@ export class AudioService {
                 .then(fetchedBlob => {
                     blob = fetchedBlob;
                     observer.next(blob);
-                    // Очищаем ссылку на Blob после использования
                     blob = null;
                 })
                 .catch(error => {
-                    console.error('Ошибка при загрузке файла:', error);
+                    console.error('Error loading file:', error);
                     observer.next(new Blob());
                 })
                 .finally(() => observer.complete());
         });
     }
-    // streamAudio(path: string): Observable<Blob> {
-    //     return new Observable<Blob>(observer => {
-    //         fetch("../assets/music/" + path)
-    //             .then(response => {
-    //                 if (!response.ok) {
-    //                     throw new Error('Network response was not ok');
-    //                 }
-    //                 return response.blob();
-    //             })
-    //             .then(blob => observer.next(blob))
-    //             .catch(error => {
-    //                 console.error('Ошибка при загрузке файла:', error);
-    //                 observer.next(new Blob());
-    //             })
-    //             .finally(() => observer.complete());
-    //     });
-    // }
+
     getDuration(duration: number): string {
         const hours = Math.floor(duration / 3600);
         const minutes = Math.floor((duration % 3600) / 60);
