@@ -1,29 +1,28 @@
-import { AfterViewInit, Component, ElementRef, HostListener, Input, input, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { ITrack } from '../../dtos/track';
 import { ColorService } from '../../services/color.service';
-import { TrackService } from '../../services/track.service';
 import { IPlaylist } from '../../dtos/playlist';
 import { PlaylistService } from '../../services/playlist.service';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
-import { ActivatedRoute, Router } from '@angular/router';
-import { delay } from 'rxjs/internal/operators/delay';
+import { ActivatedRoute } from '@angular/router';
 import { ArtistService } from '../../services/artist.service';
-import { IArtist } from '../../dtos/artist';
 import { AlbumService } from '../../services/album.service';
 import { CommonModule } from '@angular/common';
 import { AudioService } from '../../services/audio.service';
 import { UrlService } from '../../services/url.service';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-playlist',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule,
+
+    ],
     templateUrl: './playlist.component.html',
     styleUrl: './playlist.component.scss'
 })
 export class PlaylistComponent {
+
     user: IUser;
     toggledContextMenu: boolean = false;
     @ViewChild('imageElement', { static: false }) imageElement!: ElementRef;
@@ -59,28 +58,31 @@ export class PlaylistComponent {
         private audioService: AudioService,
         private urlParamService: UrlService
     ) {
-        this.user = userService.getCurrentUserInfo();
+        this.user = this.userService.getCurrentUserInfo();
+
         this.route.paramMap.subscribe(params => {
             let id = params.get('id') || "";
             this.urlParamService.setActiveId(id);
             this.playlist = this.playlistService.getPlaylistById(id)
             setTimeout(() => this.extractColor(), 1);
         });
-        this.audioService.getCurrentTrack().subscribe((trackid) => {
-            this.trackId = trackid.Id
-        });
-        this.audioService.isTrackPaused().subscribe((ispaused) => {
-            this.paused = ispaused
-        })
-        this.audioService.getPlaylist().subscribe((playlist) => {
-            this.currentPlaylist = playlist
-        })
+
         this.audioService.getCurrentTrack().subscribe((track) => {
+            this.trackId = track.Id
+
             if (this.playlist.Id == this.currentPlaylist.Id) {
                 this.currentTrack = track;
                 this.currentIndex = this.currentPlaylist.Tracks.findIndex(track => track.Id === track.Id)
             }
         });
+
+        this.audioService.isTrackPaused().subscribe((ispaused) => {
+            this.paused = ispaused
+        })
+
+        this.audioService.getPlaylist().subscribe((playlist) => {
+            this.currentPlaylist = playlist
+        })
     }
 
     isActive(item: string): boolean {

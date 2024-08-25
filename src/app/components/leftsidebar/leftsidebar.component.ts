@@ -23,7 +23,6 @@ export class LeftsidebarComponent {
     constructor(private playlistService: PlaylistService,
         private userService: UserService,
         private urlService: UrlService,
-        private router: Router,
         private audioService: AudioService,
     ) {
         this.urlService.getActiveId().subscribe(id => {
@@ -38,7 +37,10 @@ export class LeftsidebarComponent {
 
     redirectToPlaylist(id: string) {
         this.activeId = id;
-        this.router.navigate(["playlists/" + id]);
+
+        let route = "/playlists/" + id;
+
+        this.urlService.redirect(route);
     }
 
     isActive(id: string): boolean {

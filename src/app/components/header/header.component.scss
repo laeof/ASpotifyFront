@@ -20,11 +20,19 @@
                 margin-right: 10px;
             }
 
-            &:hover:not(.locked) {
-                cursor: pointer;
-
+            &.locked {
                 path {
-                    fill: rgba(255, 255, 255, 1);
+                    fill: rgba(255, 255, 255, 0.5);
+                }
+            }
+
+            &:hover {
+                &:not(.locked) {
+                    cursor: pointer;
+
+                    path {
+                        fill: rgba(255, 255, 255, 1);
+                    }
                 }
             }
 

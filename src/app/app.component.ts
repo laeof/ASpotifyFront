@@ -17,19 +17,22 @@ import { ITrack } from './dtos/track';
 import { HeaderComponent } from './components/header/header.component';
 import { SidebarService } from './services/sidebar.service';
 import { NowplayingsidebarComponent } from "./components/nowplayingsidebar/nowplayingsidebar.component";
+import { HomeComponent } from './components/home/home.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-root',
     standalone: true,
     imports: [
-    HeaderComponent,
-    FooterComponent,
-    LeftsidebarComponent,
-    MainComponent,
-    HttpClientModule,
-    CommonModule,
-    NowplayingsidebarComponent
-],
+        HeaderComponent,
+        FooterComponent,
+        LeftsidebarComponent,
+        MainComponent,
+        HttpClientModule,
+        CommonModule,
+        NowplayingsidebarComponent,
+        HomeComponent
+    ],
     providers: [
         ColorService,
         TrackService,
@@ -57,7 +60,10 @@ export class AppComponent {
         Image: '',
         Url: ''
     };
-    constructor(private audioService: AudioService) {
+    constructor(private audioService: AudioService,
+        private route: ActivatedRoute,
+        private urlParamService: UrlService,
+    ) {
         this.audioService.getCurrentTrack().subscribe(track => {
             this.track = track;
         });
