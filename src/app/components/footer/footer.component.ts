@@ -36,6 +36,7 @@ export class FooterComponent {
     volume: number = 0;
     trackPosition: number = 0;
     paused: boolean = true;
+    toggledNowPlaying = false;
     trackId: string = "";
     random: boolean = true;
 
@@ -66,10 +67,18 @@ export class FooterComponent {
         this.audioService.getPlaylist().subscribe((playlist) => {
             this.playlist = playlist
         })
+
+        this.sidebarService.isNowPlayingVisible().subscribe(visible => {
+            this.toggledNowPlaying = visible;
+        }) 
     }
 
     toggleNowPlaying() {
         this.sidebarService.toggleNowPlayingVisible();
+    }
+
+    isNowPlayingToggled() {
+        return this.toggledNowPlaying;
     }
 
     isActive(): boolean {

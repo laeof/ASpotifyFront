@@ -2,8 +2,8 @@ import { BehaviorSubject, Observable } from "rxjs";
 
 export class SidebarService {
 
-    nowPlayingVisible = true;
-    nowPlayingVisibleObservable = new BehaviorSubject<boolean>(true);
+    private nowPlayingVisible = true;
+    private nowPlayingVisibleObservable = new BehaviorSubject<boolean>(true);
 
     toggleNowPlayingVisible() {
         this.nowPlayingVisible = !this.nowPlayingVisible;

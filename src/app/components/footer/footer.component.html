@@ -94,14 +94,16 @@
                 xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" x="0" y="0" viewBox="0 0 512 512"
                 style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
                 <g>
-                    <path
+                    <path [ngClass]="{'repeatToggled': getRepeat()}"
                         d="M24 310.56c13.25 0 24-10.74 24-24v-80.18c0-48.59 39.53-88.13 88.13-88.13h253.93c.26 6.99.62 13.98 1.11 20.97 1 17.08 19.75 29.24 32.58 22.19 22.71-11.24 53.41-29.47 78.39-47.53 6.81-4.96 9.8-12.32 9.84-19.63-.04-7.31-3.03-14.67-9.84-19.63-24.98-18.05-55.69-36.29-78.39-47.53-12.83-7.05-31.58 5.11-32.58 22.19-.49 6.99-.85 13.98-1.11 20.97H136.13C61.07 70.26 0 131.33 0 206.38v80.18c0 13.25 10.74 24 24 24zM488 201.44c-13.25 0-24 10.74-24 24v80.18c0 48.59-39.53 88.13-88.13 88.13H121.95c-.26-6.99-.62-13.98-1.11-20.97-1-17.08-19.75-29.24-32.58-22.19-22.71 11.24-53.41 29.47-78.39 47.53-6.82 4.95-9.81 12.31-9.85 19.62.04 7.31 3.03 14.67 9.84 19.63 24.98 18.05 55.69 36.29 78.39 47.53 12.83 7.05 31.58-5.11 32.58-22.19.49-6.99.85-13.98 1.11-20.97h253.93c75.06 0 136.12-61.07 136.12-136.12v-80.18c0-13.25-10.74-24-24-24z"
-                        fill="#000000" opacity="1" data-original="#000000" class="svg"></path>
-                    <path [ngClass]="{'show': !getRepeat()}"
+                        fill="#000000" opacity="1" data-original="#000000" class="svg">
+                    </path>
+                    <path [ngClass]="{'repeatToggled': getRepeat(), 'notRepeat': !getRepeat()}"
                         d="M232 196.49v119.02c0 13.25 10.74 24 24 24s24-10.74 24-24V196.49c0-13.25-10.74-24-24-24s-24 10.74-24 24z"
                         fill="#000000" opacity="1" data-original="#000000" class="svg"></path>
                 </g>
             </svg>
+
         </div>
         <div class="slider">
             <label class="time">{{getDuration(trackPosition)}}</label>
@@ -114,8 +116,10 @@
         <div class="features">
             <svg (click)="toggleNowPlaying()" xmlns="http://www.w3.org/2000/svg" version="1.1"
                 xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16" style="width: 20px;height: 20px;">
-                <path d="M11.196 8 6 5v6l5.196-3z" class="svg"></path>
-                <path class="svg" style="width: 20px;height: 20px;"
+                <path d="M11.196 8 6 5v6l5.196-3z" class="svg" [ngClass]="{'playingSidebar': !isNowPlayingToggled()}">
+                </path>
+                <path class="svg" [ngClass]="{'playingSidebar': !isNowPlayingToggled()}"
+                    style="width: 20px;height: 20px;"
                     d="M15.002 1.75A1.75 1.75 0 0 0 13.252 0h-10.5a1.75 1.75 0 0 0-1.75 1.75v12.5c0 .966.783 1.75 1.75 1.75h10.5a1.75 1.75 0 0 0 1.75-1.75V1.75zm-1.75-.25a.25.25 0 0 1 .25.25v12.5a.25.25 0 0 1-.25.25h-10.5a.25.25 0 0 1-.25-.25V1.75a.25.25 0 0 1 .25-.25h10.5z">
                 </path>
             </svg>
