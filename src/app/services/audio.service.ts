@@ -25,15 +25,7 @@ export class AudioService {
     private nextTrackId: string = '';
     private playlistActiveId = '';
     private playlistPlayingId = '';
-
-    private playlist: IPlaylist = {
-        Id: '',
-        UserId: '',
-        Image: '',
-        Name: '',
-        Type: PlaylistType.Playlist,
-        TrackIds: []
-    }
+    private trackPlayingNow: string = "";
 
     constructor(private http: HttpClient,
         private api: ApiService,
@@ -67,6 +59,8 @@ export class AudioService {
             clearInterval(this.intervalId);
         }
 
+        this.trackPlayingNow = track.Id;
+
         this.playAudio(track);
         this.setTrackPositionTracking(0);
 
@@ -81,20 +75,21 @@ export class AudioService {
     }
 
     toggleAudio(item: ITrack, playlist: IPlaylist) {
-        if (!this.audio.paused && item.Id === this.trackid && this.playlist.Id == this.playlistPlayingId) {
-            this.stopAudio();
-            return;
+
+        if(item.Id === this.trackPlayingNow && playlist.Id === this.playlistActiveId){
+            if (!this.audio.paused) {
+                this.stopAudio();
+                return;
+            }
+    
+            if (this.audio.src != "") {
+                this.resumeAudio();
+                return;
+            }
         }
 
-        if (this.audio.src != "" && this.playlist.Id == this.playlistPlayingId) {
-            this.resumeAudio();
-            return;
-        }
-
-        if (this.audio.src == "") {
-            this.playTrack(item);
-            return;
-        }
+        this.isPaused.next(false);
+        this.playTrack(item);
     }
 
     playAudio(item: ITrack) {

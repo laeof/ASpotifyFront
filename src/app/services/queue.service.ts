@@ -11,7 +11,8 @@ export class QueueService {
     private repeatState = false;
 
     setQueue(queue: string[]) {
-        this.queue.next(queue);
+        // this.queue.next(new Array().concat(queue));
+        this.queue.next(queue)
     }
 
     addToQueue(trackId: string) {
@@ -27,11 +28,15 @@ export class QueueService {
     }
 
     prevQueueItem() {
+        console.log('prev')
         this.addToQueue(this.removeFromPlayedQueue());
     }
 
     nextQueueItem() {
-        return this.addToPlayedQueue(this.queue.value.pop() || '');
+        console.log('next')
+        let track = this.queue.value.shift() || this.currentPlayingTrack.value;
+        this.addToPlayedQueue(track);
+        this.currentPlayingTrack.next(track);
     }
 
     getQueue(): Observable<string[]> {
@@ -46,14 +51,14 @@ export class QueueService {
         var nextTrack;
 
         //track play now
-        nextTrack = this.queue.value.pop() || '';
+        nextTrack = this.queue.value.shift() || '';
         this.currentPlayingTrack.next(nextTrack);
 
         //track will play
-        if(!this.repeatState)
-            nextTrack = this.queue.value.pop() || '';
-        
-        this.nextPlayingTrack.next(nextTrack);
+        // if(!this.repeatState)
+        //     nextTrack = this.queue.value.pop() || '';
+
+        // this.nextPlayingTrack.next(nextTrack);
 
         return this.currentPlayingTrack.asObservable();
     }

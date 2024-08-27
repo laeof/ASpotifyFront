@@ -82,9 +82,12 @@ export class PlaylistComponent implements OnDestroy {
         this.sub = this.route.paramMap.subscribe(params => {
             let id = params.get('id') || "";
             this.playlistService.setActiveId(id);
-            this.playlist = this.playlistService.getPlaylistById(id);
             setTimeout(() => this.extractColor(), 1);
         });
+
+        this.playlistService.getActiveId().subscribe(playlist => {
+            this.playlist = this.playlistService.getPlaylistById(playlist)
+        })
 
         this.queueService.getCurrentPlayingTrack().subscribe((trackId) => {
             this.trackId = trackId
@@ -117,6 +120,7 @@ export class PlaylistComponent implements OnDestroy {
 
     toggleAudio(item: string) {
         this.playerService.toggleAudio(item, this.playlist.Id)
+        console.log(this.currentTrack)
     }
 
     toggleContextMenu() {

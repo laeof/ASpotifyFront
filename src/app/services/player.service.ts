@@ -15,6 +15,7 @@ export class PlayerService {
     repeatStateObs = new BehaviorSubject<boolean>(false);
 
     private nowPlayingPlaylistId: string = '';
+    private activePlaylistId: string = '';
     private nowPlayingTrackId: string = '';
 
     constructor(private audioService: AudioService,
@@ -29,17 +30,21 @@ export class PlayerService {
         this.playlistService.getPlayingPlaylistId().subscribe(playlistId => {
             this.nowPlayingPlaylistId = playlistId;
         })
+
+        this.playlistService.getActiveId().subscribe(playlistId => {
+            this.activePlaylistId = playlistId
+        })
     }
 
     playBack() {
-        this.queueService.nextQueueItem();
-        this.audioService.playTrack(
-            this.trackService.getTrackById(
-                this.nowPlayingTrackId));
+        this.queueService.prevQueueItem();
+        //this.audioService.playTrack(this.trackService.getTrackById(this.queueService.nextTrack()));
+        // this.trackService.getTrackById(
+        //     this.nowPlayingTrackId));
     }
 
     playNext() {
-        this.queueService.prevQueueItem();
+        this.queueService.nextQueueItem();
         this.audioService.playTrack(
             this.trackService.getTrackById(
                 this.nowPlayingTrackId));
@@ -49,8 +54,6 @@ export class PlayerService {
         if (this.nowPlayingPlaylistId != playlistId) {
             this.queueService.setQueue(
                 this.playlistService.getPlaylistById(playlistId).TrackIds);
-
-            this.setNowPlayingPlaylistId(playlistId);
         }
 
         if (this.nowPlayingTrackId != trackId)
@@ -58,7 +61,12 @@ export class PlayerService {
 
         this.audioService.toggleAudio(
             this.trackService.getTrackById(
-                this.nowPlayingTrackId), this.playlistService.getPlaylistById(this.nowPlayingPlaylistId));
+                this.nowPlayingTrackId),
+            this.playlistService.getPlaylistById(
+                this.nowPlayingPlaylistId));
+
+        if (this.nowPlayingPlaylistId != playlistId)
+            this.setNowPlayingPlaylistId(playlistId);
     }
 
     toggleRandom() {
