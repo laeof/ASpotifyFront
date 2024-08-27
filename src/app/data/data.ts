@@ -1,6 +1,4 @@
 import { ITrack } from "../dtos/track";
-import { IAlbum } from "../dtos/album";
-import { IArtist } from "../dtos/artist";
 import { IPlaylist } from "../dtos/playlist";
 import { IUser } from "../dtos/user";
 
@@ -237,24 +235,10 @@ export const TRACKS: ITrack[] = [
     // },
 ];
 
-export const ALBUMS: IAlbum[] = [
-    { Id: "album1", ArtistId: 'artist1', Name: "album1", Tracks: TRACKS.slice(0, 2) },
-    { Id: "album2", ArtistId: 'artist2', Name: "album2", Tracks: TRACKS.slice(2, 4) },
-    { Id: "album3", ArtistId: 'artist3', Name: "Опианариум", Tracks: TRACKS.slice(4) },
-    { Id: "album4", ArtistId: 'artist4', Name: "Любовь, аддикция и марафоны", Tracks: TRACKS.slice(5) }
-];
-
-export const ARTISTS: IArtist[] = [
-    { Id: "artist1", FirstName: 'John', LastName: 'Doe', NickName: "nickname1", UserId: '2', Tracks: TRACKS.slice(0, 2), Albums: ALBUMS.slice(0, 1) },
-    { Id: "artist2", FirstName: 'Jane', LastName: 'Smith', NickName: "nickname2", UserId: '1', Tracks: TRACKS.slice(2, 4), Albums: ALBUMS.slice(1, 2) },
-    { Id: "artist3", FirstName: 'Jane', LastName: 'Smith', NickName: "Автостопом по фазе сна", UserId: '1', Tracks: TRACKS.slice(5), Albums: ALBUMS.slice(1, 2) },
-    { Id: "artist4", FirstName: 'Jane', LastName: 'Smith', NickName: "Три дня дождя", UserId: '1', Tracks: TRACKS.slice(5), Albums: ALBUMS.slice(1, 2) }
-];
-
 export const PLAYLISTS: IPlaylist[] = [
-    { Id: "1", UserId: '1', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Tracks: TRACKS.slice(4, 24) },
-    { Id: "2", UserId: '1', Image: "/assets/imgs/webp/apfs.webp", Name: "Опианариум", Tracks: TRACKS.slice(4, 12) },
-    { Id: "3", UserId: '1', Image: "/assets/imgs/loveaddiction.jpg", Name: "Любовь, аддикция и марафоны", Tracks: TRACKS.slice(12, 24) }
+    { Id: "1", UserId: '1', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(4, 24).map(track => track.Id) },
+    { Id: "2", UserId: '1', Image: "/assets/imgs/webp/apfs.webp", Name: "Опианариум", Type: 1, TrackIds: TRACKS.slice(4, 12).map(track => track.Id) },
+    { Id: "3", UserId: '1', Image: "/assets/imgs/loveaddiction.jpg", Name: "Любовь, аддикция и марафоны", Type: 1, TrackIds: TRACKS.slice(12, 24).map(track => track.Id) }
 ];
 
 export const USERS: IUser[] = [
@@ -262,24 +246,24 @@ export const USERS: IUser[] = [
         Id: "1",
         UserName: 'wandered thoughts',
         Email: 'laoef@example.com',
-        Image: '/assets/imgs/bg.png'
+        Image: '/assets/imgs/bg.png',
+        FirstName: null,
+        LastName: null
     },
     {
         Id: "2",
-        UserName: 'jane_smith',
+        UserName: 'Автостопом по фазе сна',
         Email: 'jane.smith@example.com',
-        Image: '/assets/imgs/image.png'
+        Image: '/assets/imgs/image.png',
+        FirstName: null,
+        LastName: null
     },
     {
         Id: "3",
-        UserName: 'alice_jones',
+        UserName: 'Три дня дождя',
         Email: 'alice.jones@example.com',
-        Image: '/assets/imgs/image.png'
-    },
-    {
-        Id: "4",
-        UserName: 'bob_brown',
-        Email: 'bob.brown@example.com',
-        Image: '/assets/imgs/image.png'
+        Image: '/assets/imgs/image.png',
+        FirstName: null,
+        LastName: null
     }
 ];

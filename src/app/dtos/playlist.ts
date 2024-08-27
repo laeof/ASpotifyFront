@@ -5,5 +5,12 @@ export interface IPlaylist {
     UserId: string,
     Image: string,
     Name: string,
-    Tracks: ITrack[]
+    Type: PlaylistType,
+    TrackIds: string[]
+}
+
+export enum PlaylistType {
+    Playlist = 0,
+    Album = 1,
+    Single = 2
 }

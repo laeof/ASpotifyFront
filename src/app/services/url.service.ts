@@ -62,11 +62,6 @@ export class UrlService {
 
         if (this.backroutes.length === 0) {
             this.backRoute.next(false);
-            console.log('next')
-            console.log(this.nextroutes);
-
-            console.log('back')
-            console.log(this.backroutes);
         }
 
         this.route.navigate([popped]);
@@ -84,24 +79,8 @@ export class UrlService {
 
         if (this.nextroutes.length === 0) {
             this.nextRoute.next(false);
-            console.log('next')
-            console.log(this.nextroutes);
-
-            console.log('back')
-            console.log(this.backroutes);
         }
 
         this.route.navigate([popped]);
     }
-
-    private activeIdSubject = new BehaviorSubject<string>("");
-
-    setActiveId(id: string) {
-        this.activeIdSubject.next(id);
-    }
-
-    getActiveId(): Observable<string> {
-        return this.activeIdSubject.asObservable();
-    }
-
 }
