@@ -1,40 +1,73 @@
-import { HttpClient } from "@angular/common/http";
-import { ApiService } from "./api.service";
 import { PlaylistService } from "./playlist.service";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, iif, Observable } from "rxjs";
 import { AudioService } from "./audio.service";
+import { QueueService } from "./queue.service";
+import { TrackService } from "./track.service";
+import { Injectable } from "@angular/core";
+
+@Injectable({
+    providedIn: 'root'
+})
 
 export class PlayerService {
 
-    private randomState: boolean = false;
     randomStateObs = new BehaviorSubject<boolean>(false);
-
-    private repeatState: boolean = false;
     repeatStateObs = new BehaviorSubject<boolean>(false);
 
-    private nowPlayingTrackIdObs = new BehaviorSubject<string>('');
-    private nowPlayingPlaylistObs = new BehaviorSubject<string>('');
+    private nowPlayingPlaylistId: string = '';
+    private nowPlayingTrackId: string = '';
 
-    constructor(private audioService: AudioService) {
+    constructor(private audioService: AudioService,
+        private queueService: QueueService,
+        private trackService: TrackService,
+        private playlistService: PlaylistService,
+    ) {
+        this.queueService.getCurrentPlayingTrack().subscribe(trackId => {
+            this.nowPlayingTrackId = trackId;
+        })
 
+        this.playlistService.getPlayingPlaylistId().subscribe(playlistId => {
+            this.nowPlayingPlaylistId = playlistId;
+        })
     }
 
     playBack() {
-        
+        this.queueService.nextQueueItem();
+        this.audioService.playTrack(
+            this.trackService.getTrackById(
+                this.nowPlayingTrackId));
     }
 
     playNext() {
-
+        this.queueService.prevQueueItem();
+        this.audioService.playTrack(
+            this.trackService.getTrackById(
+                this.nowPlayingTrackId));
     }
 
     toggleAudio(trackId: string, playlistId: string) {
-        this.nowPlayingTrackIdObs.next(trackId);
-        this.nowPlayingPlaylistObs.next(playlistId);
+        if (this.nowPlayingPlaylistId != playlistId) {
+            this.queueService.setQueue(
+                this.playlistService.getPlaylistById(playlistId).TrackIds);
+
+            this.setNowPlayingPlaylistId(playlistId);
+        }
+
+        if (this.nowPlayingTrackId != trackId)
+            this.queueService.setCurrentPlayingTrack(trackId);
+
+        this.audioService.toggleAudio(
+            this.trackService.getTrackById(
+                this.nowPlayingTrackId), this.playlistService.getPlaylistById(this.nowPlayingPlaylistId));
     }
 
     toggleRandom() {
-        this.randomState = !this.randomState;
-        this.randomStateObs.next(this.randomState);
+        this.randomStateObs.next(!this.randomStateObs.value);
+
+        if (this.randomStateObs.value)
+            this.queueService.shuffleQueue();
+
+        console.log("shuffled queue: ", this.queueService.getQueue());
     }
 
     getRandomState(): Observable<boolean> {
@@ -42,31 +75,26 @@ export class PlayerService {
     }
 
     toggleRepeat() {
-        this.repeatState = !this.repeatState;
-        this.repeatStateObs.next(this.repeatState);
+        this.repeatStateObs.next(!this.repeatStateObs.value);
     }
 
     getRepeatState(): Observable<boolean> {
         return this.repeatStateObs.asObservable();
     }
 
-    setTrackPosition() {
-
+    setTrackPosition(position: number) {
+        this.audioService.setTrackPosition(position);
     }
 
-    setVolume() {
-
+    setVolume(volume: number) {
+        this.audioService.setVolume(volume);
     }
 
-    getVolume() {
-
+    getVolume(): Observable<number> {
+        return this.audioService.getVolume();
     }
 
-    getNowPlayingTrackId(): Observable<string> {
-        return this.nowPlayingTrackIdObs.asObservable();
-    }
-
-    getNowPlayingPlaylistId(): Observable<string> {
-        return this.nowPlayingPlaylistObs.asObservable();
+    setNowPlayingPlaylistId(playlistId: string) {
+        this.playlistService.setPlayingPlaylistId(playlistId);
     }
 }

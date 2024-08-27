@@ -8,6 +8,7 @@ import { ApiService } from './api.service';
 import { PlaylistService } from './playlist.service';
 import { PlayerService } from './player.service';
 import { TrackService } from './track.service';
+import { QueueService } from './queue.service';
 
 @Injectable({
     providedIn: 'root'
@@ -17,14 +18,13 @@ export class AudioService {
     private musicApi = "";
     private audio: any;
 
-    private currentPlaylist = new BehaviorSubject<IPlaylist>({
-        Id: '',
-        UserId: '',
-        Image: '',
-        Name: '',
-        Type: PlaylistType.Playlist,
-        TrackIds: []
-    });
+    private trackPosition = new BehaviorSubject<number>(0);
+    private volume = new BehaviorSubject<number>(0.05);
+    private isPaused = new BehaviorSubject<boolean>(false);
+    private trackid: string = "";
+    private nextTrackId: string = '';
+    private playlistActiveId = '';
+    private playlistPlayingId = '';
 
     private playlist: IPlaylist = {
         Id: '',
@@ -33,69 +33,71 @@ export class AudioService {
         Name: '',
         Type: PlaylistType.Playlist,
         TrackIds: []
-    };
-    private trackPosition = new BehaviorSubject<number>(0);
-    private volume = new BehaviorSubject<number>(0.05);
-    private playlistId = new BehaviorSubject<string>("");
-    private isPaused = new BehaviorSubject<boolean>(false);
-    private trackid: string = "";
+    }
 
     constructor(private http: HttpClient,
         private api: ApiService,
-        private trackService: TrackService
+        private trackService: TrackService,
+        private queueService: QueueService,
+        private playlistService: PlaylistService
     ) {
         this.audio = new Audio();
         this.musicApi = this.api.getMusicApi();
+        this.queueService.getNextPlayingTrack().subscribe(nextId => {
+            this.nextTrackId = nextId
+        })
+
+        this.queueService.getCurrentPlayingTrack().subscribe(trackId => {
+            this.trackid = trackId
+        })
+
+        this.playlistService.getPlayingPlaylistId().subscribe(value => {
+            this.playlistPlayingId = value;
+        })
+
+        this.playlistService.getActiveId().subscribe(value => {
+            this.playlistActiveId = value;
+        })
     }
 
     private intervalId: any;
 
-    //save
-    playTrack(track: ITrack, repeat: boolean = false) {
+    playTrack(track: ITrack, nextTrack: ITrack = this.trackService.getTrackById(this.nextTrackId)) {
         if (this.intervalId) {
             clearInterval(this.intervalId);
         }
 
         this.playAudio(track);
-        this.playlistId.next(this.playlist.Id);
         this.setTrackPositionTracking(0);
 
         this.intervalId = setInterval(() => {
             let currentTime = Math.round(this.audio.currentTime);
 
             this.setTrackPositionTracking(currentTime);
-            if (repeat)
-                this.playTrack(track);
-            else {
-                // playnexttrack
-                this.playTrack(track);
-            }
+
+            if (this.trackService.getTrackById(this.trackid).Duration == currentTime)
+                this.playTrack(nextTrack);
         }, 1000);
     }
 
-    //save
-    toggleAudio(item: ITrack, playlist: IPlaylist = this.playlist, currentPlaylist: IPlaylist = this.playlist) {
-        //fixme
-        if (this.trackid == item.Id && !this.audio.paused && playlist.Id === currentPlaylist.Id) {
-            this.stopAudio(item);
-            //console.log(1)
+    toggleAudio(item: ITrack, playlist: IPlaylist) {
+        if (!this.audio.paused && item.Id === this.trackid && this.playlist.Id == this.playlistPlayingId) {
+            this.stopAudio();
+            return;
         }
-        else if (this.audio.src != "" && item.Id == this.trackid && this.audio.paused && playlist.Id === currentPlaylist.Id) {
+
+        if (this.audio.src != "" && this.playlist.Id == this.playlistPlayingId) {
             this.resumeAudio();
-            //console.log(2)
+            return;
         }
-        else {
-            this.setPlaylist(playlist);
+
+        if (this.audio.src == "") {
             this.playTrack(item);
-            //console.log(3)
+            return;
         }
     }
 
-    //save
     playAudio(item: ITrack) {
-        //this.trackId.next(item.Id);
-        //this.trackid = item.Id;
-        //this.setCurrentTrack(item);
         this.isPaused.next(false);
         this.streamAudio(item.Url).subscribe(blob => {
             this.audio.src = URL.createObjectURL(blob);
@@ -104,13 +106,11 @@ export class AudioService {
         });
     }
 
-    //save
-    stopAudio(item: ITrack) {
+    stopAudio() {
         this.audio.pause();
         this.isPaused.next(true);
     }
 
-    //save
     resumeAudio() {
         let time = this.audio.currentTime;
         this.audio.play();
@@ -118,46 +118,30 @@ export class AudioService {
         this.isPaused.next(false);
     }
 
-    //save
     setTrackPositionTracking(position: number) {
         this.trackPosition.next(position);
     }
 
-    //save
     setTrackPosition(position: number) {
         this.trackPosition.next(position);
         this.audio.currentTime = position;
     }
 
-    //save
     getTrackPosition(): Observable<number> {
         return this.trackPosition.asObservable();
     }
 
-    //save
     setVolume(volume: number) {
         this.volume.next(volume);
         this.audio.volume = volume;
     }
 
-    //save
     getVolume(): Observable<number> {
         return this.volume.asObservable();
     }
 
-    //save
-    setPlaylist(playlist: IPlaylist) {
-        this.playlist = playlist;
-        this.currentPlaylist.next(this.playlist)
-    }
-
-    //save
-    getPlaylistId(): Observable<string> {
-        return this.playlistId;
-    }
-
-    getPlaylist(): Observable<IPlaylist> {
-        return this.currentPlaylist;
+    isTrackPaused(): Observable<boolean> {
+        return this.isPaused.asObservable();
     }
 
     streamAudioFromServer(path: string): Observable<Blob> {
@@ -186,9 +170,5 @@ export class AudioService {
                 })
                 .finally(() => observer.complete());
         });
-    }
-
-    getDuration(duration: number): string {
-        return this.trackService.getDuration(duration);
     }
 }

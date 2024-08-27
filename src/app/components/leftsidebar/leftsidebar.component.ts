@@ -1,5 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { IPlaylist } from '../../dtos/playlist';
+import { IPlaylist, PlaylistType } from '../../dtos/playlist';
 import { PlaylistService } from '../../services/playlist.service';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
@@ -26,10 +26,10 @@ export class LeftsidebarComponent {
         private urlService: UrlService,
         private audioService: AudioService,
     ) {
-        this.urlService.getActiveId().subscribe(id => {
+        this.playlistService.getActiveId().subscribe(id => {
             this.activeId = id;
         });
-        this.audioService.getPlaylistId().subscribe(play => {
+        this.playlistService.getPlayingPlaylistId().subscribe(play => {
             this.playingId = play;
         })
         this.audioService.isTrackPaused().subscribe(pause => {
@@ -62,7 +62,8 @@ export class LeftsidebarComponent {
             UserId: this.user?.Id || "",
             Image: '../assets/imgs/image.png',
             Name: 'Playlist ' + id,
-            Tracks: []
+            Type: PlaylistType.Playlist,
+            TrackIds: []
         }
         this.items.push(newPlaylist);
         this.playlistService.createNewPlaylist(newPlaylist);

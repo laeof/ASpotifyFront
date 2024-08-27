@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ITrack } from '../../dtos/track';
 import { ColorService } from '../../services/color.service';
-import { IPlaylist } from '../../dtos/playlist';
+import { IPlaylist, PlaylistType } from '../../dtos/playlist';
 import { PlaylistService } from '../../services/playlist.service';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
@@ -12,6 +12,9 @@ import { CommonModule } from '@angular/common';
 import { AudioService } from '../../services/audio.service';
 import { UrlService } from '../../services/url.service';
 import { Subscription } from 'rxjs';
+import { QueueService } from '../../services/queue.service';
+import { TrackService } from '../../services/track.service';
+import { PlayerService } from '../../services/player.service';
 
 @Component({
     selector: 'app-playlist',
@@ -33,7 +36,8 @@ export class PlaylistComponent implements OnDestroy {
         UserId: '',
         Image: '',
         Name: '',
-        Tracks: []
+        Type: PlaylistType.Playlist,
+        TrackIds: []
     };
     //playing
     currentPlaylist: IPlaylist = {
@@ -41,7 +45,8 @@ export class PlaylistComponent implements OnDestroy {
         UserId: '',
         Image: '',
         Name: '',
-        Tracks: []
+        Type: PlaylistType.Playlist,
+        TrackIds: []
     };
 
     sub: Subscription;
@@ -49,33 +54,43 @@ export class PlaylistComponent implements OnDestroy {
     trackId: string | undefined;
     paused: boolean = false;
     trackDuration: number = 0;
-    currentTrack: ITrack | undefined;
+    currentTrack: ITrack = {
+        Id: '',
+        Name: '',
+        ArtistId: '',
+        Date: new Date,
+        AlbumId: '',
+        Duration: 0,
+        Image: '',
+        Url: ''
+    };
     currentIndex: number = 0;
 
     constructor(private colorService: ColorService,
         private playlistService: PlaylistService,
         private userService: UserService,
-        private route: ActivatedRoute,
         private artistService: ArtistService,
         private albumService: AlbumService,
         private audioService: AudioService,
-        private urlParamService: UrlService
+        private playerService: PlayerService,
+        private queueService: QueueService,
+        private trackService: TrackService,
+        private route: ActivatedRoute,
     ) {
         this.user = this.userService.getCurrentUserInfo();
 
         this.sub = this.route.paramMap.subscribe(params => {
             let id = params.get('id') || "";
-            this.urlParamService.setActiveId(id);
-            this.playlist = this.playlistService.getPlaylistById(id)
+            this.playlistService.setActiveId(id);
+            this.playlist = this.playlistService.getPlaylistById(id);
             setTimeout(() => this.extractColor(), 1);
         });
 
-        this.audioService.getCurrentTrack().subscribe((track) => {
-            this.trackId = track.Id
-
+        this.queueService.getCurrentPlayingTrack().subscribe((trackId) => {
+            this.trackId = trackId
             if (this.playlist.Id == this.currentPlaylist.Id) {
-                this.currentTrack = track;
-                this.currentIndex = this.currentPlaylist.Tracks.findIndex(track => track.Id === track.Id)
+                this.currentTrack = this.trackService.getTrackById(trackId);
+                this.currentIndex = this.currentPlaylist.TrackIds.findIndex(track => track === track)
             }
         });
 
@@ -83,13 +98,13 @@ export class PlaylistComponent implements OnDestroy {
             this.paused = ispaused
         })
 
-        this.audioService.getPlaylist().subscribe((playlist) => {
-            this.currentPlaylist = playlist
+        this.playlistService.getPlayingPlaylistId().subscribe(playlist => {
+            this.currentPlaylist = this.playlistService.getPlaylistById(playlist)
         })
     }
 
     ngOnDestroy(): void {
-        this.urlParamService.setActiveId("");
+        this.playlistService.setActiveId("");
     }
 
     isActive(item: string): boolean {
@@ -100,8 +115,8 @@ export class PlaylistComponent implements OnDestroy {
         return this.paused
     }
 
-    toggleAudio(item: ITrack, index: number) {
-        this.audioService.toggleAudio(item, index, this.playlist)
+    toggleAudio(item: string) {
+        this.playerService.toggleAudio(item, this.playlist.Id)
     }
 
     toggleContextMenu() {
@@ -139,7 +154,11 @@ export class PlaylistComponent implements OnDestroy {
     }
 
     getDuration(duration: number) {
-        return this.audioService.getDuration(duration);
+        return this.trackService.getDuration(duration);
+    }
+
+    getTrackById(id: string): ITrack {
+        return this.trackService.getTrackById(id);
     }
 }
 

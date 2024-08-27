@@ -1,14 +1,25 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import { PLAYLISTS } from "../data/data";
-import { IPlaylist } from "../dtos/playlist";
+import { IPlaylist, PlaylistType } from "../dtos/playlist";
 
 export class PlaylistService {
 
-    
+    private currentPlaylistPlayingId = new BehaviorSubject<string>("");
+    private activePlaylistId = new BehaviorSubject<string>("");
+
     private playlists: IPlaylist[] = PLAYLISTS;
 
+    private playlist: IPlaylist = {
+        Id: "",
+        UserId: "",
+        Image: "",
+        Name: "",
+        Type: PlaylistType.Playlist,
+        TrackIds: []
+    }
+
     getPlaylistById(id: string): IPlaylist {
-        return this.playlists[Number(id) - 1];
+        return this.playlists.find(pl => pl.Id === id) || this.playlist;
     }
 
     getAllPlaylists(id: string): IPlaylist[] {
@@ -19,13 +30,19 @@ export class PlaylistService {
         this.playlists.push(playlist);
     }
 
-    private activeIdSubject = new BehaviorSubject<string>("");
-
     setActiveId(id: string) {
-        this.activeIdSubject.next(id);
+        this.activePlaylistId.next(id);
     }
 
     getActiveId(): Observable<string> {
-        return this.activeIdSubject.asObservable();
+        return this.activePlaylistId.asObservable();
+    }
+
+    setPlayingPlaylistId(id: string) {
+        this.currentPlaylistPlayingId.next(id);
+    }
+
+    getPlayingPlaylistId(): Observable<string> {
+        return this.currentPlaylistPlayingId.asObservable();
     }
 }

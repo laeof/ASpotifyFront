@@ -8,6 +8,8 @@ export class QueueService {
     private currentPlayingTrack = new BehaviorSubject<string>('');
     private nextPlayingTrack = new BehaviorSubject<string>('');
 
+    private repeatState = false;
+
     setQueue(queue: string[]) {
         this.queue.next(queue);
     }
@@ -24,7 +26,6 @@ export class QueueService {
         this.queue.value.sort(() => Math.random() - 0.5);
     }
 
-    //track was played
     prevQueueItem() {
         this.addToQueue(this.removeFromPlayedQueue());
     }
@@ -37,15 +38,21 @@ export class QueueService {
         return this.queue.asObservable();;
     }
 
+    setCurrentPlayingTrack(id: string) {
+        this.currentPlayingTrack.next(id);
+    }
+
     getCurrentPlayingTrack(): Observable<string> {
-        let nextTrack;
+        var nextTrack;
 
         //track play now
         nextTrack = this.queue.value.pop() || '';
         this.currentPlayingTrack.next(nextTrack);
 
         //track will play
-        nextTrack = this.queue.value.pop() || '';
+        if(!this.repeatState)
+            nextTrack = this.queue.value.pop() || '';
+        
         this.nextPlayingTrack.next(nextTrack);
 
         return this.currentPlayingTrack.asObservable();
@@ -53,6 +60,10 @@ export class QueueService {
 
     getNextPlayingTrack(): Observable<string> {
         return this.nextPlayingTrack.asObservable();
+    }
+
+    toggleRepeatState() {
+        this.repeatState = !this.repeatState;
     }
 
     private addToPlayedQueue(trackId: string) {

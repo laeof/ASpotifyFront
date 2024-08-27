@@ -5,8 +5,10 @@ import { ITrack } from '../../dtos/track';
 import { AudioService } from '../../services/audio.service';
 import { ArtistService } from '../../services/artist.service';
 import { PlaylistService } from '../../services/playlist.service';
-import { IPlaylist } from '../../dtos/playlist';
+import { IPlaylist, PlaylistType } from '../../dtos/playlist';
 import { findIndex } from 'rxjs';
+import { QueueService } from '../../services/queue.service';
+import { TrackService } from '../../services/track.service';
 
 @Component({
     selector: 'app-nowplayingsidebar',
@@ -45,27 +47,31 @@ export class NowplayingsidebarComponent {
         UserId: '',
         Image: '',
         Name: '',
-        Tracks: []
+        Type: PlaylistType.Playlist,
+        TrackIds: []
     };
 
     constructor(private sidebarService: SidebarService,
         private audioService: AudioService,
-        private artistService: ArtistService
+        private artistService: ArtistService,
+        private queueService: QueueService,
+        private trackService: TrackService,
+        private playlistService: PlaylistService
     ) {
         this.sidebarService.isNowPlayingVisible().subscribe(nowPlaying => {
             this.nowPlayingVisible = nowPlaying;
         });
 
-        this.audioService.getCurrentTrack().subscribe(track => {
-            this.track = track;
-
-            this.audioService.getNextTrack().subscribe(track => {
-                this.nextTrack = track
-            })
+        this.queueService.getCurrentPlayingTrack().subscribe(trackId => {
+            this.track = this.trackService.getTrackById(trackId);  
         })
 
-        this.audioService.getPlaylist().subscribe((playlist) => {
-            this.playlist = playlist
+        this.queueService.getNextPlayingTrack().subscribe(trackId => {
+            this.nextTrack = this.trackService.getTrackById(trackId)
+        })
+
+        this.playlistService.getPlayingPlaylistId().subscribe((playlist) => {
+            this.playlist = this.playlistService.getPlaylistById(playlist)
         })
     }
 

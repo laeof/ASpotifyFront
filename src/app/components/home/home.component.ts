@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { ITrack } from '../../dtos/track';
 import { AudioService } from '../../services/audio.service';
 import { UrlService } from '../../services/url.service';
+import { PlayerService } from '../../services/player.service';
 
 @Component({
     selector: 'app-home',
@@ -20,7 +21,7 @@ export class HomeComponent {
     user: IUser | undefined;
     constructor(private userService: UserService,
         private playlistService: PlaylistService,
-        private audioService: AudioService,
+        private playerService: PlayerService, 
         private urlService: UrlService
     ) {
         this.user = this.userService.getCurrentUserInfo();
@@ -33,7 +34,7 @@ export class HomeComponent {
         this.urlService.redirect(route);
     }
 
-    toggleAudio(item: ITrack, index: number, playlist: IPlaylist) {
-        this.audioService.toggleAudio(item, index, playlist)
+    toggleAudio(item: string, playlist: string) {
+        this.playerService.toggleAudio(item, playlist)
     }
 }

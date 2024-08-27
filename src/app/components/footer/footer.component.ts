@@ -3,10 +3,13 @@ import { ITrack } from '../../dtos/track';
 import { ArtistService } from '../../services/artist.service';
 import { AudioService } from '../../services/audio.service';
 import { map, Observable } from 'rxjs';
-import { IPlaylist } from '../../dtos/playlist';
+import { IPlaylist, PlaylistType } from '../../dtos/playlist';
 import { CommonModule } from '@angular/common';
 import { PlaylistService } from '../../services/playlist.service';
 import { SidebarService } from '../../services/sidebar.service';
+import { QueueService } from '../../services/queue.service';
+import { TrackService } from '../../services/track.service';
+import { PlayerService } from '../../services/player.service';
 
 @Component({
     selector: 'app-footer',
@@ -31,46 +34,55 @@ export class FooterComponent {
         UserId: '',
         Image: '',
         Name: '',
-        Tracks: []
+        Type: PlaylistType.Playlist,
+        TrackIds: []
     };
     volume: number = 0;
     trackPosition: number = 0;
     paused: boolean = true;
     toggledNowPlaying = false;
-    trackId: string = "";
-    random: boolean = true;
+    random: boolean = false;
+    repeat: boolean = false;
 
     constructor(private artistService: ArtistService,
         private audioService: AudioService,
-        private sidebarService: SidebarService
+        private sidebarService: SidebarService,
+        private trackService: TrackService,
+        private playlistService: PlaylistService,
+        private queueService: QueueService,
+        private playerService: PlayerService
     ) {
-        this.audioService.getCurrentTrack().subscribe(track => {
-            this.track = track;
+        this.queueService.getCurrentPlayingTrack().subscribe(track => {
+            this.track = this.trackService.getTrackById(track);
         });
 
         this.audioService.getTrackPosition().subscribe(trackpos => {
             this.trackPosition = trackpos;
         });
 
-        this.audioService.getVolume().subscribe(volume => {
+        this.playerService.getVolume().subscribe(volume => {
             this.volume = volume * 100;
-        });
-
-        this.audioService.getCurrentTrack().subscribe((trackid) => {
-            this.trackId = trackid.Id
         });
 
         this.audioService.isTrackPaused().subscribe((ispaused) => {
             this.paused = ispaused
         })
 
-        this.audioService.getPlaylist().subscribe((playlist) => {
-            this.playlist = playlist
+        this.playlistService.getPlayingPlaylistId().subscribe((playlist) => {
+            this.playlist = this.playlistService.getPlaylistById(playlist)
         })
 
         this.sidebarService.isNowPlayingVisible().subscribe(visible => {
             this.toggledNowPlaying = visible;
         }) 
+
+        this.playerService.getRandomState().subscribe(random => {
+            this.random = random;
+        })
+        
+        this.playerService.getRepeatState().subscribe(repeat => {
+            this.repeat = repeat
+        })
     }
 
     toggleNowPlaying() {
@@ -82,7 +94,7 @@ export class FooterComponent {
     }
 
     isActive(): boolean {
-        return this.audioService.isActive();
+        return this.track.Id != '';
     }
 
     isPaused(): any {
@@ -90,43 +102,37 @@ export class FooterComponent {
     }
 
     toggleAudio() {
-        this.audioService.toggleAudio(this.track);
+        this.playerService.toggleAudio(this.track.Id, this.playlist.Id);
     }
 
     toggleRandom(): any {
-        this.audioService.toggleRandom();
+        this.playerService.toggleRandom();
     }
 
     getRandom() {
-        return this.audioService.getRandomState();
+        return this.random;
     }
 
     toggleRepeat() {
-        this.audioService.toggleRepeat();
+        this.playerService.toggleRepeat();
     }
 
     getRepeat() {
-        return this.audioService.getRepeat();
+        return this.repeat
     }
 
     nextAudio() {
-        if(!this.audioService.getRandomState())
-            this.audioService.playPlaylist(this.playlist.Tracks.findIndex(track => track.Id === this.track.Id) + 1)
-        else {
-            this.audioService.playRandom();
-        }
+        this.playerService.playNext();
     }
 
     prevAudio() {
-        let prevIndex = this.audioService.getPrevTrackIndex();
-        this.audioService.playPlaylist(prevIndex)
+        this.playerService.playBack();
     }
 
     onPositionChange(event: Event) {
         const input = event.target as HTMLInputElement;
         const position = +input.value;
         this.audioService.setTrackPosition(position);
-        console.log("changed")
     }
 
     onVolumeChange(event: Event) {
@@ -140,6 +146,6 @@ export class FooterComponent {
     }
 
     getDuration(duration: number) {
-        return this.audioService.getDuration(duration);
+        return this.trackService.getDuration(duration);
     }
 }

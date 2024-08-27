@@ -22,11 +22,9 @@ export class HeaderComponent {
         this.user = this.userService.getCurrentUserInfo();
         this.urlService.getBackRouteState().subscribe(state => {
             this.backRouteState = state;
-            console.log(state);
         });
         this.urlService.getNextRouteState().subscribe(state => {
             this.nextRouteState = state;
-            console.log(state);
         });
     }
 
