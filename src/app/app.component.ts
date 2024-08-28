@@ -18,7 +18,8 @@ import { HeaderComponent } from './components/header/header.component';
 import { SidebarService } from './services/sidebar.service';
 import { NowplayingsidebarComponent } from "./components/nowplayingsidebar/nowplayingsidebar.component";
 import { HomeComponent } from './components/home/home.component';
-import { ActivatedRoute } from '@angular/router';
+import { QueueService } from './services/queue.service';
+import { PlayerService } from './services/player.service';
 
 @Component({
     selector: 'app-root',
@@ -43,7 +44,9 @@ import { ActivatedRoute } from '@angular/router';
         AudioService,
         UrlService,
         ApiService,
-        SidebarService
+        SidebarService,
+        QueueService,
+        PlayerService,
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
@@ -60,17 +63,16 @@ export class AppComponent {
         Image: '',
         Url: ''
     };
-    constructor(private audioService: AudioService,
-        private route: ActivatedRoute,
-        private urlParamService: UrlService,
+    constructor(private queueService: QueueService,
+        private trackService: TrackService
     ) {
-        this.audioService.getCurrentTrack().subscribe(track => {
-            this.track = track;
+        this.queueService.getCurrentTrack().subscribe(track => {
+            this.track = this.trackService.getTrackById(track);
         });
     }
 
     isActive() {
-        return this.audioService.isActive();
+        return this.track.Id != '';
     }
 
 }

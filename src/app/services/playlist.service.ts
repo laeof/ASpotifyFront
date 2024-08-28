@@ -1,48 +1,48 @@
+import { BehaviorSubject, Observable } from "rxjs";
 import { PLAYLISTS } from "../data/data";
-import { IPlaylist } from "../dtos/playlist";
-import { ITrack } from "../dtos/track";
+import { IPlaylist, PlaylistType } from "../dtos/playlist";
 
 export class PlaylistService {
 
-    private tracks: ITrack[] = [];
-    private trackSet: Set<ITrack> | undefined;
-    private playlist: IPlaylist[] = PLAYLISTS;
+    private currentPlaylistPlayingId = new BehaviorSubject<string>("");
+    private activePlaylistId = new BehaviorSubject<string>("");
 
-    setRandomTrack(tracks: ITrack[]) {
-        this.tracks = tracks;
-        this.trackSet = new Set(tracks);
-    }
+    private playlists: IPlaylist[] = PLAYLISTS;
 
-    getRandomTrack(): ITrack | null {
-        if (this.trackSet == undefined)
-            return null
-
-        if (this.trackSet.size === 0) {
-            this.trackSet = new Set(this.tracks);
-        }
-
-        const randomIndex = Math.floor(Math.random() * this.trackSet.size);
-        const trackArray = Array.from(this.trackSet);
-        const randomTrack = trackArray[randomIndex];
-        this.trackSet.delete(randomTrack); // set delete
-        //console.log(this.trackSet)
-
-        return randomTrack;
-    }
-
-    resetPlaylist(): void {
-        this.trackSet = new Set(this.tracks); // Сбрасываем HashSet
+    private playlist: IPlaylist = {
+        Id: "",
+        UserId: "",
+        Image: "",
+        Name: "",
+        Type: PlaylistType.Playlist,
+        TrackIds: []
     }
 
     getPlaylistById(id: string): IPlaylist {
-        return this.playlist[Number(id) - 1];
+        return this.playlists.find(pl => pl.Id === id) || this.playlist;
     }
 
     getAllPlaylists(id: string): IPlaylist[] {
-        return this.playlist.filter(playlist => playlist.UserId === id);
+        return this.playlists.filter(playlist => playlist.UserId === id);
     }
 
     createNewPlaylist(playlist: IPlaylist) {
-        this.playlist.push(playlist);
+        this.playlists.push(playlist);
+    }
+
+    setActiveId(id: string) {
+        this.activePlaylistId.next(id);
+    }
+
+    getActiveId(): Observable<string> {
+        return this.activePlaylistId.asObservable();
+    }
+
+    setPlayingPlaylistId(id: string) {
+        this.currentPlaylistPlayingId.next(id);
+    }
+
+    getPlayingPlaylistId(): Observable<string> {
+        return this.currentPlaylistPlayingId.asObservable();
     }
 }

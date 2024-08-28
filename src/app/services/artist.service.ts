@@ -1,14 +1,14 @@
-import { ARTISTS } from "../data/data";
-import { IArtist } from "../dtos/artist";
+import { USERS } from "../data/data";
+import { IUser } from "../dtos/user";
 
 export class ArtistService {
-    Artists: IArtist[] = ARTISTS;
+    Artists: IUser[] = USERS;
     // getArtistById(id: string): string {
     // }
     getArtistNameById(id: string) {
         const artist = this.Artists.find(item => item.Id === id);
         if (artist == undefined)
             return "";
-        return artist.NickName;
+        return artist.UserName;
     }
 }
