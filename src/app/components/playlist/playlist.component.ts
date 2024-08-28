@@ -31,6 +31,7 @@ export class PlaylistComponent implements OnDestroy {
     toggledContextMenu: boolean = false;
     @ViewChild('imageElement', { static: false }) imageElement!: ElementRef;
 
+    //active
     playlist: IPlaylist = {
         Id: '',
         UserId: '',
@@ -51,7 +52,7 @@ export class PlaylistComponent implements OnDestroy {
 
     sub: Subscription;
 
-    trackId: string | undefined;
+    trackId: string = '';
     paused: boolean = false;
     trackDuration: number = 0;
     currentTrack: ITrack = {
@@ -64,7 +65,6 @@ export class PlaylistComponent implements OnDestroy {
         Image: '',
         Url: ''
     };
-    currentIndex: number = 0;
 
     constructor(private colorService: ColorService,
         private playlistService: PlaylistService,
@@ -82,6 +82,7 @@ export class PlaylistComponent implements OnDestroy {
         this.sub = this.route.paramMap.subscribe(params => {
             let id = params.get('id') || "";
             this.playlistService.setActiveId(id);
+            // this.playlistService.getPlaylistById(id);
             setTimeout(() => this.extractColor(), 1);
         });
 
@@ -89,21 +90,19 @@ export class PlaylistComponent implements OnDestroy {
             this.playlist = this.playlistService.getPlaylistById(playlist)
         })
 
+        this.playlistService.getPlayingPlaylistId().subscribe(playlist => {
+            this.currentPlaylist = this.playlistService.getPlaylistById(playlist)
+        })
+
         this.queueService.getCurrentTrack().subscribe((trackId) => {
-            this.trackId = trackId
             if (this.playlist.Id == this.currentPlaylist.Id) {
-                this.currentTrack = this.trackService.getTrackById(trackId);
-                this.currentIndex = this.currentPlaylist.TrackIds.findIndex(track => track === track)
+                this.trackId = trackId;
             }
         });
 
         this.audioService.isTrackPaused().subscribe((ispaused) => {
             this.paused = ispaused
-        })
-
-        this.playlistService.getPlayingPlaylistId().subscribe(playlist => {
-            this.currentPlaylist = this.playlistService.getPlaylistById(playlist)
-        })
+        })  
     }
 
     ngOnDestroy(): void {
@@ -113,22 +112,21 @@ export class PlaylistComponent implements OnDestroy {
     //big play button
     getTrackForPlay(): string {
         if(this.playlist.Id == this.currentPlaylist.Id)
-            return this.currentTrack.Id;
+            return this.trackId;
 
-        console.log(this.currentTrack)
-
-        return this.currentPlaylist.TrackIds[0];
+        return this.playlist.TrackIds[0];
     }
 
     isActive(item: string): boolean {
-        return item === this.trackId && this.playlist.Id == this.currentPlaylist.Id;
+        return item == this.trackId && this.playlist.Id == this.currentPlaylist.Id;
     }
 
-    isPaused(item: string): any {
+    isPaused(): any {
         return this.paused
     }
 
     toggleAudio(item: string) {
+        this.trackId = item;
         this.playerService.toggleAudio(item, this.playlist.Id)
     }
 

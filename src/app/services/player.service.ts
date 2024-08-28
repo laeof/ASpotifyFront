@@ -56,12 +56,9 @@ export class PlayerService {
                 this.playlistService.getPlaylistById(playlistId).TrackIds);
         }
 
-        if (this.nowPlayingTrackId != trackId)
-            this.queueService.setCurrentTrack(trackId || this.nowPlayingTrackId);
-
         this.audioService.toggleAudio(
             this.trackService.getTrackById(
-                this.nowPlayingTrackId),
+                trackId),
             this.playlistService.getPlaylistById(
                 this.nowPlayingPlaylistId));
 

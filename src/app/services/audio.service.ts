@@ -24,8 +24,6 @@ export class AudioService {
     private trackid: string = "";
     private nextTrackId: string = '';
     private playlistActiveId = '';
-    private playlistPlayingId = '';
-    private trackPlayingNow: string = "";
 
     constructor(private http: HttpClient,
         private api: ApiService,
@@ -43,10 +41,6 @@ export class AudioService {
             this.trackid = trackId
         })
 
-        this.playlistService.getPlayingPlaylistId().subscribe(value => {
-            this.playlistPlayingId = value;
-        })
-
         this.playlistService.getActiveId().subscribe(value => {
             this.playlistActiveId = value;
         })
@@ -58,10 +52,9 @@ export class AudioService {
         if (this.intervalId) {
             clearInterval(this.intervalId);
         }
-
-        this.trackPlayingNow = track.Id;
-
-        this.queueService.setCurrentTrack(track.Id);
+        
+        if(this.trackid != track.Id)
+            this.queueService.setCurrentTrack(track.Id);
 
         this.playAudio(track);
         this.setTrackPositionTracking(0);
@@ -77,20 +70,21 @@ export class AudioService {
     }
 
     toggleAudio(item: ITrack, playlist: IPlaylist) {
-
-        if(item.Id === this.trackPlayingNow && playlist.Id === this.playlistActiveId){
+        if(item.Id === this.trackid && playlist.Id === this.playlistActiveId){
             if (!this.audio.paused) {
                 this.stopAudio();
+                console.log('stopped')
                 return;
             }
     
             if (this.audio.src != "") {
                 this.resumeAudio();
+                console.log('resumed')
                 return;
             }
         }
 
-        this.isPaused.next(false);
+        console.log('played')
         this.playTrack(item);
     }
 
