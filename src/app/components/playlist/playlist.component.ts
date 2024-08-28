@@ -16,6 +16,7 @@ import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { ContextMenuService } from '../../services/context-menu.service';
 
 @Component({
     selector: 'app-playlist',
@@ -76,6 +77,7 @@ export class PlaylistComponent implements OnDestroy {
         private playerService: PlayerService,
         private queueService: QueueService,
         private trackService: TrackService,
+        private contextMenuService: ContextMenuService,
         private route: ActivatedRoute,
     ) {
         this.user = this.userService.getCurrentUserInfo();
@@ -83,7 +85,6 @@ export class PlaylistComponent implements OnDestroy {
         this.sub = this.route.paramMap.subscribe(params => {
             let id = params.get('id') || "";
             this.playlistService.setActiveId(id);
-            // this.playlistService.getPlaylistById(id);
             setTimeout(() => this.extractColor(), 1);
         });
 
@@ -109,20 +110,12 @@ export class PlaylistComponent implements OnDestroy {
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
 
     onTrackClick(event: MouseEvent) {
-        this.contextMenu.menuItems = [
-            { label: 'Track func 1', action: () => console.log('Action 1 clicked') },
-            { label: 'Track func 2', action: () => console.log('Action 2 clicked') },
-            { label: 'Track func 3', action: () => console.log('Action 3 clicked') },
-        ];
+        this.contextMenu.menuItems = this.contextMenuService.getTrackActions();
         this.contextMenu.open(event);
     }
 
     onPlaylistClick(event: MouseEvent) {
-        this.contextMenu.menuItems = [
-            { label: 'Playlist func 1', action: () => console.log('Action 1 clicked') },
-            { label: 'Playlist func 2', action: () => console.log('Action 2 clicked') },
-            { label: 'Playlist func 3', action: () => console.log('Action 3 clicked') },
-        ];
+        this.contextMenu.menuItems = this.contextMenuService.getPlaylistActions();
         this.contextMenu.open(event);
     }
 

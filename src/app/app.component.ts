@@ -21,6 +21,7 @@ import { HomeComponent } from './components/home/home.component';
 import { QueueService } from './services/queue.service';
 import { PlayerService } from './services/player.service';
 import { ContextMenuComponent } from './components/context-menu/context-menu.component';
+import { ContextMenuService } from './services/context-menu.service';
 
 @Component({
     selector: 'app-root',
@@ -49,6 +50,7 @@ import { ContextMenuComponent } from './components/context-menu/context-menu.com
         SidebarService,
         QueueService,
         PlayerService,
+        ContextMenuService
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'

@@ -1,17 +1,20 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { IPlaylist, PlaylistType } from '../../dtos/playlist';
 import { PlaylistService } from '../../services/playlist.service';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UrlService } from '../../services/url.service';
 import { AudioService } from '../../services/audio.service';
+import { ContextMenuService } from '../../services/context-menu.service';
+import { ContextMenuComponent } from '../context-menu/context-menu.component';
 
 @Component({
     selector: 'app-leftsidebar',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule,
+        ContextMenuComponent
+    ],
     templateUrl: './leftsidebar.component.html',
     styleUrl: './leftsidebar.component.scss'
 })
@@ -25,6 +28,7 @@ export class LeftsidebarComponent {
         private userService: UserService,
         private urlService: UrlService,
         private audioService: AudioService,
+        private contextMenuService: ContextMenuService
     ) {
         this.playlistService.getActiveId().subscribe(id => {
             this.activeId = id;
@@ -37,6 +41,18 @@ export class LeftsidebarComponent {
         })
         this.user = this.userService.getCurrentUserInfo();
         this.items = playlistService.getAllPlaylists(this.user.Id);
+    }
+
+    @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
+
+    onPlaylistClick(event: MouseEvent) {
+        this.contextMenu.menuItems = this.contextMenuService.getPlaylistActions();
+        this.contextMenu.open(event);
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent) {
+        this.contextMenu.close();
     }
 
     redirectToPlaylist(id: string) {

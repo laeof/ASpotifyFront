@@ -10,6 +10,7 @@ import { findIndex } from 'rxjs';
 import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { ContextMenuService } from '../../services/context-menu.service';
 
 @Component({
     selector: 'app-nowplayingsidebar',
@@ -59,7 +60,8 @@ export class NowplayingsidebarComponent {
         private artistService: ArtistService,
         private queueService: QueueService,
         private trackService: TrackService,
-        private playlistService: PlaylistService
+        private playlistService: PlaylistService,
+        private contextMenuService: ContextMenuService
     ) {
         this.sidebarService.isNowPlayingVisible().subscribe(nowPlaying => {
             this.nowPlayingVisible = nowPlaying;
@@ -81,11 +83,7 @@ export class NowplayingsidebarComponent {
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
 
     onActionsClick(event: MouseEvent) {
-        this.contextMenu.menuItems = [
-            { label: 'Action func 1', action: () => console.log('Action 1 clicked') },
-            { label: 'Action func 2', action: () => console.log('Action 2 clicked') },
-            { label: 'Action func 3', action: () => console.log('Action 3 clicked') },
-        ];
+        this.contextMenu.menuItems = this.contextMenuService.getTrackActions();
         this.contextMenu.open(event);
     }
 
@@ -93,7 +91,6 @@ export class NowplayingsidebarComponent {
     onDocumentClick(event: MouseEvent) {
         this.contextMenu.close();
     }
-
 
     playAudio() {
         this.audioService.playTrack(this.nextTrack);

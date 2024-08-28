@@ -1,10 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-
-interface MenuItem {
-    label: string;
-    action: () => void;
-}
+import { MenuItem } from '../../dtos/menuItem';
 
 @Component({
     selector: 'app-context-menu',

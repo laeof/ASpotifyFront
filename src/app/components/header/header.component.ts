@@ -3,11 +3,15 @@ import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
 import { UrlService } from '../../services/url.service';
 import { CommonModule } from '@angular/common';
+import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { ContextMenuService } from '../../services/context-menu.service';
 
 @Component({
     selector: 'app-header',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule,
+        ContextMenuComponent
+    ],
     templateUrl: './header.component.html',
     styleUrl: './header.component.scss'
 })
@@ -16,7 +20,8 @@ export class HeaderComponent {
     backRouteState: boolean = false;
     nextRouteState: boolean = false;
     constructor(private userService: UserService,
-        private urlService: UrlService
+        private urlService: UrlService,
+        private contextMenuService: ContextMenuService
     ) {
         this.user = this.userService.getCurrentUserInfo();
         this.urlService.getBackRouteState().subscribe(state => {
@@ -25,6 +30,18 @@ export class HeaderComponent {
         this.urlService.getNextRouteState().subscribe(state => {
             this.nextRouteState = state;
         });
+    }
+
+    @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
+
+    onProfileClick(event: MouseEvent) {
+        this.contextMenu.menuItems = this.contextMenuService.getProfileActions();
+        this.contextMenu.open(event);
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent) {
+        this.contextMenu.close();
     }
 
     redirectToHome() {
