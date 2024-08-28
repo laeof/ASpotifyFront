@@ -1,0 +1,25 @@
+.context-menu {
+    position: absolute;
+    background-color: rgba(44, 44, 44, 0.95);
+    border-radius: 4px;
+
+    .context-menu-list {
+        position: relative;
+        padding: 5px;
+
+        .context-menu-item {
+            display: flex;
+            padding: 10px 15px;
+            border-radius: 4px;
+
+            p {
+                user-select: none;
+                margin-left: 10px;
+            }
+
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+        }
+    }
+}

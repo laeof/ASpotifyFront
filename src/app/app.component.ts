@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, ViewChild } from '@angular/core';
 import { FooterComponent } from './components/footer/footer.component';
 import { LeftsidebarComponent } from './components/leftsidebar/leftsidebar.component';
 import { MainComponent } from './components/main/main.component';
@@ -20,6 +20,7 @@ import { NowplayingsidebarComponent } from "./components/nowplayingsidebar/nowpl
 import { HomeComponent } from './components/home/home.component';
 import { QueueService } from './services/queue.service';
 import { PlayerService } from './services/player.service';
+import { ContextMenuComponent } from './components/context-menu/context-menu.component';
 
 @Component({
     selector: 'app-root',
@@ -32,7 +33,8 @@ import { PlayerService } from './services/player.service';
         HttpClientModule,
         CommonModule,
         NowplayingsidebarComponent,
-        HomeComponent
+        HomeComponent,
+        ContextMenuComponent
     ],
     providers: [
         ColorService,

@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, ViewChild } from '@angular/core';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
-import { Router } from '@angular/router';
 import { UrlService } from '../../services/url.service';
 import { CommonModule } from '@angular/common';
 
@@ -30,7 +29,7 @@ export class HeaderComponent {
 
     redirectToHome() {
         let route = "/home";
-        
+
         this.urlService.redirect(route);
     }
 
@@ -43,12 +42,12 @@ export class HeaderComponent {
     }
 
     navigateNextRoute() {
-        if(this.getNextRouteState())
+        if (this.getNextRouteState())
             this.urlService.navigateNextRoute();
     }
 
     navigateBackRoute() {
-        if(this.getBackRouteState())
+        if (this.getBackRouteState())
             this.urlService.navigateBackRoute();
     }
 }

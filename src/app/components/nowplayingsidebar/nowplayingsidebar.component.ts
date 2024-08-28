@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { SidebarService } from '../../services/sidebar.service';
 import { CommonModule } from '@angular/common';
 import { ITrack } from '../../dtos/track';
@@ -9,11 +9,14 @@ import { IPlaylist, PlaylistType } from '../../dtos/playlist';
 import { findIndex } from 'rxjs';
 import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
+import { ContextMenuComponent } from '../context-menu/context-menu.component';
 
 @Component({
     selector: 'app-nowplayingsidebar',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule,
+        ContextMenuComponent
+    ],
     templateUrl: './nowplayingsidebar.component.html',
     styleUrl: './nowplayingsidebar.component.scss'
 })
@@ -63,7 +66,7 @@ export class NowplayingsidebarComponent {
         });
 
         this.queueService.getCurrentTrack().subscribe(trackId => {
-            this.track = this.trackService.getTrackById(trackId);  
+            this.track = this.trackService.getTrackById(trackId);
         })
 
         this.queueService.getNextTrack().subscribe(trackId => {
@@ -74,6 +77,23 @@ export class NowplayingsidebarComponent {
             this.playlist = this.playlistService.getPlaylistById(playlist)
         })
     }
+
+    @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
+
+    onActionsClick(event: MouseEvent) {
+        this.contextMenu.menuItems = [
+            { label: 'Action func 1', action: () => console.log('Action 1 clicked') },
+            { label: 'Action func 2', action: () => console.log('Action 2 clicked') },
+            { label: 'Action func 3', action: () => console.log('Action 3 clicked') },
+        ];
+        this.contextMenu.open(event);
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent) {
+        this.contextMenu.close();
+    }
+
 
     playAudio() {
         this.audioService.playTrack(this.nextTrack);

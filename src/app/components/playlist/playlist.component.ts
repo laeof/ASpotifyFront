@@ -15,12 +15,13 @@ import { Subscription } from 'rxjs';
 import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
+import { ContextMenuComponent } from '../context-menu/context-menu.component';
 
 @Component({
     selector: 'app-playlist',
     standalone: true,
     imports: [CommonModule,
-
+        ContextMenuComponent
     ],
     templateUrl: './playlist.component.html',
     styleUrl: './playlist.component.scss'
@@ -102,7 +103,32 @@ export class PlaylistComponent implements OnDestroy {
 
         this.audioService.isTrackPaused().subscribe((ispaused) => {
             this.paused = ispaused
-        })  
+        })
+    }
+
+    @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
+
+    onTrackClick(event: MouseEvent) {
+        this.contextMenu.menuItems = [
+            { label: 'Track func 1', action: () => console.log('Action 1 clicked') },
+            { label: 'Track func 2', action: () => console.log('Action 2 clicked') },
+            { label: 'Track func 3', action: () => console.log('Action 3 clicked') },
+        ];
+        this.contextMenu.open(event);
+    }
+
+    onPlaylistClick(event: MouseEvent) {
+        this.contextMenu.menuItems = [
+            { label: 'Playlist func 1', action: () => console.log('Action 1 clicked') },
+            { label: 'Playlist func 2', action: () => console.log('Action 2 clicked') },
+            { label: 'Playlist func 3', action: () => console.log('Action 3 clicked') },
+        ];
+        this.contextMenu.open(event);
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent) {
+        this.contextMenu.close();
     }
 
     ngOnDestroy(): void {
@@ -111,7 +137,7 @@ export class PlaylistComponent implements OnDestroy {
 
     //big play button
     getTrackForPlay(): string {
-        if(this.playlist.Id == this.currentPlaylist.Id)
+        if (this.playlist.Id == this.currentPlaylist.Id)
             return this.trackId;
 
         return this.playlist.TrackIds[0];
@@ -132,13 +158,6 @@ export class PlaylistComponent implements OnDestroy {
 
     toggleContextMenu() {
         this.toggledContextMenu = !this.toggledContextMenu;
-    }
-
-    @HostListener('document:click', ['$event'])
-    onDocumentClick(event: MouseEvent) {
-        if (this.toggledContextMenu) {
-            this.toggledContextMenu = false;
-        }
     }
 
     getAlbumName(id: string) {
