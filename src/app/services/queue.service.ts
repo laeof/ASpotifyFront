@@ -1,81 +1,85 @@
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, ObservableLike } from "rxjs";
 
 export class QueueService {
 
-    private queue = new BehaviorSubject<string[]>([]);
-    private playedQueue = new BehaviorSubject<string[]>([]);
+    private originalTracks: string[] = [];
+    private tracks: string[] = [];
+    private currentIndex: number = 0;
+    private repeatTrack: boolean = false;
 
     private currentPlayingTrack = new BehaviorSubject<string>('');
     private nextPlayingTrack = new BehaviorSubject<string>('');
 
-    private repeatState = false;
-
-    setQueue(queue: string[]) {
-        // this.queue.next(new Array().concat(queue));
-        this.queue.next(queue)
+    shuffleQueue(): void {
+        for (let i = this.tracks.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [this.tracks[i], this.tracks[j]] = [this.tracks[j], this.tracks[i]];
+        }
+        this.currentIndex = 0;
     }
 
-    addToQueue(trackId: string) {
-        this.queue.value.push(trackId);
+    toggleRepeatTrack(repeat: boolean): void {
+        this.repeatTrack = repeat;
     }
 
-    removeFromQueue(trackId: string) {
-        this.queue.value.splice(this.queue.value.findIndex(id => id == trackId), 1);
+    setCurrentTrack(id: string) {
+        this.currentIndex = this.tracks.findIndex(i => i === id);
+        this.setTracks();
     }
 
-    shuffleQueue() {
-        this.queue.value.sort(() => Math.random() - 0.5);
-    }
-
-    prevQueueItem() {
-        console.log('prev')
-        this.addToQueue(this.removeFromPlayedQueue());
-    }
-
-    nextQueueItem() {
-        console.log('next')
-        let track = this.queue.value.shift() || this.currentPlayingTrack.value;
-        this.addToPlayedQueue(track);
-        this.currentPlayingTrack.next(track);
-    }
-
-    getQueue(): Observable<string[]> {
-        return this.queue.asObservable();;
-    }
-
-    setCurrentPlayingTrack(id: string) {
-        this.currentPlayingTrack.next(id);
-    }
-
-    getCurrentPlayingTrack(): Observable<string> {
-        var nextTrack;
-
-        //track play now
-        nextTrack = this.queue.value.shift() || '';
-        this.currentPlayingTrack.next(nextTrack);
-
-        //track will play
-        // if(!this.repeatState)
-        //     nextTrack = this.queue.value.pop() || '';
-
-        // this.nextPlayingTrack.next(nextTrack);
-
+    getCurrentTrack(): Observable<string> {
+        this.setTracks();
         return this.currentPlayingTrack.asObservable();
     }
 
-    getNextPlayingTrack(): Observable<string> {
+    getNextTrack(): Observable<string> {
         return this.nextPlayingTrack.asObservable();
     }
 
-    toggleRepeatState() {
-        this.repeatState = !this.repeatState;
+    nextTrack(): void {
+        if (this.repeatTrack) {
+            return;
+        }
+        this.currentIndex = (this.currentIndex + 1) % this.tracks.length;
+        this.setTracks();
     }
 
-    private addToPlayedQueue(trackId: string) {
-        this.playedQueue.value.push(trackId);
+    prevTrack(): void {
+        if (this.repeatTrack) {
+            return;
+        }
+        this.currentIndex = (this.currentIndex - 1 + this.tracks.length) % this.tracks.length;
+        this.setTracks();
     }
 
-    private removeFromPlayedQueue(): string {
-        return this.playedQueue.value.pop() || this.currentPlayingTrack.value;
+    private setTracks() {
+        this.currentPlayingTrack.next(this.tracks[this.currentIndex])
+        this.nextPlayingTrack.next(this.tracks[(this.currentIndex + 1) % this.tracks.length])
+    }
+
+    resetQueue(): void {
+        this.tracks = [...this.originalTracks];
+        if(this.repeatTrack)
+            this.shuffleQueue();
+        this.currentIndex = 0;
+    }
+
+    setQueue(newTracks: string[]): void {
+        this.originalTracks = [...newTracks];
+        this.tracks = [...newTracks];
+        this.currentIndex = this.currentIndex || 0;
+        this.setTracks();
+    }
+
+    addTrackAtIndex(track: string, index: number = this.currentIndex + 1): void {
+        if (index < 0 || index > this.tracks.length) {
+            console.error("index out of range.");
+            return;
+        }
+        this.tracks.splice(index, 0, track);
+        this.originalTracks.splice(index, 0, track);
+        if (index <= this.currentIndex) {
+            this.currentIndex++;
+        }
     }
 }

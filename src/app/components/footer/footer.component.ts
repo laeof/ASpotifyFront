@@ -52,7 +52,7 @@ export class FooterComponent {
         private queueService: QueueService,
         private playerService: PlayerService
     ) {
-        this.queueService.getCurrentPlayingTrack().subscribe(track => {
+        this.queueService.getCurrentTrack().subscribe(track => {
             this.track = this.trackService.getTrackById(track);
         });
 

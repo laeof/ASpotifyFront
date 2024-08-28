@@ -14,7 +14,7 @@
     </div>
     <div class="tracks">
         <div class="actions" [ngClass]="{'playing': currentPlaylist.Id === playlist.Id, 'paused': paused}">
-            <span class="toggleplay" id="play" (click)="toggleAudio(playlist.TrackIds[0])">
+            <span class="toggleplay" id="play" (click)="toggleAudio(getTrackForPlay())">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                     xmlns:svgjs="http://svgjs.com/svgjs" width="20" height="20" x="0" y="0"
                     viewBox="0 0 552.611 552.611" style="enable-background:new 0 0 512 512" xml:space="preserve"
@@ -26,7 +26,7 @@
                     </g>
                 </svg>
             </span>
-            <span class="toggleplay" id="pause" (click)="toggleAudio(currentTrack.Id || playlist.TrackIds[0])">
+            <span class="toggleplay" id="pause" (click)="toggleAudio(getTrackForPlay())">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                     width="25" height="25" x="0" y="0" viewBox="0 0 32 32" style="enable-background:new 0 0 512 512"
                     xml:space="preserve" class="" style="margin-left: 0px;">

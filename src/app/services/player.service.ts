@@ -23,7 +23,7 @@ export class PlayerService {
         private trackService: TrackService,
         private playlistService: PlaylistService,
     ) {
-        this.queueService.getCurrentPlayingTrack().subscribe(trackId => {
+        this.queueService.getCurrentTrack().subscribe(trackId => {
             this.nowPlayingTrackId = trackId;
         })
 
@@ -37,14 +37,14 @@ export class PlayerService {
     }
 
     playBack() {
-        this.queueService.prevQueueItem();
-        //this.audioService.playTrack(this.trackService.getTrackById(this.queueService.nextTrack()));
-        // this.trackService.getTrackById(
-        //     this.nowPlayingTrackId));
+        this.queueService.prevTrack();
+        this.audioService.playTrack(
+            this.trackService.getTrackById(
+                this.nowPlayingTrackId));
     }
 
     playNext() {
-        this.queueService.nextQueueItem();
+        this.queueService.nextTrack();
         this.audioService.playTrack(
             this.trackService.getTrackById(
                 this.nowPlayingTrackId));
@@ -57,7 +57,7 @@ export class PlayerService {
         }
 
         if (this.nowPlayingTrackId != trackId)
-            this.queueService.setCurrentPlayingTrack(trackId);
+            this.queueService.setCurrentTrack(trackId || this.nowPlayingTrackId);
 
         this.audioService.toggleAudio(
             this.trackService.getTrackById(
@@ -74,8 +74,6 @@ export class PlayerService {
 
         if (this.randomStateObs.value)
             this.queueService.shuffleQueue();
-
-        console.log("shuffled queue: ", this.queueService.getQueue());
     }
 
     getRandomState(): Observable<boolean> {
@@ -84,6 +82,7 @@ export class PlayerService {
 
     toggleRepeat() {
         this.repeatStateObs.next(!this.repeatStateObs.value);
+        this.queueService.toggleRepeatTrack(this.repeatStateObs.value);
     }
 
     getRepeatState(): Observable<boolean> {

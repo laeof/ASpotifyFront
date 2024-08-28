@@ -89,7 +89,7 @@ export class PlaylistComponent implements OnDestroy {
             this.playlist = this.playlistService.getPlaylistById(playlist)
         })
 
-        this.queueService.getCurrentPlayingTrack().subscribe((trackId) => {
+        this.queueService.getCurrentTrack().subscribe((trackId) => {
             this.trackId = trackId
             if (this.playlist.Id == this.currentPlaylist.Id) {
                 this.currentTrack = this.trackService.getTrackById(trackId);
@@ -110,6 +110,16 @@ export class PlaylistComponent implements OnDestroy {
         this.playlistService.setActiveId("");
     }
 
+    //big play button
+    getTrackForPlay(): string {
+        if(this.playlist.Id == this.currentPlaylist.Id)
+            return this.currentTrack.Id;
+
+        console.log(this.currentTrack)
+
+        return this.currentPlaylist.TrackIds[0];
+    }
+
     isActive(item: string): boolean {
         return item === this.trackId && this.playlist.Id == this.currentPlaylist.Id;
     }
@@ -120,7 +130,6 @@ export class PlaylistComponent implements OnDestroy {
 
     toggleAudio(item: string) {
         this.playerService.toggleAudio(item, this.playlist.Id)
-        console.log(this.currentTrack)
     }
 
     toggleContextMenu() {

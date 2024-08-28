@@ -66,7 +66,7 @@ export class AppComponent {
     constructor(private queueService: QueueService,
         private trackService: TrackService
     ) {
-        this.queueService.getCurrentPlayingTrack().subscribe(track => {
+        this.queueService.getCurrentTrack().subscribe(track => {
             this.track = this.trackService.getTrackById(track);
         });
     }

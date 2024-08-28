@@ -62,11 +62,11 @@ export class NowplayingsidebarComponent {
             this.nowPlayingVisible = nowPlaying;
         });
 
-        this.queueService.getCurrentPlayingTrack().subscribe(trackId => {
+        this.queueService.getCurrentTrack().subscribe(trackId => {
             this.track = this.trackService.getTrackById(trackId);  
         })
 
-        this.queueService.getNextPlayingTrack().subscribe(trackId => {
+        this.queueService.getNextTrack().subscribe(trackId => {
             this.nextTrack = this.trackService.getTrackById(trackId)
         })
 
@@ -76,7 +76,7 @@ export class NowplayingsidebarComponent {
     }
 
     playAudio() {
-        this.audioService.playAudio(this.nextTrack);
+        this.audioService.playTrack(this.nextTrack);
     }
 
     toggleContextMenu() {

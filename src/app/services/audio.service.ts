@@ -19,7 +19,7 @@ export class AudioService {
     private audio: any;
 
     private trackPosition = new BehaviorSubject<number>(0);
-    private volume = new BehaviorSubject<number>(0.05);
+    private volume = new BehaviorSubject<number>(0.01);
     private isPaused = new BehaviorSubject<boolean>(false);
     private trackid: string = "";
     private nextTrackId: string = '';
@@ -35,11 +35,11 @@ export class AudioService {
     ) {
         this.audio = new Audio();
         this.musicApi = this.api.getMusicApi();
-        this.queueService.getNextPlayingTrack().subscribe(nextId => {
+        this.queueService.getNextTrack().subscribe(nextId => {
             this.nextTrackId = nextId
         })
 
-        this.queueService.getCurrentPlayingTrack().subscribe(trackId => {
+        this.queueService.getCurrentTrack().subscribe(trackId => {
             this.trackid = trackId
         })
 
@@ -60,6 +60,8 @@ export class AudioService {
         }
 
         this.trackPlayingNow = track.Id;
+
+        this.queueService.setCurrentTrack(track.Id);
 
         this.playAudio(track);
         this.setTrackPositionTracking(0);
