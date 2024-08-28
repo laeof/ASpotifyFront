@@ -11,11 +11,10 @@ import { Injectable } from "@angular/core";
 
 export class PlayerService {
 
-    randomStateObs = new BehaviorSubject<boolean>(false);
-    repeatStateObs = new BehaviorSubject<boolean>(false);
+    private randomStateObs = new BehaviorSubject<boolean>(false);
+    private repeatStateObs = new BehaviorSubject<boolean>(false);
 
     private nowPlayingPlaylistId: string = '';
-    private activePlaylistId: string = '';
     private nowPlayingTrackId: string = '';
 
     constructor(private audioService: AudioService,
@@ -29,10 +28,6 @@ export class PlayerService {
 
         this.playlistService.getPlayingPlaylistId().subscribe(playlistId => {
             this.nowPlayingPlaylistId = playlistId;
-        })
-
-        this.playlistService.getActiveId().subscribe(playlistId => {
-            this.activePlaylistId = playlistId
         })
     }
 

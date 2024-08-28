@@ -6,6 +6,7 @@ export class QueueService {
     private tracks: string[] = [];
     private currentIndex: number = 0;
     private repeatTrack: boolean = false;
+    private randomTrack: boolean = false;
 
     private currentPlayingTrack = new BehaviorSubject<string>('');
     private nextPlayingTrack = new BehaviorSubject<string>('');
@@ -20,6 +21,10 @@ export class QueueService {
 
     toggleRepeatTrack(repeat: boolean): void {
         this.repeatTrack = repeat;
+    }
+
+    setRandomTrack(random: boolean) {
+        this.randomTrack = random;
     }
 
     setCurrentTrack(id: string) {
@@ -41,6 +46,12 @@ export class QueueService {
             return;
         }
         this.currentIndex = (this.currentIndex + 1) % this.tracks.length;
+
+        if (this.currentIndex + 1 == this.tracks.length) {
+            if (this.randomTrack)
+                this.shuffleQueue();
+        }
+
         this.setTracks();
     }
 
@@ -49,6 +60,7 @@ export class QueueService {
             return;
         }
         this.currentIndex = (this.currentIndex - 1 + this.tracks.length) % this.tracks.length;
+
         this.setTracks();
     }
 
@@ -59,8 +71,6 @@ export class QueueService {
 
     resetQueue(): void {
         this.tracks = [...this.originalTracks];
-        if(this.repeatTrack)
-            this.shuffleQueue();
         this.currentIndex = 0;
     }
 
