@@ -10,7 +10,6 @@ import { Injectable } from "@angular/core";
 })
 
 export class PlayerService {
-
     private randomStateObs = new BehaviorSubject<boolean>(false);
     private repeatStateObs = new BehaviorSubject<boolean>(false);
 

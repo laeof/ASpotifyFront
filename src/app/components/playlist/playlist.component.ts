@@ -28,7 +28,6 @@ import { ContextMenuService } from '../../services/context-menu.service';
     styleUrl: './playlist.component.scss'
 })
 export class PlaylistComponent implements OnDestroy {
-
     user: IUser;
     toggledContextMenu: boolean = false;
     @ViewChild('imageElement', { static: false }) imageElement!: ElementRef;
@@ -105,6 +104,18 @@ export class PlaylistComponent implements OnDestroy {
         this.audioService.isTrackPaused().subscribe((ispaused) => {
             this.paused = ispaused
         })
+    }
+
+    toggleLikedSongs(trackId: string) {
+        if (this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId)) {
+            this.playlistService.removeFromPlaylist(this.user.lovedPlaylistId, trackId);
+            return;
+        }
+        this.playlistService.addToPlaylist(this.user.lovedPlaylistId, trackId);
+    }
+
+    getLikedSongsState(trackId: string) {
+        return this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId);
     }
 
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;

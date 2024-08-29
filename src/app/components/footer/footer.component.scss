@@ -2,7 +2,7 @@
 
 .footer {
     user-select: none;
-    
+
     &.visible {
         display: flex;
     }
@@ -93,6 +93,12 @@
             svg {
                 &:first-child {
                     margin-right: 15px;
+                }
+
+                &.isLoved {
+                    .svg {
+                        fill: #D66EDE
+                    }
                 }
             }
         }

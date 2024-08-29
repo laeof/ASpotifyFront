@@ -1,3 +1,4 @@
+
 .main-wrap {
     overflow-y: auto;
     height: 100%;
@@ -290,6 +291,14 @@
                                         fill: rgba(255, 255, 255, 1);
                                     }
                                 }
+                            }
+
+                            &.isLoved {
+                                svg {
+                                    .svg {
+                                        fill: #D66EDE
+                                    }
+                                }        
                             }
                         }
 

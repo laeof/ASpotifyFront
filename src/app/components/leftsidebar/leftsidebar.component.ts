@@ -40,7 +40,7 @@ export class LeftsidebarComponent {
             this.isPaused = pause
         })
         this.user = this.userService.getCurrentUserInfo();
-        this.items = playlistService.getAllPlaylists(this.user.Id);
+        this.items = playlistService.getAllPlaylistsUserId(this.user.Id);
     }
 
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;

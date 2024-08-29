@@ -125,7 +125,7 @@
                         <td class="date">
                             {{getTrackById(item).Date.toLocaleDateString()}}
                         </td>
-                        <td class="like">
+                        <td class="like" (click)="toggleLikedSongs(item)" [ngClass]="{'isLoved': getLikedSongsState(item)}">
                             <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs"
                                 width="25" height="25" x="0" y="0" viewBox="0 0 512.001 512"
