@@ -48,12 +48,12 @@ export class AudioService {
 
     private intervalId: any;
 
-    playTrack(track: ITrack, nextTrack: ITrack = this.trackService.getTrackById(this.nextTrackId)) {
+    playTrack(track: ITrack) {
         if (this.intervalId) {
             clearInterval(this.intervalId);
         }
-        
-        if(this.trackid != track.Id)
+
+        if (this.trackid != track.Id)
             this.queueService.setCurrentTrack(track.Id);
 
         this.playAudio(track);
@@ -65,18 +65,19 @@ export class AudioService {
             this.setTrackPositionTracking(currentTime);
 
             if (this.trackService.getTrackById(this.trackid).Duration == currentTime)
-                this.playTrack(nextTrack);
+                this.playTrack(
+                    this.trackService.getTrackById(this.nextTrackId));
         }, 1000);
     }
 
     toggleAudio(item: ITrack, playlist: IPlaylist) {
-        if(item.Id === this.trackid && playlist.Id === this.playlistActiveId){
+        if (item.Id === this.trackid && playlist.Id === this.playlistActiveId) {
             if (!this.audio.paused) {
                 this.stopAudio();
                 console.log('stopped')
                 return;
             }
-    
+
             if (this.audio.src != "") {
                 this.resumeAudio();
                 console.log('resumed')
