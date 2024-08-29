@@ -109,8 +109,8 @@ export class PlaylistComponent implements OnDestroy {
 
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
 
-    onTrackClick(event: MouseEvent) {
-        this.contextMenu.menuItems = this.contextMenuService.getTrackActions();
+    onTrackClick(event: MouseEvent, id: string) {
+        this.contextMenu.menuItems = this.contextMenuService.getTrackActions(id);
         this.contextMenu.open(event);
     }
 

@@ -1,13 +1,23 @@
+import { Injectable } from "@angular/core";
 import { MenuItem } from "../dtos/menuItem";
+import { QueueService } from "./queue.service";
+
+@Injectable({
+    providedIn: 'root'
+})
 
 export class ContextMenuService {
 
-    getTrackActions(): MenuItem[] {
+    constructor(private queueService: QueueService) {
+
+    }
+
+    getTrackActions(id: string = ''): MenuItem[] {
         return [
             {
                 svg: '',
-                label: 'Track func 1',
-                action: () => console.log('Action 1 clicked')
+                label: 'Add to queue',
+                action: () => this.queueService.addTrackAtIndex(id)
             },
             { svg: '', label: 'Track func 2', action: () => console.log('Action 2 clicked') },
             { svg: '', label: 'Track func 3', action: () => console.log('Action 3 clicked') },

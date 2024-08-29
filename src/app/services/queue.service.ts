@@ -81,6 +81,10 @@ export class QueueService {
         this.setTracks();
     }
 
+    getQueue() {
+        return this.tracks;
+    }
+
     addTrackAtIndex(track: string, index: number = this.currentIndex + 1): void {
         if (index < 0 || index > this.tracks.length) {
             console.error("index out of range.");
@@ -91,5 +95,6 @@ export class QueueService {
         if (index <= this.currentIndex) {
             this.currentIndex++;
         }
+        console.log(this.getQueue())
     }
 }
