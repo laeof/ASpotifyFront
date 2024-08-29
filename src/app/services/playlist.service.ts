@@ -1,6 +1,12 @@
 import { BehaviorSubject, Observable } from "rxjs";
 import { PLAYLISTS } from "../data/data";
 import { IPlaylist, PlaylistType } from "../dtos/playlist";
+import { QueueService } from "./queue.service";
+import { Injectable } from "@angular/core";
+
+@Injectable({
+    providedIn: 'root'
+})
 
 export class PlaylistService {
 
@@ -18,12 +24,19 @@ export class PlaylistService {
         TrackIds: []
     }
 
+    constructor(private queueService: QueueService) {
+
+    }
+
     getPlaylistById(id: string): IPlaylist {
         return this.playlists.find(pl => pl.Id === id) || this.playlist;
     }
 
     addToPlaylist(playlistId: string, trackId: string) {
         this.getPlaylistById(playlistId).TrackIds.unshift(trackId);
+        
+        if(playlistId == this.currentPlaylistPlayingId.value)
+            this.queueService.addTrackAtIndex(trackId, 0);
     }
 
     removeFromPlaylist(playlistId: string, trackId: string) {

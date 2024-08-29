@@ -1,6 +1,8 @@
 import { Injectable } from "@angular/core";
 import { MenuItem } from "../dtos/menuItem";
 import { QueueService } from "./queue.service";
+import { PlaylistService } from "./playlist.service";
+import { BehaviorSubject } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -8,18 +10,25 @@ import { QueueService } from "./queue.service";
 
 export class ContextMenuService {
 
-    constructor(private queueService: QueueService) {
+    constructor(private queueService: QueueService,
+        private playlistService: PlaylistService,
+    ) {
 
     }
 
-    getTrackActions(id: string = ''): MenuItem[] {
+    getTrackActions(trackId: string = '', playlistId: string = ''): MenuItem[] {
         return [
             {
                 svg: '',
                 label: 'Add to queue',
-                action: () => this.queueService.addTrackAtIndex(id)
+                action: () => this.queueService.addTrackAtIndex(trackId)
             },
-            { svg: '', label: 'Track func 2', action: () => console.log('Action 2 clicked') },
+            {
+                svg: '',
+                label:
+                    'Add to playlist',
+                action: () => this.playlistService.addToPlaylist(trackId, playlistId)
+            },
             { svg: '', label: 'Track func 3', action: () => console.log('Action 3 clicked') },
         ];
     }
@@ -39,5 +48,7 @@ export class ContextMenuService {
             { svg: '', label: 'Profile func 3', action: () => console.log('Action 3 clicked') },
         ];
     }
+
+
 
 }

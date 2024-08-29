@@ -91,7 +91,12 @@ export class QueueService {
             console.error("index out of range.");
             return;
         }
+        
         this.tracks.splice(index, 0, track);
+
+        if(index == 0) {
+            this.currentIndex += 1;
+        }
 
         //update tracks
         this.setTracks();
