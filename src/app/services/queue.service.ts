@@ -91,7 +91,10 @@ export class QueueService {
             return;
         }
         this.tracks.splice(index, 0, track);
-        this.originalTracks.splice(index, 0, track);
+
+        //update tracks
+        this.setTracks();
+
         if (index <= this.currentIndex) {
             this.currentIndex++;
         }
