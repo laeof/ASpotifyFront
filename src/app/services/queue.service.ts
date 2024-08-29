@@ -16,6 +16,7 @@ export class QueueService {
             const j = Math.floor(Math.random() * (i + 1));
             [this.tracks[i], this.tracks[j]] = [this.tracks[j], this.tracks[i]];
         }
+        this.setTracks(this.tracks.findIndex(i => i === this.currentPlayingTrack.value));
         this.currentIndex = 0;
     }
 
@@ -64,8 +65,8 @@ export class QueueService {
         this.setTracks();
     }
 
-    private setTracks() {
-        this.currentPlayingTrack.next(this.tracks[this.currentIndex])
+    private setTracks(index: number = this.currentIndex) {
+        this.currentPlayingTrack.next(this.tracks[index])
         this.nextPlayingTrack.next(this.tracks[(this.currentIndex + 1) % this.tracks.length])
     }
 
@@ -81,15 +82,23 @@ export class QueueService {
         this.setTracks();
     }
 
+    getQueue() {
+        return this.tracks;
+    }
+
     addTrackAtIndex(track: string, index: number = this.currentIndex + 1): void {
         if (index < 0 || index > this.tracks.length) {
             console.error("index out of range.");
             return;
         }
         this.tracks.splice(index, 0, track);
-        this.originalTracks.splice(index, 0, track);
+
+        //update tracks
+        this.setTracks();
+
         if (index <= this.currentIndex) {
             this.currentIndex++;
         }
+        console.log(this.getQueue())
     }
 }

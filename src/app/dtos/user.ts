@@ -4,5 +4,6 @@ export interface IUser {
     FirstName: string | null,
     LastName: string | null,
     Email: string,
+    lovedPlaylistId: string;
     Image: string,
 }

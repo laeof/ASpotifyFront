@@ -22,7 +22,21 @@ export class PlaylistService {
         return this.playlists.find(pl => pl.Id === id) || this.playlist;
     }
 
-    getAllPlaylists(id: string): IPlaylist[] {
+    addToPlaylist(playlistId: string, trackId: string) {
+        this.getPlaylistById(playlistId).TrackIds.unshift(trackId);
+    }
+
+    removeFromPlaylist(playlistId: string, trackId: string) {
+        this.getPlaylistById(playlistId).TrackIds
+            .splice(this.getPlaylistById(playlistId)
+                .TrackIds.findIndex(id => id === trackId), 1)
+    }
+
+    getLovedTrackState(playlistId: string, trackId: string,): boolean {
+        return this.getPlaylistById(playlistId).TrackIds.findIndex(id => id == trackId) != -1;
+    }
+
+    getAllPlaylistsUserId(id: string): IPlaylist[] {
         return this.playlists.filter(playlist => playlist.UserId === id);
     }
 

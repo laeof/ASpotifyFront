@@ -10,6 +10,8 @@ import { SidebarService } from '../../services/sidebar.service';
 import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
+import { UserService } from '../../services/user.service';
+import { IUser } from '../../dtos/user';
 
 @Component({
     selector: 'app-footer',
@@ -44,14 +46,19 @@ export class FooterComponent {
     random: boolean = false;
     repeat: boolean = false;
 
+    user: IUser;
+
     constructor(private artistService: ArtistService,
         private audioService: AudioService,
         private sidebarService: SidebarService,
         private trackService: TrackService,
         private playlistService: PlaylistService,
         private queueService: QueueService,
-        private playerService: PlayerService
+        private playerService: PlayerService,
+        private userService: UserService
     ) {
+        this.user = this.userService.getCurrentUserInfo();
+
         this.queueService.getCurrentTrack().subscribe(track => {
             this.track = this.trackService.getTrackById(track);
         });
@@ -83,6 +90,18 @@ export class FooterComponent {
         this.playerService.getRepeatState().subscribe(repeat => {
             this.repeat = repeat
         })
+    }
+
+    toggleLikedSongs(trackId: string) {
+        if (this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId)) {
+            this.playlistService.removeFromPlaylist(this.user.lovedPlaylistId, trackId);
+            return;
+        }
+        this.playlistService.addToPlaylist(this.user.lovedPlaylistId, trackId);
+    }
+
+    getLikedSongsState(trackId: string) {
+        return this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId);
     }
 
     toggleNowPlaying() {

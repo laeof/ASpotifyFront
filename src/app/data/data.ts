@@ -196,9 +196,12 @@ export const TRACKS: ITrack[] = [
 ];
 
 export const PLAYLISTS: IPlaylist[] = [
-    { Id: "1", UserId: '1', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 20).map(track => track.Id) },
+    { Id: "1", UserId: '1', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
     { Id: "2", UserId: '1', Image: "/assets/imgs/webp/apfs.webp", Name: "Опианариум", Type: 1, TrackIds: TRACKS.slice(0, 8).map(track => track.Id) },
-    { Id: "3", UserId: '1', Image: "/assets/imgs/loveaddiction.jpg", Name: "Любовь, аддикция и марафоны", Type: 1, TrackIds: TRACKS.slice(8, 24).map(track => track.Id) }
+    { Id: "3", UserId: '1', Image: "/assets/imgs/loveaddiction.jpg", Name: "Любовь, аддикция и марафоны", Type: 1, TrackIds: TRACKS.slice(8, 24).map(track => track.Id) },
+    { Id: "4", UserId: '2', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
+    { Id: "5", UserId: '3', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
+
 ];
 
 export const USERS: IUser[] = [
@@ -207,6 +210,7 @@ export const USERS: IUser[] = [
         UserName: 'wandered thoughts',
         Email: 'laoef@example.com',
         Image: '/assets/imgs/bg.png',
+        lovedPlaylistId: '1',
         FirstName: null,
         LastName: null
     },
@@ -215,6 +219,7 @@ export const USERS: IUser[] = [
         UserName: 'Автостопом по фазе сна',
         Email: 'jane.smith@example.com',
         Image: '/assets/imgs/image.png',
+        lovedPlaylistId: '4',
         FirstName: null,
         LastName: null
     },
@@ -223,6 +228,7 @@ export const USERS: IUser[] = [
         UserName: 'Три дня дождя',
         Email: 'alice.jones@example.com',
         Image: '/assets/imgs/image.png',
+        lovedPlaylistId: '5',
         FirstName: null,
         LastName: null
     }

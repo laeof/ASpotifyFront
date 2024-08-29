@@ -1,6 +1,7 @@
 @import "../../shared/mixin.scss";
 
 .sidebar {
+    user-select: none;
     width: 400px;
     display: flex;
     flex-direction: column;

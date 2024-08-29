@@ -1,4 +1,4 @@
-<div class="header">
+<div class="header" >
     <div class="actions">
         <span class="item">
             <svg role="img" viewBox="0 0 24 24" aria-hidden="false" height="32" class="Svg-sc-6c3c1v-0 dDJltW">
@@ -89,10 +89,11 @@
                 </g>
             </svg>
         </span>
-        <span class="item">
+        <span class="item" (click)="onProfileClick($event)" (click)="$event.stopPropagation()">
             <span class="wrap-img">
                 <img src="{{user?.Image}}" class="img">
             </span>
         </span>
     </div>
 </div>
+<app-context-menu #contextMenu></app-context-menu>

@@ -15,18 +15,19 @@ import { Subscription } from 'rxjs';
 import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
+import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { ContextMenuService } from '../../services/context-menu.service';
 
 @Component({
     selector: 'app-playlist',
     standalone: true,
     imports: [CommonModule,
-
+        ContextMenuComponent
     ],
     templateUrl: './playlist.component.html',
     styleUrl: './playlist.component.scss'
 })
 export class PlaylistComponent implements OnDestroy {
-
     user: IUser;
     toggledContextMenu: boolean = false;
     @ViewChild('imageElement', { static: false }) imageElement!: ElementRef;
@@ -75,6 +76,7 @@ export class PlaylistComponent implements OnDestroy {
         private playerService: PlayerService,
         private queueService: QueueService,
         private trackService: TrackService,
+        private contextMenuService: ContextMenuService,
         private route: ActivatedRoute,
     ) {
         this.user = this.userService.getCurrentUserInfo();
@@ -82,7 +84,6 @@ export class PlaylistComponent implements OnDestroy {
         this.sub = this.route.paramMap.subscribe(params => {
             let id = params.get('id') || "";
             this.playlistService.setActiveId(id);
-            // this.playlistService.getPlaylistById(id);
             setTimeout(() => this.extractColor(), 1);
         });
 
@@ -102,7 +103,36 @@ export class PlaylistComponent implements OnDestroy {
 
         this.audioService.isTrackPaused().subscribe((ispaused) => {
             this.paused = ispaused
-        })  
+        })
+    }
+
+    toggleLikedSongs(trackId: string) {
+        if (this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId)) {
+            this.playlistService.removeFromPlaylist(this.user.lovedPlaylistId, trackId);
+            return;
+        }
+        this.playlistService.addToPlaylist(this.user.lovedPlaylistId, trackId);
+    }
+
+    getLikedSongsState(trackId: string) {
+        return this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId);
+    }
+
+    @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
+
+    onTrackClick(event: MouseEvent, id: string) {
+        this.contextMenu.menuItems = this.contextMenuService.getTrackActions(id);
+        this.contextMenu.open(event);
+    }
+
+    onPlaylistClick(event: MouseEvent) {
+        this.contextMenu.menuItems = this.contextMenuService.getPlaylistActions();
+        this.contextMenu.open(event);
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent) {
+        this.contextMenu.close();
     }
 
     ngOnDestroy(): void {
@@ -111,7 +141,7 @@ export class PlaylistComponent implements OnDestroy {
 
     //big play button
     getTrackForPlay(): string {
-        if(this.playlist.Id == this.currentPlaylist.Id)
+        if (this.playlist.Id == this.currentPlaylist.Id)
             return this.trackId;
 
         return this.playlist.TrackIds[0];
@@ -132,13 +162,6 @@ export class PlaylistComponent implements OnDestroy {
 
     toggleContextMenu() {
         this.toggledContextMenu = !this.toggledContextMenu;
-    }
-
-    @HostListener('document:click', ['$event'])
-    onDocumentClick(event: MouseEvent) {
-        if (this.toggledContextMenu) {
-            this.toggledContextMenu = false;
-        }
     }
 
     getAlbumName(id: string) {

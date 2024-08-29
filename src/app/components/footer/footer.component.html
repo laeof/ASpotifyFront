@@ -14,7 +14,8 @@
             </div>
         </div>
         <div class="features">
-            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+            <svg (click)="toggleLikedSongs(track.Id)" [ngClass]="{'isLoved': getLikedSongsState(track.Id)}"
+                xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                 xmlns:svgjs="http://svgjs.com/svgjs" width="25" height="25" x="0" y="0" viewBox="0 0 512.001 512"
                 style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
                 <g>

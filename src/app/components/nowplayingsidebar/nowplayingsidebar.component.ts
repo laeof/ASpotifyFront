@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
 import { SidebarService } from '../../services/sidebar.service';
 import { CommonModule } from '@angular/common';
 import { ITrack } from '../../dtos/track';
@@ -9,11 +9,15 @@ import { IPlaylist, PlaylistType } from '../../dtos/playlist';
 import { findIndex } from 'rxjs';
 import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
+import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { ContextMenuService } from '../../services/context-menu.service';
 
 @Component({
     selector: 'app-nowplayingsidebar',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule,
+        ContextMenuComponent
+    ],
     templateUrl: './nowplayingsidebar.component.html',
     styleUrl: './nowplayingsidebar.component.scss'
 })
@@ -56,14 +60,15 @@ export class NowplayingsidebarComponent {
         private artistService: ArtistService,
         private queueService: QueueService,
         private trackService: TrackService,
-        private playlistService: PlaylistService
+        private playlistService: PlaylistService,
+        private contextMenuService: ContextMenuService
     ) {
         this.sidebarService.isNowPlayingVisible().subscribe(nowPlaying => {
             this.nowPlayingVisible = nowPlaying;
         });
 
         this.queueService.getCurrentTrack().subscribe(trackId => {
-            this.track = this.trackService.getTrackById(trackId);  
+            this.track = this.trackService.getTrackById(trackId);
         })
 
         this.queueService.getNextTrack().subscribe(trackId => {
@@ -73,6 +78,18 @@ export class NowplayingsidebarComponent {
         this.playlistService.getPlayingPlaylistId().subscribe((playlist) => {
             this.playlist = this.playlistService.getPlaylistById(playlist)
         })
+    }
+
+    @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
+
+    onActionsClick(event: MouseEvent) {
+        this.contextMenu.menuItems = this.contextMenuService.getTrackActions();
+        this.contextMenu.open(event);
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent) {
+        this.contextMenu.close();
     }
 
     playAudio() {
