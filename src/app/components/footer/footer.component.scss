@@ -1,6 +1,8 @@
 @import "../../shared/mixin.scss";
 
 .footer {
+    user-select: none;
+    
     &.visible {
         display: flex;
     }
