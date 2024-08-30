@@ -27,7 +27,16 @@ import { ContextMenuService } from '../../services/context-menu.service';
     styleUrl: './playlist.component.scss'
 })
 export class PlaylistComponent implements OnDestroy {
-    user: IUser;
+    private user: IUser = {
+        Id: '',
+        UserName: '',
+        FirstName: null,
+        LastName: null,
+        Email: '',
+        lovedPlaylistId: '',
+        Image: '',
+        Playlists: []
+    };
     toggledContextMenu: boolean = false;
     @ViewChild('imageElement', { static: false }) imageElement!: ElementRef;
 
@@ -78,7 +87,9 @@ export class PlaylistComponent implements OnDestroy {
         private contextMenuService: ContextMenuService,
         private route: ActivatedRoute,
     ) {
-        this.user = this.userService.getCurrentUserInfo();
+        this.userService.getCurrentUserInfo().subscribe(user => {
+            this.user = user;
+        });
 
         this.sub = this.route.paramMap.subscribe(params => {
             let id = params.get('id') || "";
@@ -171,8 +182,8 @@ export class PlaylistComponent implements OnDestroy {
         return this.artistService.getArtistNameById(id);
     }
 
-    getPlaylistType() {
-        return this.playlistService.getPlaylistType(this.playlist);
+    getPlaylistType(type: PlaylistType = this.playlist.Type) {
+        return this.playlistService.getPlaylistType(type);
     }
 
     extractColor() {

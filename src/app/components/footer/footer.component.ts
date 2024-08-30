@@ -46,7 +46,16 @@ export class FooterComponent {
     random: boolean = false;
     repeat: boolean = false;
 
-    user: IUser;
+    private user: IUser = {
+        Id: '',
+        UserName: '',
+        FirstName: null,
+        LastName: null,
+        Email: '',
+        lovedPlaylistId: '',
+        Image: '',
+        Playlists: []
+    };
 
     constructor(private artistService: ArtistService,
         private audioService: AudioService,
@@ -57,7 +66,9 @@ export class FooterComponent {
         private playerService: PlayerService,
         private userService: UserService
     ) {
-        this.user = this.userService.getCurrentUserInfo();
+        this.userService.getCurrentUserInfo().subscribe(user => {
+            this.user = user;
+        });
 
         this.queueService.getCurrentTrack().subscribe(track => {
             this.track = this.trackService.getTrackById(track);
@@ -81,12 +92,12 @@ export class FooterComponent {
 
         this.sidebarService.isNowPlayingVisible().subscribe(visible => {
             this.toggledNowPlaying = visible;
-        }) 
+        })
 
         this.playerService.getRandomState().subscribe(random => {
             this.random = random;
         })
-        
+
         this.playerService.getRepeatState().subscribe(repeat => {
             this.repeat = repeat
         })

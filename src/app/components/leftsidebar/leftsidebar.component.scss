@@ -23,6 +23,7 @@
         }
 
         padding: 0;
+        font-weight: 400;
 
         .playlists {
             overflow-y: auto;
@@ -95,16 +96,18 @@
                         flex-direction: column;
                         justify-content: center;
                         margin-left: 10px;
+                        letter-spacing: .2px;
 
                         .title {
                             font-size: 18px;
-                            font-weight: 300;
                             margin: 0 0 5px 0;
+                            font-weight: 400;
                         }
 
                         .subtitle {
                             font-size: 14px;
                             color: $backcolor;
+                            font-weight: 400;
                         }
                     }
                 }

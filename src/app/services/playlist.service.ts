@@ -16,6 +16,17 @@ export class PlaylistService {
 
     private playlists: IPlaylist[] = PLAYLISTS;
 
+    private user: IUser = {
+        Id: "",
+        UserName: "",
+        FirstName: null,
+        LastName: null,
+        Email: "",
+        lovedPlaylistId: "",
+        Image: "",
+        Playlists: []
+    };
+
     private playlist: IPlaylist = {
         Id: "",
         AuthorId: "",
@@ -28,7 +39,13 @@ export class PlaylistService {
     constructor(private queueService: QueueService,
         private userService: UserService
     ) {
+        this.userService.getCurrentUserInfo().subscribe(user => {
+            this.user = user;
+        });
+    }
 
+    getLastPlaylistId() {
+        return this.playlists.length + 1;
     }
 
     getPlaylistById(id: string): IPlaylist {
@@ -53,12 +70,21 @@ export class PlaylistService {
     }
 
     getAllPlaylistsUserId(id: string): string[] {
-        // return this.playlists.filter(playlist => playlist.AuthorId === id);
         return this.userService.getUserInfoById(id).Playlists;
     }
 
-    createNewPlaylist(playlist: IPlaylist) {
-        this.playlists.push(playlist);
+    createNewPlaylist() {
+        var id = this.getLastPlaylistId();
+        var newPlaylist: IPlaylist = {
+            Id: id.toString(),
+            AuthorId: this.user.Id,
+            Image: '../assets/imgs/image.png',
+            Name: 'Playlist ' + id,
+            Type: PlaylistType.Playlist,
+            TrackIds: []
+        }
+        this.playlists.push(newPlaylist);
+        this.userService.addPlaylistToUserById(this.user.Id, newPlaylist.Id);
     }
 
     setActiveId(id: string) {
@@ -77,8 +103,8 @@ export class PlaylistService {
         return this.currentPlaylistPlayingId.asObservable();
     }
 
-    getPlaylistType(playlist: IPlaylist): string {
-        switch (playlist.Type) {
+    getPlaylistType(type: PlaylistType): string {
+        switch (type) {
             case 0:
                 return 'Playlist';
             case 1:

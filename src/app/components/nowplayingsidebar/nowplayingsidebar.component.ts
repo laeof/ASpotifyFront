@@ -57,7 +57,16 @@ export class NowplayingsidebarComponent {
         TrackIds: []
     };
 
-    user: IUser;
+    private user: IUser = {
+        Id: '',
+        UserName: '',
+        FirstName: null,
+        LastName: null,
+        Email: '',
+        lovedPlaylistId: '',
+        Image: '',
+        Playlists: []
+    };
 
     constructor(private sidebarService: SidebarService,
         private audioService: AudioService,
@@ -68,7 +77,9 @@ export class NowplayingsidebarComponent {
         private contextMenuService: ContextMenuService,
         private userService: UserService
     ) {
-        this.user = this.userService.getCurrentUserInfo();
+        this.userService.getCurrentUserInfo().subscribe(user => {
+            this.user = user;
+        });
 
         this.sidebarService.isNowPlayingVisible().subscribe(nowPlaying => {
             this.nowPlayingVisible = nowPlaying;
