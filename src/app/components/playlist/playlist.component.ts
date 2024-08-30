@@ -110,9 +110,7 @@ export class PlaylistComponent implements OnDestroy {
         })
 
         this.queueService.getCurrentTrackId().subscribe((trackId) => {
-            if (this.playlist.Id == this.currentPlaylist.Id) {
-                this.trackId = trackId;
-            }
+            this.trackId = trackId;
         });
 
         this.audioService.isTrackPaused().subscribe((ispaused) => {
@@ -172,6 +170,9 @@ export class PlaylistComponent implements OnDestroy {
     toggleAudio(item: string) {
         this.trackId = item;
         this.playerService.toggleAudio(item, this.playlist.Id)
+        console.log("tracK: " + item)
+        console.log("playing: " + this.currentPlaylist.Id)
+        console.log("activepl: " + this.playlist.Id)
     }
 
     toggleContextMenu() {

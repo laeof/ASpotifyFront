@@ -79,13 +79,16 @@ export class FooterComponent {
         */
         let latestPlayingPlaylist = this.localStorageService.getLatestPlaylistId() ?? this.user.latestPlayingPlaylist;
         let latestPlayingSong = this.localStorageService.getLatestSongId() ?? this.user.latestPlayingTrack;
+        let latestSongTrackPosition = this.localStorageService.getLatestSongTrackPosition() ?? 0;
 
-        console.log(latestPlayingSong)
-        console.log(latestPlayingPlaylist)
+        console.log("latest song: " + latestPlayingSong)
+        console.log("latest playlist: " + latestPlayingPlaylist)
 
         if (latestPlayingSong != null && latestPlayingPlaylist != null) {
             this.playlistService.setPlayingPlaylistId(latestPlayingPlaylist)
+            this.queueService.setQueue(this.playlistService.getPlaylistById(latestPlayingPlaylist).TrackIds)
             this.queueService.setCurrentTrack(latestPlayingSong)
+            this.audioService.setTrackPosition(latestSongTrackPosition)
             this.audioService.setTrackPause();
         }
 
@@ -151,7 +154,7 @@ export class FooterComponent {
     }
 
     toggleAudio() {
-        this.playerService.toggleAudio(this.track.Id, this.playlist.Id);
+        this.playerService.toggleAudio(this.track.Id, this.playlist.Id, true);
     }
 
     toggleRandom(): any {

@@ -47,13 +47,14 @@ export class AudioService {
     }
 
     private intervalId: any;
+    private intervalResume: any;
 
     playTrack(track: ITrack) {
         if (this.intervalId) {
             clearInterval(this.intervalId);
         }
 
-        if (this.trackid != track.Id)
+        if (this.trackid !== track.Id)
             this.queueService.setCurrentTrack(track.Id);
 
         this.playAudio(track);
@@ -70,23 +71,26 @@ export class AudioService {
         }, 1000);
     }
 
-    toggleAudio(item: ITrack, playlist: IPlaylist) {
-        if (item.Id === this.trackid && playlist.Id === this.playlistActiveId) {
+    toggleAudio(item: ITrack, playlist: IPlaylist, lockPlaylistCheck: boolean = false) {
+        if (item.Id === this.trackid && (playlist.Id === this.playlistActiveId || lockPlaylistCheck)) {
             if (!this.audio.paused) {
                 this.stopAudio();
                 console.log('stopped')
                 return;
             }
 
-            if (this.audio.src != "") {
+            if (this.audio.src != "" || item.Id != '') {
                 this.resumeAudio();
                 console.log('resumed')
                 return;
             }
         }
 
-        console.log('played')
+        if (this.trackid != item.Id)
+            this.setTrackPosition(0)
+
         this.playTrack(item);
+
     }
 
     playAudio(item: ITrack) {
@@ -104,10 +108,31 @@ export class AudioService {
     }
 
     resumeAudio() {
-        let time = this.audio.currentTime;
-        this.audio.play();
-        this.audio.currentTime = time;
         this.isPaused.next(false);
+
+        let time = this.audio.currentTime ?? this.trackPosition.value;
+
+        if (this.audio.src == "")
+            this.playAudio(this.trackService.getTrackById(this.trackid));
+        else
+            this.audio.play();
+
+        if (this.intervalResume) {
+            clearInterval(this.intervalResume);
+        }
+
+        this.setTrackPosition(Math.round(time));
+
+        this.intervalResume = setInterval(() => {
+
+            let currentTime = Math.round(this.audio.currentTime);
+
+            this.setTrackPositionTracking(currentTime);
+
+            if (this.trackService.getTrackById(this.trackid).Duration == currentTime)
+                this.playTrack(
+                    this.trackService.getTrackById(this.nextTrackId));
+        }, 1000);
     }
 
     setTrackPositionTracking(position: number) {
