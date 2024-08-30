@@ -24,6 +24,8 @@ export class PlaylistService {
         Email: "",
         lovedPlaylistId: "",
         Image: "",
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
         Playlists: []
     };
 
@@ -97,6 +99,8 @@ export class PlaylistService {
 
     setPlayingPlaylistId(id: string) {
         this.currentPlaylistPlayingId.next(id);
+        this.queueService.setQueue(
+            this.getPlaylistById(id).TrackIds);
     }
 
     getPlayingPlaylistId(): Observable<string> {

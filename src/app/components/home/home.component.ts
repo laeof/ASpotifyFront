@@ -26,6 +26,8 @@ export class HomeComponent {
         Email: '',
         lovedPlaylistId: '',
         Image: '',
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
         Playlists: []
     };
     constructor(private userService: UserService,

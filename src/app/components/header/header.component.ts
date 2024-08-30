@@ -5,6 +5,10 @@ import { UrlService } from '../../services/url.service';
 import { CommonModule } from '@angular/common';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { ContextMenuService } from '../../services/context-menu.service';
+import { LocalStorageService } from '../../services/localstorage.service';
+import { PlaylistComponent } from '../playlist/playlist.component';
+import { PlaylistService } from '../../services/playlist.service';
+import { QueueService } from '../../services/queue.service';
 
 @Component({
     selector: 'app-header',
@@ -24,6 +28,8 @@ export class HeaderComponent {
         Email: '',
         lovedPlaylistId: '',
         Image: '',
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
         Playlists: []
     };
 
@@ -31,8 +37,9 @@ export class HeaderComponent {
     nextRouteState: boolean = false;
     constructor(private userService: UserService,
         private urlService: UrlService,
-        private contextMenuService: ContextMenuService
+        private contextMenuService: ContextMenuService,
     ) {
+
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.user = user;
         });

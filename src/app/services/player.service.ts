@@ -21,7 +21,7 @@ export class PlayerService {
         private trackService: TrackService,
         private playlistService: PlaylistService,
     ) {
-        this.queueService.getCurrentTrack().subscribe(trackId => {
+        this.queueService.getCurrentTrackId().subscribe(trackId => {
             this.nowPlayingTrackId = trackId;
         })
 
@@ -46,8 +46,7 @@ export class PlayerService {
 
     toggleAudio(trackId: string, playlistId: string) {
         if (this.nowPlayingPlaylistId != playlistId) {
-            this.queueService.setQueue(
-                this.playlistService.getPlaylistById(playlistId).TrackIds);
+            this.playlistService.setPlayingPlaylistId(playlistId);
         }
 
         this.audioService.toggleAudio(

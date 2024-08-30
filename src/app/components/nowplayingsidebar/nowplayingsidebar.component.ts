@@ -65,6 +65,8 @@ export class NowplayingsidebarComponent {
         Email: '',
         lovedPlaylistId: '',
         Image: '',
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
         Playlists: []
     };
 
@@ -85,7 +87,7 @@ export class NowplayingsidebarComponent {
             this.nowPlayingVisible = nowPlaying;
         });
 
-        this.queueService.getCurrentTrack().subscribe(trackId => {
+        this.queueService.getCurrentTrackId().subscribe(trackId => {
             this.track = this.trackService.getTrackById(trackId);
         })
 

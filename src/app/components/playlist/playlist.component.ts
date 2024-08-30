@@ -16,6 +16,7 @@ import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { ContextMenuService } from '../../services/context-menu.service';
+import { LocalStorageService } from '../../services/localstorage.service';
 
 @Component({
     selector: 'app-playlist',
@@ -35,6 +36,8 @@ export class PlaylistComponent implements OnDestroy {
         Email: '',
         lovedPlaylistId: '',
         Image: '',
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
         Playlists: []
     };
     toggledContextMenu: boolean = false;
@@ -85,8 +88,9 @@ export class PlaylistComponent implements OnDestroy {
         private queueService: QueueService,
         private trackService: TrackService,
         private contextMenuService: ContextMenuService,
-        private route: ActivatedRoute,
+        private route: ActivatedRoute
     ) {
+
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.user = user;
         });
@@ -105,7 +109,7 @@ export class PlaylistComponent implements OnDestroy {
             this.currentPlaylist = this.playlistService.getPlaylistById(playlist)
         })
 
-        this.queueService.getCurrentTrack().subscribe((trackId) => {
+        this.queueService.getCurrentTrackId().subscribe((trackId) => {
             if (this.playlist.Id == this.currentPlaylist.Id) {
                 this.trackId = trackId;
             }

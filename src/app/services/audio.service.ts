@@ -19,7 +19,7 @@ export class AudioService {
     private audio: any;
 
     private trackPosition = new BehaviorSubject<number>(0);
-    private volume = new BehaviorSubject<number>(0.01);
+    private volume = new BehaviorSubject<number>(0.1);
     private isPaused = new BehaviorSubject<boolean>(false);
     private trackid: string = "";
     private nextTrackId: string = '';
@@ -37,7 +37,7 @@ export class AudioService {
             this.nextTrackId = nextId
         })
 
-        this.queueService.getCurrentTrack().subscribe(trackId => {
+        this.queueService.getCurrentTrackId().subscribe(trackId => {
             this.trackid = trackId
         })
 
@@ -130,6 +130,10 @@ export class AudioService {
 
     getVolume(): Observable<number> {
         return this.volume.asObservable();
+    }
+
+    setTrackPause() {
+        this.isPaused.next(true);
     }
 
     isTrackPaused(): Observable<boolean> {

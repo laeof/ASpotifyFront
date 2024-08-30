@@ -12,6 +12,7 @@ import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
+import { LocalStorageService } from '../../services/localstorage.service';
 
 @Component({
     selector: 'app-footer',
@@ -54,6 +55,8 @@ export class FooterComponent {
         Email: '',
         lovedPlaylistId: '',
         Image: '',
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
         Playlists: []
     };
 
@@ -64,13 +67,29 @@ export class FooterComponent {
         private playlistService: PlaylistService,
         private queueService: QueueService,
         private playerService: PlayerService,
-        private userService: UserService
+        private userService: UserService,
+        private localStorageService: LocalStorageService
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.user = user;
         });
+        /*
+        todo:
+            save latest data to user
+        */
+        let latestPlayingPlaylist = this.localStorageService.getLatestPlaylistId() ?? this.user.latestPlayingPlaylist;
+        let latestPlayingSong = this.localStorageService.getLatestSongId() ?? this.user.latestPlayingTrack;
 
-        this.queueService.getCurrentTrack().subscribe(track => {
+        console.log(latestPlayingSong)
+        console.log(latestPlayingPlaylist)
+
+        if (latestPlayingSong != null && latestPlayingPlaylist != null) {
+            this.playlistService.setPlayingPlaylistId(latestPlayingPlaylist)
+            this.queueService.setCurrentTrack(latestPlayingSong)
+            this.audioService.setTrackPause();
+        }
+
+        this.queueService.getCurrentTrackId().subscribe(track => {
             this.track = this.trackService.getTrackById(track);
         });
 

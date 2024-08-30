@@ -28,6 +28,8 @@ export class LeftsidebarComponent {
         Email: '',
         lovedPlaylistId: '',
         Image: '',
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
         Playlists: []
     };
     isPaused: boolean = false;

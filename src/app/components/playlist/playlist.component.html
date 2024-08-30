@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="tracks">
-        <div class="actions" [ngClass]="{'playing': currentPlaylist.Id === playlist.Id, 'paused': paused}" (contextmenu)="onPlaylistClick($event)">
+        <div class="actions" [ngClass]="{'playing': currentPlaylist.Id === playlist.Id && !paused, 'paused': paused}" (contextmenu)="onPlaylistClick($event)">
             <span class="toggleplay" id="play" (click)="toggleAudio(getTrackForPlay())">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                     xmlns:svgjs="http://svgjs.com/svgjs" width="20" height="20" x="0" y="0"
@@ -79,7 +79,7 @@
                     </tr>
                     @for (item of playlist.TrackIds; track item; let i = $index) {
                     <tr [ngClass]="{'active': isActive(item)}" (contextmenu)="onTrackClick($event, item)">
-                        <td class="number" [ngClass]="{'playing': isActive(item), 'paused': isPaused()}">
+                        <td class="number" [ngClass]="{'playing': isActive(item), 'paused': paused}">
                             <p id="number">{{i + 1}}</p>
                             <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18" x="0" y="0"

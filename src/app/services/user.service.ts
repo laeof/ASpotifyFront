@@ -12,6 +12,8 @@ export class UserService {
         Email: "",
         lovedPlaylistId: "",
         Image: "",
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
         Playlists: []
     }
 
@@ -24,6 +26,8 @@ export class UserService {
             Email: "",
             lovedPlaylistId: "",
             Image: "",
+            latestPlayingPlaylist: '',
+            latestPlayingTrack: '',
             Playlists: []
         })
 
@@ -37,6 +41,14 @@ export class UserService {
 
     getUserInfoById(id: string): IUser {
         return this.users.find(user => user.Id === id) || this.user
+    }
+
+    setLatestTrack(trackId: string) {
+        this.currentUser.value.latestPlayingPlaylist = trackId;
+    }
+
+    setLatestPlaylist(playlistId: string) {
+        this.currentUser.value.latestPlayingPlaylist = playlistId;
     }
 
     addPlaylistToUserById(userId: string, playlistId: string) {

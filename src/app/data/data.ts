@@ -213,6 +213,8 @@ export const USERS: IUser[] = [
         lovedPlaylistId: '1',
         FirstName: null,
         LastName: null,
+        latestPlayingPlaylist: '2',
+        latestPlayingTrack: 'track5',
         Playlists: PLAYLISTS.slice(0, 3).map(playlist => playlist.Id), 
     },
     {
@@ -223,6 +225,8 @@ export const USERS: IUser[] = [
         lovedPlaylistId: '4',
         FirstName: null,
         LastName: null,
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
         Playlists: PLAYLISTS.slice(3, 4).map(playlist => playlist.Id), 
     },
     {
@@ -233,6 +237,8 @@ export const USERS: IUser[] = [
         lovedPlaylistId: '5',
         FirstName: null,
         LastName: null,
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
         Playlists: PLAYLISTS.slice(4, 5).map(playlist => playlist.Id), 
     }
 ];
