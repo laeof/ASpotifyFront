@@ -19,8 +19,19 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
     styleUrl: './leftsidebar.component.scss'
 })
 export class LeftsidebarComponent {
-    items: IPlaylist[];
-    user: IUser | undefined;
+    items: IPlaylist[] = [];
+    private user: IUser = {
+        Id: '',
+        UserName: '',
+        FirstName: null,
+        LastName: null,
+        Email: '',
+        lovedPlaylistId: '',
+        Image: '',
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
+        Playlists: []
+    };
     isPaused: boolean = false;
     activeId: string | null = null;
     playingId: string | null = null;
@@ -30,17 +41,30 @@ export class LeftsidebarComponent {
         private audioService: AudioService,
         private contextMenuService: ContextMenuService
     ) {
+        this.userService.getCurrentUserInfo().subscribe(user => {
+            this.user = user;
+            playlistService.getAllPlaylistsUserId(this.user.Id).map(playlist => {
+                if (!this.items.includes(this.playlistService.getPlaylistById(playlist)))
+                    this.items.push(this.playlistService.getPlaylistById(playlist))
+            });
+        });
+
         this.playlistService.getActiveId().subscribe(id => {
             this.activeId = id;
         });
+
         this.playlistService.getPlayingPlaylistId().subscribe(play => {
             this.playingId = play;
-        })
+        });
+
         this.audioService.isTrackPaused().subscribe(pause => {
             this.isPaused = pause
-        })
-        this.user = this.userService.getCurrentUserInfo();
-        this.items = playlistService.getAllPlaylistsUserId(this.user.Id);
+        });
+
+    }
+    
+    getPlaylistType(type: PlaylistType) {
+        return this.playlistService.getPlaylistType(type);
     }
 
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
@@ -72,16 +96,7 @@ export class LeftsidebarComponent {
     }
 
     createNewPlaylist() {
-        var id = this.items.length + 1;
-        var newPlaylist: IPlaylist = {
-            Id: id.toString(),
-            UserId: this.user?.Id || "",
-            Image: '../assets/imgs/image.png',
-            Name: 'Playlist ' + id,
-            Type: PlaylistType.Playlist,
-            TrackIds: []
-        }
-        this.items.push(newPlaylist);
-        this.playlistService.createNewPlaylist(newPlaylist);
+        this.playlistService.createNewPlaylist();
+        // this.items.push(this.playlistService.getPlaylistById());
     }
 }

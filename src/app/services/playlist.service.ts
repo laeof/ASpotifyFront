@@ -1,21 +1,53 @@
 import { BehaviorSubject, Observable } from "rxjs";
-import { PLAYLISTS } from "../data/data";
+import { PLAYLISTS, USERS } from "../data/data";
 import { IPlaylist, PlaylistType } from "../dtos/playlist";
+import { QueueService } from "./queue.service";
+import { Injectable } from "@angular/core";
+import { IUser } from "../dtos/user";
+import { UserService } from "./user.service";
+
+@Injectable({
+    providedIn: 'root'
+})
 
 export class PlaylistService {
-
     private currentPlaylistPlayingId = new BehaviorSubject<string>("");
     private activePlaylistId = new BehaviorSubject<string>("");
 
     private playlists: IPlaylist[] = PLAYLISTS;
 
+    private user: IUser = {
+        Id: "",
+        UserName: "",
+        FirstName: null,
+        LastName: null,
+        Email: "",
+        lovedPlaylistId: "",
+        Image: "",
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
+        Playlists: []
+    };
+
     private playlist: IPlaylist = {
         Id: "",
-        UserId: "",
+        AuthorId: "",
         Image: "",
         Name: "",
         Type: PlaylistType.Playlist,
         TrackIds: []
+    }
+
+    constructor(private queueService: QueueService,
+        private userService: UserService
+    ) {
+        this.userService.getCurrentUserInfo().subscribe(user => {
+            this.user = user;
+        });
+    }
+
+    getLastPlaylistId() {
+        return this.playlists.length + 1;
     }
 
     getPlaylistById(id: string): IPlaylist {
@@ -24,6 +56,9 @@ export class PlaylistService {
 
     addToPlaylist(playlistId: string, trackId: string) {
         this.getPlaylistById(playlistId).TrackIds.unshift(trackId);
+        
+        if(playlistId == this.currentPlaylistPlayingId.value)
+            this.queueService.addTrackAtIndex(trackId, 0);
     }
 
     removeFromPlaylist(playlistId: string, trackId: string) {
@@ -36,12 +71,22 @@ export class PlaylistService {
         return this.getPlaylistById(playlistId).TrackIds.findIndex(id => id == trackId) != -1;
     }
 
-    getAllPlaylistsUserId(id: string): IPlaylist[] {
-        return this.playlists.filter(playlist => playlist.UserId === id);
+    getAllPlaylistsUserId(id: string): string[] {
+        return this.userService.getUserInfoById(id).Playlists;
     }
 
-    createNewPlaylist(playlist: IPlaylist) {
-        this.playlists.push(playlist);
+    createNewPlaylist() {
+        var id = this.getLastPlaylistId();
+        var newPlaylist: IPlaylist = {
+            Id: id.toString(),
+            AuthorId: this.user.Id,
+            Image: '../assets/imgs/image.png',
+            Name: 'Playlist ' + id,
+            Type: PlaylistType.Playlist,
+            TrackIds: []
+        }
+        this.playlists.push(newPlaylist);
+        this.userService.addPlaylistToUserById(this.user.Id, newPlaylist.Id);
     }
 
     setActiveId(id: string) {
@@ -58,5 +103,18 @@ export class PlaylistService {
 
     getPlayingPlaylistId(): Observable<string> {
         return this.currentPlaylistPlayingId.asObservable();
+    }
+
+    getPlaylistType(type: PlaylistType): string {
+        switch (type) {
+            case 0:
+                return 'Playlist';
+            case 1:
+                return 'Album';
+            case 2:
+                return 'Single'
+        }
+
+        return ''
     }
 }

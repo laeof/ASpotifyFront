@@ -1,4 +1,4 @@
-import { Component, HostListener, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { FooterComponent } from './components/footer/footer.component';
 import { LeftsidebarComponent } from './components/leftsidebar/leftsidebar.component';
 import { MainComponent } from './components/main/main.component';
@@ -22,6 +22,7 @@ import { QueueService } from './services/queue.service';
 import { PlayerService } from './services/player.service';
 import { ContextMenuComponent } from './components/context-menu/context-menu.component';
 import { ContextMenuService } from './services/context-menu.service';
+import { LocalStorageService } from './services/localstorage.service';
 
 @Component({
     selector: 'app-root',
@@ -50,7 +51,8 @@ import { ContextMenuService } from './services/context-menu.service';
         SidebarService,
         QueueService,
         PlayerService,
-        ContextMenuService
+        ContextMenuService,
+        LocalStorageService,
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
@@ -70,7 +72,7 @@ export class AppComponent {
     constructor(private queueService: QueueService,
         private trackService: TrackService
     ) {
-        this.queueService.getCurrentTrack().subscribe(track => {
+        this.queueService.getCurrentTrackId().subscribe(track => {
             this.track = this.trackService.getTrackById(track);
         });
     }

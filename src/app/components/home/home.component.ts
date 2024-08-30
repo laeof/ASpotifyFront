@@ -18,14 +18,30 @@ import { PlayerService } from '../../services/player.service';
 })
 export class HomeComponent {
     playlists: IPlaylist[] = [];
-    user: IUser | undefined;
+    private user: IUser = {
+        Id: '',
+        UserName: '',
+        FirstName: null,
+        LastName: null,
+        Email: '',
+        lovedPlaylistId: '',
+        Image: '',
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
+        Playlists: []
+    };
     constructor(private userService: UserService,
         private playlistService: PlaylistService,
-        private playerService: PlayerService, 
+        private playerService: PlayerService,
         private urlService: UrlService
     ) {
-        this.user = this.userService.getCurrentUserInfo();
-        this.playlists = this.playlistService.getAllPlaylistsUserId(this.user.Id);
+        this.userService.getCurrentUserInfo().subscribe(user => {
+            this.user = user;
+            playlistService.getAllPlaylistsUserId(this.user.Id).map(playlist => {
+                if (!this.playlists.includes(this.playlistService.getPlaylistById(playlist)))
+                    this.playlists.push(this.playlistService.getPlaylistById(playlist))
+            });
+        });
     }
 
     redirectToPlaylist(id: string) {

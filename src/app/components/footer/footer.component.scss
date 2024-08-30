@@ -20,7 +20,27 @@
     svg {
         cursor: pointer;
 
+        &#like {
+            .svg {
+                fill: rgba(255, 255, 255, 0.3);
+            }
+
+            &:hover {
+                .svg {
+
+                    fill: $hovercolor;
+                }
+            }
+
+            &.isLoved {
+                .svg {
+                    fill: #D66EDE
+                }
+            }
+        }
+
         .svg {
+
             fill: $backcolor;
 
             &.notRepeat {
@@ -71,17 +91,19 @@
 
             .name {
                 padding-left: 12px;
+                font-weight: 400;
+                letter-spacing: .2px;
 
                 .title {
                     font-size: 1rem;
-                    font-weight: 300;
                     margin: 0;
+                    font-weight: 400;
                     padding-bottom: 3px;
+                    color: rgba(255, 255, 255, 0.9);
                 }
 
                 .subtitle {
                     font-size: 12px;
-                    font-weight: 300;
                     color: rgba(255, 255, 255, 0.7);
                 }
             }
@@ -93,12 +115,6 @@
             svg {
                 &:first-child {
                     margin-right: 15px;
-                }
-
-                &.isLoved {
-                    .svg {
-                        fill: #D66EDE
-                    }
                 }
             }
         }

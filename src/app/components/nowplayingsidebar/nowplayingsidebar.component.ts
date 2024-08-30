@@ -11,6 +11,8 @@ import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { ContextMenuService } from '../../services/context-menu.service';
+import { UserService } from '../../services/user.service';
+import { IUser } from '../../dtos/user';
 
 @Component({
     selector: 'app-nowplayingsidebar',
@@ -48,11 +50,24 @@ export class NowplayingsidebarComponent {
 
     playlist: IPlaylist = {
         Id: '',
-        UserId: '',
+        AuthorId: '',
         Image: '',
         Name: '',
         Type: PlaylistType.Playlist,
         TrackIds: []
+    };
+
+    private user: IUser = {
+        Id: '',
+        UserName: '',
+        FirstName: null,
+        LastName: null,
+        Email: '',
+        lovedPlaylistId: '',
+        Image: '',
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
+        Playlists: []
     };
 
     constructor(private sidebarService: SidebarService,
@@ -61,13 +76,18 @@ export class NowplayingsidebarComponent {
         private queueService: QueueService,
         private trackService: TrackService,
         private playlistService: PlaylistService,
-        private contextMenuService: ContextMenuService
+        private contextMenuService: ContextMenuService,
+        private userService: UserService
     ) {
+        this.userService.getCurrentUserInfo().subscribe(user => {
+            this.user = user;
+        });
+
         this.sidebarService.isNowPlayingVisible().subscribe(nowPlaying => {
             this.nowPlayingVisible = nowPlaying;
         });
 
-        this.queueService.getCurrentTrack().subscribe(trackId => {
+        this.queueService.getCurrentTrackId().subscribe(trackId => {
             this.track = this.trackService.getTrackById(trackId);
         })
 
@@ -78,6 +98,18 @@ export class NowplayingsidebarComponent {
         this.playlistService.getPlayingPlaylistId().subscribe((playlist) => {
             this.playlist = this.playlistService.getPlaylistById(playlist)
         })
+    }
+
+    toggleLikedSongs(trackId: string) {
+        if (this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId)) {
+            this.playlistService.removeFromPlaylist(this.user.lovedPlaylistId, trackId);
+            return;
+        }
+        this.playlistService.addToPlaylist(this.user.lovedPlaylistId, trackId);
+    }
+
+    getLikedSongsState(trackId: string) {
+        return this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId);
     }
 
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;

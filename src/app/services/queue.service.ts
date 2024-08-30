@@ -1,4 +1,5 @@
 import { BehaviorSubject, Observable, ObservableLike } from "rxjs";
+import { LocalStorageService } from "./localstorage.service";
 
 export class QueueService {
 
@@ -33,7 +34,7 @@ export class QueueService {
         this.setTracks();
     }
 
-    getCurrentTrack(): Observable<string> {
+    getCurrentTrackId(): Observable<string> {
         this.setTracks();
         return this.currentPlayingTrack.asObservable();
     }
@@ -66,7 +67,7 @@ export class QueueService {
     }
 
     private setTracks(index: number = this.currentIndex) {
-        this.currentPlayingTrack.next(this.tracks[index])
+        this.currentPlayingTrack.next(this.tracks[index]);
         this.nextPlayingTrack.next(this.tracks[(this.currentIndex + 1) % this.tracks.length])
     }
 
@@ -91,14 +92,14 @@ export class QueueService {
             console.error("index out of range.");
             return;
         }
+        
         this.tracks.splice(index, 0, track);
-
-        //update tracks
-        this.setTracks();
 
         if (index <= this.currentIndex) {
             this.currentIndex++;
         }
-        console.log(this.getQueue())
+        
+        //update tracks
+        this.setTracks();
     }
 }

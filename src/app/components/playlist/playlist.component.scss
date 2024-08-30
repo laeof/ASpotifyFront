@@ -178,6 +178,8 @@
 
                 tbody {
                     tr {
+                        font-weight: 400;
+                        letter-spacing: .2px;
                         padding-bottom: 5px;
                         padding-top: 5px;
                         display: flex;
@@ -281,7 +283,7 @@
                                 cursor: pointer;
 
                                 .svg {
-                                    fill: rgba(255, 255, 255, 0.8);
+                                    fill: rgba(255, 255, 255, 0.3);
                                 }
                             }
 

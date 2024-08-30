@@ -10,13 +10,13 @@ import { ArtistService } from '../../services/artist.service';
 import { AlbumService } from '../../services/album.service';
 import { CommonModule } from '@angular/common';
 import { AudioService } from '../../services/audio.service';
-import { UrlService } from '../../services/url.service';
 import { Subscription } from 'rxjs';
 import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { ContextMenuService } from '../../services/context-menu.service';
+import { LocalStorageService } from '../../services/localstorage.service';
 
 @Component({
     selector: 'app-playlist',
@@ -28,14 +28,25 @@ import { ContextMenuService } from '../../services/context-menu.service';
     styleUrl: './playlist.component.scss'
 })
 export class PlaylistComponent implements OnDestroy {
-    user: IUser;
+    private user: IUser = {
+        Id: '',
+        UserName: '',
+        FirstName: null,
+        LastName: null,
+        Email: '',
+        lovedPlaylistId: '',
+        Image: '',
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
+        Playlists: []
+    };
     toggledContextMenu: boolean = false;
     @ViewChild('imageElement', { static: false }) imageElement!: ElementRef;
 
     //active
     playlist: IPlaylist = {
         Id: '',
-        UserId: '',
+        AuthorId: '',
         Image: '',
         Name: '',
         Type: PlaylistType.Playlist,
@@ -44,7 +55,7 @@ export class PlaylistComponent implements OnDestroy {
     //playing
     currentPlaylist: IPlaylist = {
         Id: '',
-        UserId: '',
+        AuthorId: '',
         Image: '',
         Name: '',
         Type: PlaylistType.Playlist,
@@ -77,9 +88,12 @@ export class PlaylistComponent implements OnDestroy {
         private queueService: QueueService,
         private trackService: TrackService,
         private contextMenuService: ContextMenuService,
-        private route: ActivatedRoute,
+        private route: ActivatedRoute
     ) {
-        this.user = this.userService.getCurrentUserInfo();
+
+        this.userService.getCurrentUserInfo().subscribe(user => {
+            this.user = user;
+        });
 
         this.sub = this.route.paramMap.subscribe(params => {
             let id = params.get('id') || "";
@@ -95,10 +109,8 @@ export class PlaylistComponent implements OnDestroy {
             this.currentPlaylist = this.playlistService.getPlaylistById(playlist)
         })
 
-        this.queueService.getCurrentTrack().subscribe((trackId) => {
-            if (this.playlist.Id == this.currentPlaylist.Id) {
-                this.trackId = trackId;
-            }
+        this.queueService.getCurrentTrackId().subscribe((trackId) => {
+            this.trackId = trackId;
         });
 
         this.audioService.isTrackPaused().subscribe((ispaused) => {
@@ -158,6 +170,9 @@ export class PlaylistComponent implements OnDestroy {
     toggleAudio(item: string) {
         this.trackId = item;
         this.playerService.toggleAudio(item, this.playlist.Id)
+        console.log("tracK: " + item)
+        console.log("playing: " + this.currentPlaylist.Id)
+        console.log("activepl: " + this.playlist.Id)
     }
 
     toggleContextMenu() {
@@ -170,6 +185,10 @@ export class PlaylistComponent implements OnDestroy {
 
     getArtistName(id: string) {
         return this.artistService.getArtistNameById(id);
+    }
+
+    getPlaylistType(type: PlaylistType = this.playlist.Type) {
+        return this.playlistService.getPlaylistType(type);
     }
 
     extractColor() {

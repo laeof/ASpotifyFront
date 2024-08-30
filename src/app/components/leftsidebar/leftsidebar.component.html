@@ -34,22 +34,11 @@
                             {{item.Name}}
                         </p>
                         <p class="subtitle">
-                            Плейліст - {{item.TrackIds.length}} треки
+                            {{getPlaylistType(item.Type)}} - {{item.TrackIds.length}} треки
                         </p>
                     </div>
                 </div>
                 <div class="wrap-playing" [ngClass]="{'playing': isPlaying(item.Id)}">
-                    <!-- <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
-                        xmlns:svgjs="http://svgjs.com/svgjs" width="50" height="50" x="0" y="0" viewBox="0 0 256 256"
-                        style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
-                        <g>
-                            <g fill="#ff0039">
-                                <path
-                                    d="M69.33 149.82a6 6 0 0 1-6-6v-31.64a6 6 0 0 1 12 0v31.64a6 6 0 0 1-6 6zM96 161.11a6 6 0 0 1-6-6v-54.22a6 6 0 1 1 12 0v54.22a6 6 0 0 1-6 6zM128 178.82a6 6 0 0 1-6-6V83.18a6 6 0 0 1 12 0v89.64a6 6 0 0 1-6 6zM160 165.64a6 6 0 0 1-6-6V96.36a6 6 0 0 1 12 0v63.28a6 6 0 0 1-6 6zM186.67 156.41a6 6 0 0 1-6-6v-44.82a6 6 0 0 1 12 0v44.82a6 6 0 0 1-6 6z"
-                                    fill="#fff" class="svg"></path>
-                            </g>
-                        </g>
-                    </svg> -->
                     <div class="boxContainer">
                         <div class="box box1" [ngClass]="{'pause': isPaused}"></div>
                         <div class="box box2" [ngClass]="{'pause': isPaused}"></div>

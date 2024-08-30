@@ -12,6 +12,7 @@ import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
+import { LocalStorageService } from '../../services/localstorage.service';
 
 @Component({
     selector: 'app-footer',
@@ -33,7 +34,7 @@ export class FooterComponent {
     };
     playlist: IPlaylist = {
         Id: '',
-        UserId: '',
+        AuthorId: '',
         Image: '',
         Name: '',
         Type: PlaylistType.Playlist,
@@ -46,7 +47,18 @@ export class FooterComponent {
     random: boolean = false;
     repeat: boolean = false;
 
-    user: IUser;
+    private user: IUser = {
+        Id: '',
+        UserName: '',
+        FirstName: null,
+        LastName: null,
+        Email: '',
+        lovedPlaylistId: '',
+        Image: '',
+        latestPlayingPlaylist: '',
+        latestPlayingTrack: '',
+        Playlists: []
+    };
 
     constructor(private artistService: ArtistService,
         private audioService: AudioService,
@@ -55,11 +67,32 @@ export class FooterComponent {
         private playlistService: PlaylistService,
         private queueService: QueueService,
         private playerService: PlayerService,
-        private userService: UserService
+        private userService: UserService,
+        private localStorageService: LocalStorageService
     ) {
-        this.user = this.userService.getCurrentUserInfo();
+        this.userService.getCurrentUserInfo().subscribe(user => {
+            this.user = user;
+        });
+        /*
+        todo:
+            save latest data to user
+        */
+        let latestPlayingPlaylist = this.localStorageService.getLatestPlaylistId() ?? this.user.latestPlayingPlaylist;
+        let latestPlayingSong = this.localStorageService.getLatestSongId() ?? this.user.latestPlayingTrack;
+        let latestSongTrackPosition = this.localStorageService.getLatestSongTrackPosition() ?? 0;
 
-        this.queueService.getCurrentTrack().subscribe(track => {
+        console.log("latest song: " + latestPlayingSong)
+        console.log("latest playlist: " + latestPlayingPlaylist)
+
+        if (latestPlayingSong != null && latestPlayingPlaylist != null) {
+            this.playlistService.setPlayingPlaylistId(latestPlayingPlaylist)
+            this.queueService.setQueue(this.playlistService.getPlaylistById(latestPlayingPlaylist).TrackIds)
+            this.queueService.setCurrentTrack(latestPlayingSong)
+            this.audioService.setTrackPosition(latestSongTrackPosition)
+            this.audioService.setTrackPause();
+        }
+
+        this.queueService.getCurrentTrackId().subscribe(track => {
             this.track = this.trackService.getTrackById(track);
         });
 
@@ -81,12 +114,12 @@ export class FooterComponent {
 
         this.sidebarService.isNowPlayingVisible().subscribe(visible => {
             this.toggledNowPlaying = visible;
-        }) 
+        })
 
         this.playerService.getRandomState().subscribe(random => {
             this.random = random;
         })
-        
+
         this.playerService.getRepeatState().subscribe(repeat => {
             this.repeat = repeat
         })
@@ -121,7 +154,7 @@ export class FooterComponent {
     }
 
     toggleAudio() {
-        this.playerService.toggleAudio(this.track.Id, this.playlist.Id);
+        this.playerService.toggleAudio(this.track.Id, this.playlist.Id, true);
     }
 
     toggleRandom(): any {

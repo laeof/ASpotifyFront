@@ -21,7 +21,7 @@ export class PlayerService {
         private trackService: TrackService,
         private playlistService: PlaylistService,
     ) {
-        this.queueService.getCurrentTrack().subscribe(trackId => {
+        this.queueService.getCurrentTrackId().subscribe(trackId => {
             this.nowPlayingTrackId = trackId;
         })
 
@@ -44,20 +44,21 @@ export class PlayerService {
                 this.nowPlayingTrackId));
     }
 
-    toggleAudio(trackId: string, playlistId: string) {
+    toggleAudio(trackId: string, playlistId: string, lockPlaylistCheck: boolean = false) {
         if (this.nowPlayingPlaylistId != playlistId) {
             this.queueService.setQueue(
-                this.playlistService.getPlaylistById(playlistId).TrackIds);
+                this.playlistService.getPlaylistById(
+                    playlistId).TrackIds)
         }
 
         this.audioService.toggleAudio(
             this.trackService.getTrackById(
                 trackId),
             this.playlistService.getPlaylistById(
-                this.nowPlayingPlaylistId));
+                this.nowPlayingPlaylistId), lockPlaylistCheck);
 
         if (this.nowPlayingPlaylistId != playlistId)
-            this.setNowPlayingPlaylistId(playlistId);
+            this.playlistService.setPlayingPlaylistId(playlistId)
     }
 
     toggleRandom() {
@@ -90,9 +91,5 @@ export class PlayerService {
 
     getVolume(): Observable<number> {
         return this.audioService.getVolume();
-    }
-
-    setNowPlayingPlaylistId(playlistId: string) {
-        this.playlistService.setPlayingPlaylistId(playlistId);
     }
 }

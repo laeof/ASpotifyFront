@@ -2,7 +2,7 @@ import { ITrack } from './track';
 
 export interface IPlaylist {
     Id: string,
-    UserId: string,
+    AuthorId: string,
     Image: string,
     Name: string,
     Type: PlaylistType,
