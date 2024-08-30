@@ -13,7 +13,8 @@
         </div>
     </div>
     <div class="tracks">
-        <div class="actions" [ngClass]="{'playing': currentPlaylist.Id === playlist.Id && !paused, 'paused': paused}" (contextmenu)="onPlaylistClick($event)">
+        <div class="actions" [ngClass]="{'playing': currentPlaylist.Id === playlist.Id && !paused, 'paused': paused}"
+            (contextmenu)="onPlaylistClick($event)">
             <span class="toggleplay" id="play" (click)="toggleAudio(getTrackForPlay())">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                     xmlns:svgjs="http://svgjs.com/svgjs" width="20" height="20" x="0" y="0"
@@ -125,15 +126,16 @@
                         <td class="date">
                             {{getTrackById(item).Date.toLocaleDateString()}}
                         </td>
-                        <td class="like" (click)="toggleLikedSongs(item)" [ngClass]="{'isLoved': getLikedSongsState(item)}">
-                            <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
-                                xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs"
-                                width="25" height="25" x="0" y="0" viewBox="0 0 512.001 512"
-                                style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
+                        <td class="like" (click)="toggleLikedSongs(item)"
+                            [ngClass]="{'isLoved': getLikedSongsState(item)}">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" x="0"
+                                y="0" viewBox="0 0 512.001 512.001" style="enable-background:new 0 0 512 512"
+                                xml:space="preserve" class="">
                                 <g>
                                     <path
-                                        d="M256 455.516c-7.29 0-14.316-2.641-19.793-7.438-20.684-18.086-40.625-35.082-58.219-50.074l-.09-.078c-51.582-43.957-96.125-81.918-127.117-119.313C16.137 236.81 0 197.172 0 153.871c0-42.07 14.426-80.883 40.617-109.293C67.121 15.832 103.488 0 143.031 0c29.555 0 56.621 9.344 80.446 27.77C235.5 37.07 246.398 48.453 256 61.73c9.605-13.277 20.5-24.66 32.527-33.96C312.352 9.344 339.418 0 368.973 0c39.539 0 75.91 15.832 102.414 44.578C497.578 72.988 512 111.801 512 153.871c0 43.3-16.133 82.938-50.777 124.738-30.993 37.399-75.532 75.356-127.106 119.309-17.625 15.016-37.597 32.039-58.328 50.168a30.046 30.046 0 0 1-19.789 7.43zM143.031 29.992c-31.066 0-59.605 12.399-80.367 34.914-21.07 22.856-32.676 54.45-32.676 88.965 0 36.418 13.535 68.988 43.883 105.606 29.332 35.394 72.961 72.574 123.477 115.625l.093.078c17.66 15.05 37.68 32.113 58.516 50.332 20.961-18.254 41.012-35.344 58.707-50.418 50.512-43.051 94.137-80.223 123.469-115.617 30.344-36.618 43.879-69.188 43.879-105.606 0-34.516-11.606-66.11-32.676-88.965-20.758-22.515-49.3-34.914-80.363-34.914-22.758 0-43.653 7.235-62.102 21.5-16.441 12.719-27.894 28.797-34.61 40.047-3.452 5.785-9.53 9.238-16.261 9.238s-12.809-3.453-16.262-9.238c-6.71-11.25-18.164-27.328-34.61-40.047-18.448-14.265-39.343-21.5-62.097-21.5zm0 0"
-                                        fill="#fff" data-original="#000000" class="svg"></path>
+                                        d="M256.001 477.407c-2.59 0-5.179-.669-7.499-2.009-2.52-1.454-62.391-36.216-123.121-88.594-35.994-31.043-64.726-61.833-85.396-91.513C13.237 256.885-.214 219.943.003 185.49c.254-40.09 14.613-77.792 40.435-106.162 26.258-28.848 61.3-44.734 98.673-44.734 47.897 0 91.688 26.83 116.891 69.332 25.203-42.501 68.994-69.332 116.891-69.332 35.308 0 68.995 14.334 94.859 40.362 28.384 28.563 44.511 68.921 44.247 110.724-.218 34.393-13.921 71.279-40.728 109.632-20.734 29.665-49.426 60.441-85.279 91.475-60.508 52.373-119.949 87.134-122.45 88.588a15.008 15.008 0 0 1-7.541 2.032z"
+                                        fill="#000000" opacity="1" data-original="#000000" class="svg"></path>
                                 </g>
                             </svg>
                         </td>
