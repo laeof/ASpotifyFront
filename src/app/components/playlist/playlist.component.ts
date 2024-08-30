@@ -10,7 +10,6 @@ import { ArtistService } from '../../services/artist.service';
 import { AlbumService } from '../../services/album.service';
 import { CommonModule } from '@angular/common';
 import { AudioService } from '../../services/audio.service';
-import { UrlService } from '../../services/url.service';
 import { Subscription } from 'rxjs';
 import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
@@ -35,7 +34,7 @@ export class PlaylistComponent implements OnDestroy {
     //active
     playlist: IPlaylist = {
         Id: '',
-        UserId: '',
+        AuthorId: '',
         Image: '',
         Name: '',
         Type: PlaylistType.Playlist,
@@ -44,7 +43,7 @@ export class PlaylistComponent implements OnDestroy {
     //playing
     currentPlaylist: IPlaylist = {
         Id: '',
-        UserId: '',
+        AuthorId: '',
         Image: '',
         Name: '',
         Type: PlaylistType.Playlist,
@@ -170,6 +169,10 @@ export class PlaylistComponent implements OnDestroy {
 
     getArtistName(id: string) {
         return this.artistService.getArtistNameById(id);
+    }
+
+    getPlaylistType() {
+        return this.playlistService.getPlaylistType(this.playlist);
     }
 
     extractColor() {

@@ -104,13 +104,20 @@
                 .wrap-svg {
                     padding: 5px;
 
-                    &:hover {
+                    .svg {
                         cursor: pointer;
 
-                        path {
+                        &:hover {
                             fill: rgba(255, 255, 255, 1);
+
+                        }
+
+                        &.isLoved {
+                            fill: #D66EDE
                         }
                     }
+
+
                 }
             }
         }

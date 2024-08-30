@@ -94,16 +94,11 @@ export class QueueService {
         
         this.tracks.splice(index, 0, track);
 
-        if(index == 0) {
-            this.currentIndex += 1;
-        }
-
-        //update tracks
-        this.setTracks();
-
         if (index <= this.currentIndex) {
             this.currentIndex++;
         }
-        console.log(this.getQueue())
+        
+        //update tracks
+        this.setTracks();
     }
 }

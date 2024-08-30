@@ -6,9 +6,9 @@
                 <canvas #canvas style="display: none;"></canvas>
             </div>
             <div class="descr">
-                <p class="type">Плейліст</p>
+                <p class="type">{{getPlaylistType()}}</p>
                 <h2 class="title">{{playlist.Name}}</h2>
-                <p class="author">{{user.UserName}} - {{playlist.TrackIds.length}} треки</p>
+                <p class="author">{{getArtistName(playlist.AuthorId)}} - {{playlist.TrackIds.length}} tracks</p>
             </div>
         </div>
     </div>

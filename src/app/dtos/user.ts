@@ -6,4 +6,5 @@ export interface IUser {
     Email: string,
     lovedPlaylistId: string;
     Image: string,
+    Playlists: string[]
 }

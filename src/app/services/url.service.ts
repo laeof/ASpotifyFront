@@ -34,8 +34,6 @@ export class UrlService {
         if (route == this.backroutes[this.backroutes.length - 1])
             return;
 
-        console.log(this.lastroute)
-
         this.backroutes.push(route);
         this.nextroutes = [];
         this.nextRoute.next(false);

@@ -1,15 +1,16 @@
 import { BehaviorSubject, Observable } from "rxjs";
-import { PLAYLISTS } from "../data/data";
+import { PLAYLISTS, USERS } from "../data/data";
 import { IPlaylist, PlaylistType } from "../dtos/playlist";
 import { QueueService } from "./queue.service";
 import { Injectable } from "@angular/core";
+import { IUser } from "../dtos/user";
+import { UserService } from "./user.service";
 
 @Injectable({
     providedIn: 'root'
 })
 
 export class PlaylistService {
-
     private currentPlaylistPlayingId = new BehaviorSubject<string>("");
     private activePlaylistId = new BehaviorSubject<string>("");
 
@@ -17,14 +18,16 @@ export class PlaylistService {
 
     private playlist: IPlaylist = {
         Id: "",
-        UserId: "",
+        AuthorId: "",
         Image: "",
         Name: "",
         Type: PlaylistType.Playlist,
         TrackIds: []
     }
 
-    constructor(private queueService: QueueService) {
+    constructor(private queueService: QueueService,
+        private userService: UserService
+    ) {
 
     }
 
@@ -49,8 +52,9 @@ export class PlaylistService {
         return this.getPlaylistById(playlistId).TrackIds.findIndex(id => id == trackId) != -1;
     }
 
-    getAllPlaylistsUserId(id: string): IPlaylist[] {
-        return this.playlists.filter(playlist => playlist.UserId === id);
+    getAllPlaylistsUserId(id: string): string[] {
+        // return this.playlists.filter(playlist => playlist.AuthorId === id);
+        return this.userService.getUserInfoById(id).Playlists;
     }
 
     createNewPlaylist(playlist: IPlaylist) {
@@ -71,5 +75,18 @@ export class PlaylistService {
 
     getPlayingPlaylistId(): Observable<string> {
         return this.currentPlaylistPlayingId.asObservable();
+    }
+
+    getPlaylistType(playlist: IPlaylist): string {
+        switch (playlist.Type) {
+            case 0:
+                return 'Playlist';
+            case 1:
+                return 'Album';
+            case 2:
+                return 'Single'
+        }
+
+        return ''
     }
 }

@@ -196,11 +196,11 @@ export const TRACKS: ITrack[] = [
 ];
 
 export const PLAYLISTS: IPlaylist[] = [
-    { Id: "1", UserId: '1', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
-    { Id: "2", UserId: '1', Image: "/assets/imgs/webp/apfs.webp", Name: "Опианариум", Type: 1, TrackIds: TRACKS.slice(0, 8).map(track => track.Id) },
-    { Id: "3", UserId: '1', Image: "/assets/imgs/loveaddiction.jpg", Name: "Любовь, аддикция и марафоны", Type: 1, TrackIds: TRACKS.slice(8, 24).map(track => track.Id) },
-    { Id: "4", UserId: '2', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
-    { Id: "5", UserId: '3', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
+    { Id: "1", AuthorId: '1', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
+    { Id: "2", AuthorId: '2', Image: "/assets/imgs/webp/apfs.webp", Name: "Опианариум", Type: 1, TrackIds: TRACKS.slice(0, 8).map(track => track.Id) },
+    { Id: "3", AuthorId: '3', Image: "/assets/imgs/loveaddiction.jpg", Name: "Любовь, аддикция и марафоны", Type: 1, TrackIds: TRACKS.slice(8, 24).map(track => track.Id) },
+    { Id: "4", AuthorId: '2', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
+    { Id: "5", AuthorId: '3', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
 
 ];
 
@@ -212,7 +212,8 @@ export const USERS: IUser[] = [
         Image: '/assets/imgs/bg.png',
         lovedPlaylistId: '1',
         FirstName: null,
-        LastName: null
+        LastName: null,
+        Playlists: PLAYLISTS.slice(0, 3).map(playlist => playlist.Id), 
     },
     {
         Id: "2",
@@ -221,7 +222,8 @@ export const USERS: IUser[] = [
         Image: '/assets/imgs/image.png',
         lovedPlaylistId: '4',
         FirstName: null,
-        LastName: null
+        LastName: null,
+        Playlists: PLAYLISTS.slice(3, 4).map(playlist => playlist.Id), 
     },
     {
         Id: "3",
@@ -230,6 +232,7 @@ export const USERS: IUser[] = [
         Image: '/assets/imgs/image.png',
         lovedPlaylistId: '5',
         FirstName: null,
-        LastName: null
+        LastName: null,
+        Playlists: PLAYLISTS.slice(4, 5).map(playlist => playlist.Id), 
     }
 ];

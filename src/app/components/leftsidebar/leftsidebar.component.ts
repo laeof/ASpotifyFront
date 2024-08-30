@@ -19,7 +19,7 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
     styleUrl: './leftsidebar.component.scss'
 })
 export class LeftsidebarComponent {
-    items: IPlaylist[];
+    items: IPlaylist[] = [];
     user: IUser | undefined;
     isPaused: boolean = false;
     activeId: string | null = null;
@@ -40,7 +40,10 @@ export class LeftsidebarComponent {
             this.isPaused = pause
         })
         this.user = this.userService.getCurrentUserInfo();
-        this.items = playlistService.getAllPlaylistsUserId(this.user.Id);
+
+        playlistService.getAllPlaylistsUserId(this.user.Id).map(playlist => {
+            this.items.push(this.playlistService.getPlaylistById(playlist))
+        });
     }
 
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
@@ -75,13 +78,13 @@ export class LeftsidebarComponent {
         var id = this.items.length + 1;
         var newPlaylist: IPlaylist = {
             Id: id.toString(),
-            UserId: this.user?.Id || "",
+            AuthorId: this.user?.Id || "",
             Image: '../assets/imgs/image.png',
             Name: 'Playlist ' + id,
             Type: PlaylistType.Playlist,
             TrackIds: []
         }
-        this.items.push(newPlaylist);
+        //this.items.push(this.playlistService.getPlaylistById(newPlaylist));
         this.playlistService.createNewPlaylist(newPlaylist);
     }
 }

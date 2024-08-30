@@ -33,7 +33,7 @@ export class FooterComponent {
     };
     playlist: IPlaylist = {
         Id: '',
-        UserId: '',
+        AuthorId: '',
         Image: '',
         Name: '',
         Type: PlaylistType.Playlist,

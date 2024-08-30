@@ -25,7 +25,9 @@ export class HomeComponent {
         private urlService: UrlService
     ) {
         this.user = this.userService.getCurrentUserInfo();
-        this.playlists = this.playlistService.getAllPlaylistsUserId(this.user.Id);
+        this.playlistService.getAllPlaylistsUserId(this.user.Id).map(playlist => {
+            this.playlists.push(this.playlistService.getPlaylistById(playlist))
+        });
     }
 
     redirectToPlaylist(id: string) {

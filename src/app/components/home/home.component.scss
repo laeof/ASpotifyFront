@@ -18,6 +18,7 @@
     padding-top: 40px;
     background: linear-gradient(180deg, var(--custom-bg-color, rgb(40, 40, 40)) 0%, rgb(40, 40, 40) 40%);
     transition: background-color 0.3s;
+    padding-left: 10px;
 
     &::-webkit-scrollbar {
         background: transparent;
@@ -31,8 +32,6 @@
     .header {
         .badges {
             display: flex;
-
-            margin-left: 5px;
 
             .badge {
                 padding: 7px 25px;
@@ -53,16 +52,14 @@
 
         .recentplaylists {
             margin-top: 30px;
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 350px);
+            gap: 10px;
 
             .playlist-card-wrapper {
-                padding: 5px 5px;
-
                 .playlist-card {
                     display: flex;
                     align-items: center;
-                    width: 350px;
                     height: 70px;
                     @include background();
 
