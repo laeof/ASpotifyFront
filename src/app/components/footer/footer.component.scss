@@ -7,11 +7,9 @@
         display: grid;
     }
 
-    padding-top: 10px;
+    padding-top: 5px;
     height: 60px;
     display: none;
-    align-items: center;
-    justify-content: space-between;
     grid-template-columns: 350px 1fr 350px;
 
     svg {
