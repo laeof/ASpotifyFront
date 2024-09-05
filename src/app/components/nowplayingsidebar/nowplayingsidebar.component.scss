@@ -13,6 +13,15 @@
         flex: 1;
         overflow-y: auto;
 
+        &::-webkit-scrollbar {
+            background: transparent;
+            width: 12px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: rgba(233, 250, 255, 0.1);
+        }
+
         .head {
             display: flex;
             justify-content: space-between;
