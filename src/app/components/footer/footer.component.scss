@@ -4,18 +4,15 @@
     user-select: none;
 
     &.visible {
-        display: flex;
+        display: grid;
     }
 
-    // visibility: hidden;
-    // visibility: visible;
-
-    padding-top: 30px;
-    margin-top: auto;
+    padding-top: 10px;
     height: 60px;
     display: none;
     align-items: center;
     justify-content: space-between;
+    grid-template-columns: 350px 1fr 350px;
 
     svg {
         cursor: pointer;
@@ -68,7 +65,6 @@
         align-items: center;
         justify-content: space-between;
         padding-left: 10px;
-        width: 350px;
 
         .song {
             display: flex;
@@ -186,9 +182,9 @@
     .songfeatures {
         padding-right: 20px;
         display: flex;
+        justify-content: flex-end;
 
         .features {
-            width: 350px;
             display: flex;
             justify-content: flex-end;
             align-items: center;
