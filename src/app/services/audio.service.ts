@@ -95,7 +95,7 @@ export class AudioService {
 
     playAudio(item: ITrack) {
         this.isPaused.next(false);
-        this.streamAudio(item.Url).subscribe(blob => {
+        this.streamAudioFromServer(item.Url).subscribe(blob => {
             this.audio.src = URL.createObjectURL(blob);
             this.audio.volume = this.volume.value;
             this.audio.play();
