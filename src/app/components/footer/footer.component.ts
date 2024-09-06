@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { ITrack } from '../../dtos/track';
 import { ArtistService } from '../../services/artist.service';
 import { AudioService } from '../../services/audio.service';
-import { map, Observable } from 'rxjs';
 import { IPlaylist, PlaylistType } from '../../dtos/playlist';
 import { CommonModule } from '@angular/common';
 import { PlaylistService } from '../../services/playlist.service';
@@ -13,6 +12,7 @@ import { PlayerService } from '../../services/player.service';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
 import { LocalStorageService } from '../../services/localstorage.service';
+import { UrlService } from '../../services/url.service';
 
 @Component({
     selector: 'app-footer',
@@ -68,7 +68,8 @@ export class FooterComponent {
         private queueService: QueueService,
         private playerService: PlayerService,
         private userService: UserService,
-        private localStorageService: LocalStorageService
+        private localStorageService: LocalStorageService,
+        private urlService: UrlService
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.user = user;
@@ -123,6 +124,12 @@ export class FooterComponent {
         this.playerService.getRepeatState().subscribe(repeat => {
             this.repeat = repeat
         })
+    }
+
+    toggleLyrics() {
+        let route = "/lyrics";
+
+        this.urlService.redirect(route);
     }
 
     toggleLikedSongs(trackId: string) {

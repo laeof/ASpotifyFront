@@ -3,6 +3,7 @@ import { MenuItem } from "../dtos/menuItem";
 import { QueueService } from "./queue.service";
 import { PlaylistService } from "./playlist.service";
 import { BehaviorSubject } from "rxjs";
+import { UrlService } from "./url.service";
 
 @Injectable({
     providedIn: 'root'
@@ -12,6 +13,7 @@ export class ContextMenuService {
 
     constructor(private queueService: QueueService,
         private playlistService: PlaylistService,
+        private urlService: UrlService
     ) {
 
     }
@@ -43,9 +45,26 @@ export class ContextMenuService {
 
     getProfileActions(): MenuItem[] {
         return [
-            { svg: '', label: 'Profile func 1', action: () => console.log('Action 1 clicked') },
-            { svg: '', label: 'Profile func 2', action: () => console.log('Action 2 clicked') },
-            { svg: '', label: 'Profile func 3', action: () => console.log('Action 3 clicked') },
+            {
+                svg: '',
+                label: 'Account',
+                action: () => this.urlService.redirect('/account')
+            },
+            {
+                svg: '',
+                label: 'Show profile',
+                action: () => this.urlService.redirect('/profile')
+            },
+            {
+                svg: '',
+                label: 'Artist settings',
+                action: () => this.urlService.redirect('/artist')
+            }, 
+            {
+                svg: '',
+                label: 'Log out',
+                action: () => console.log('Action 4 clicked')
+            },
         ];
     }
 

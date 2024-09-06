@@ -23,6 +23,11 @@ import { PlayerService } from './services/player.service';
 import { ContextMenuComponent } from './components/context-menu/context-menu.component';
 import { ContextMenuService } from './services/context-menu.service';
 import { LocalStorageService } from './services/localstorage.service';
+import { ProfileComponent } from './components/profile/profile.component';
+import { AccountComponent } from './components/account/account.component';
+import { ArtistsettingsComponent } from './components/artistsettings/artistsettings.component';
+import { LyricsComponent } from './components/lyrics/lyrics.component';
+import { QueueComponent } from './components/queue/queue.component';
 
 @Component({
     selector: 'app-root',
@@ -36,7 +41,13 @@ import { LocalStorageService } from './services/localstorage.service';
         CommonModule,
         NowplayingsidebarComponent,
         HomeComponent,
-        ContextMenuComponent
+        ContextMenuComponent,
+        ProfileComponent,
+        AccountComponent,
+        ArtistsettingsComponent,
+        LyricsComponent,
+        QueueComponent,
+        
     ],
     providers: [
         ColorService,
