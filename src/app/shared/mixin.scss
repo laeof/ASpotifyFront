@@ -11,6 +11,17 @@ $maincolor: #D66EDE;
     border-radius: 12px;
 }
 
+@mixin sidebar {
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    height: 100%;
+    @media screen and (max-width: 1400px) {
+        max-width: 300px;
+    }
+}
+
 @mixin slider {
     padding: 15px 0px;
 

@@ -3,6 +3,34 @@
     height: 100%;
     background-color: rgb(40, 40, 40);
     border-radius: 12px;
+    padding: 20px;
     position: relative;
     user-select: none;
+    display: grid;
+    .menu-group-account {
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: rgba(70, 70, 70, 0.4);
+        border-radius: 12px;
+        
+        .title {
+            font-size: 30px;
+            padding: 0 15px;
+            margin-bottom: 10px;
+        }
+
+        .menu-group {
+            display: grid;
+            grid-template-columns: 30px 1fr 20px;
+            padding: 15px 20px;
+            transition: background-color 0.3s;
+            border-radius: 12px;
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+            .menu-group-item {
+                align-items: center;
+            }
+        }
+    }
 }

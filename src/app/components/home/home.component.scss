@@ -15,7 +15,6 @@
     border-radius: 12px;
     position: relative;
     padding: 5px;
-    padding-top: 40px;
     background: linear-gradient(180deg, var(--custom-bg-color, rgb(40, 40, 40)) 0%, rgb(40, 40, 40) 40%);
     transition: background-color 0.3s;
     padding-left: 10px;
@@ -30,6 +29,7 @@
     }
 
     .header {
+        padding: 30px 5px;
         .badges {
             display: flex;
 

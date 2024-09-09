@@ -22,20 +22,18 @@
 
             &:hover {
                 .svg {
-
                     fill: $hovercolor;
                 }
             }
 
             &.isLoved {
                 .svg {
-                    fill: #D66EDE
+                    fill: #d66ede;
                 }
             }
         }
 
         .svg {
-
             fill: $backcolor;
 
             &.notRepeat {
@@ -86,7 +84,7 @@
             .name {
                 padding-left: 12px;
                 font-weight: 400;
-                letter-spacing: .2px;
+                letter-spacing: 0.2px;
 
                 .title {
                     font-size: 1rem;
@@ -198,5 +196,11 @@
                 }
             }
         }
+    }
+}
+
+@media screen and (max-width: 1400px) {
+    .footer {
+        grid-template-columns: 300px 1fr 300px;
     }
 }

@@ -1,0 +1,58 @@
+@import "../../shared/mixin.scss";
+
+.footer-wrap {
+    .wrap {
+        display: grid;
+        border-top: 1px solid rgb(80, 80, 80);
+        grid-template-columns: repeat(auto-fill, clamp(calc(100% / 5.5), 40vw, 120px));
+        gap: 10px;
+        row-gap: 30px;
+        margin-left: 10px;
+        padding: 40px 10px;
+
+        &.bot {
+            display: flex;
+            gap: 50px;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .column-title {
+                font-size: 18px;
+                font-weight: 500;
+            }
+
+            .column-item {
+                font-weight: 400;
+                width: 100%;
+                font-size: 16px;
+                color: $backcolor;
+
+                &:hover {
+                    cursor: pointer;
+                    color: $maincolor;
+                }
+            }
+        }
+
+        .column-social {
+            display: flex;
+            gap: 10px;
+            svg {
+                cursor: pointer;
+                path {
+                    fill: $backcolor;
+                }
+
+                &:hover {
+                    path {
+                        fill: $maincolor;
+                    }
+                }
+            }
+        }
+    }
+}

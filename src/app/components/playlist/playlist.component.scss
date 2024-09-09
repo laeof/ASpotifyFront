@@ -1,6 +1,6 @@
 .main-wrap {
-    overflow-y: auto;
     height: 100%;
+    overflow-y: auto;
     background-color: rgb(40, 40, 40);
     border-radius: 12px;
     position: relative;
@@ -24,11 +24,11 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
+        position: relative;
 
         .description {
             display: flex;
-            padding: 30px;
-            padding-bottom: 15px;
+            padding: 15px;
             align-items: center;
 
             .img {
@@ -61,15 +61,15 @@
                 }
 
                 .title {
-                    line-height: clamp(30px, 4vw, 70px);
-                    font-size: clamp(30px, 4vw, 70px);
+                    line-height: clamp(1.675rem, -0.9375rem + 4.1vw, 5rem);
+                    font-size: clamp(1.875rem, -0.9375rem + 4.5vw, 5rem);
                 }
             }
         }
     }
 
     .tracks {
-        height: calc(100% - 310px);
+        height: 100%;
         background: linear-gradient(180deg, var(--custom-bg-color) 0%, rgb(40, 40, 40) 40%);
         border-bottom-left-radius: 12px;
         border-bottom-right-radius: 12px;
@@ -77,13 +77,13 @@
         flex-direction: column;
         align-items: center;
         width: 100%;
+        min-width: 645px;
 
         .actions {
             width: 100%;
             display: flex;
             align-items: center;
-            padding-left: 40px;
-            padding-top: 15px;
+            padding: 0 20px 10px 20px;
 
             #pause {
                 display: none;
@@ -169,21 +169,21 @@
         }
 
         .track {
-            width: 95%;
-
+            width: calc(100% - 30px);
             .track-table {
-                margin-top: 10px;
+                margin: 10px 0px 30px 0px;
                 width: 100%;
 
                 tbody {
                     tr {
+                        gap: 5px;
                         font-weight: 400;
-                        letter-spacing: .2px;
+                        letter-spacing: 0.2px;
                         padding-bottom: 5px;
                         padding-top: 5px;
                         display: flex;
                         align-items: center;
-                        justify-content: space-around;
+                        justify-content: center;
 
                         &:first-child {
                             border-bottom: 1px solid rgb(90, 90, 90);
@@ -200,7 +200,7 @@
 
                         .tdname {
                             padding-left: 20px;
-
+                            min-width: 230px;
                             .name {
                                 padding-left: 12px;
 
@@ -224,8 +224,8 @@
                                 height: 50px;
 
                                 img {
-                                    width: 50px;
-                                    height: 50px;
+                                    min-width: 50px;
+                                    min-height: 50px;
                                 }
                             }
                         }
@@ -297,14 +297,19 @@
                             &.isLoved {
                                 svg {
                                     .svg {
-                                        fill: #D66EDE
+                                        fill: #d66ede;
                                     }
-                                }        
+                                }
                             }
                         }
 
                         .time {
                             max-width: 60px;
+                        }
+                        
+                        .album,
+                        .date {
+                            min-width: 100px;
                         }
 
                         &:hover {

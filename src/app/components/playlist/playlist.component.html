@@ -128,9 +128,9 @@
                         </td>
                         <td class="like" (click)="toggleLikedSongs(item)"
                             [ngClass]="{'isLoved': getLikedSongsState(item)}">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" x="0"
-                                y="0" viewBox="0 0 512.001 512.001" style="enable-background:new 0 0 512 512"
+                            <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" x="0" y="0"
+                                viewBox="0 0 512.001 512.001" style="enable-background:new 0 0 512 512"
                                 xml:space="preserve" class="">
                                 <g>
                                     <path
@@ -147,6 +147,8 @@
                 </tbody>
             </table>
         </div>
+        <app-footer-info style="width: 100%; padding: 0px 30px;"></app-footer-info>
     </div>
 </div>
+
 <app-context-menu #contextMenu></app-context-menu>

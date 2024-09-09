@@ -8,11 +8,12 @@ import { ITrack } from '../../dtos/track';
 import { AudioService } from '../../services/audio.service';
 import { UrlService } from '../../services/url.service';
 import { PlayerService } from '../../services/player.service';
+import { FooterInfoComponent } from "../footer-info/footer-info.component";
 
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [],
+    imports: [FooterInfoComponent],
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss'
 })

@@ -28,6 +28,8 @@ import { AccountComponent } from './components/account/account.component';
 import { ArtistsettingsComponent } from './components/artistsettings/artistsettings.component';
 import { LyricsComponent } from './components/lyrics/lyrics.component';
 import { QueueComponent } from './components/queue/queue.component';
+import { FooterInfoComponent } from './components/footer-info/footer-info.component';
+import { CreateComponent } from './components/create/create.component';
 
 @Component({
     selector: 'app-root',
@@ -47,7 +49,7 @@ import { QueueComponent } from './components/queue/queue.component';
         ArtistsettingsComponent,
         LyricsComponent,
         QueueComponent,
-        
+        CreateComponent
     ],
     providers: [
         ColorService,

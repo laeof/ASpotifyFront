@@ -17,13 +17,14 @@ import { PlayerService } from '../../services/player.service';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { ContextMenuService } from '../../services/context-menu.service';
 import { LocalStorageService } from '../../services/localstorage.service';
+import { FooterInfoComponent } from "../footer-info/footer-info.component";
 
 @Component({
     selector: 'app-playlist',
     standalone: true,
     imports: [CommonModule,
-        ContextMenuComponent
-    ],
+        ContextMenuComponent,
+        FooterInfoComponent],
     templateUrl: './playlist.component.html',
     styleUrl: './playlist.component.scss'
 })
