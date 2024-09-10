@@ -1,19 +1,14 @@
+@import "../../shared/mixin.scss";
+
 .main-wrap {
     height: 100%;
     overflow-y: auto;
-    background-color: rgb(40, 40, 40);
+    background-color: $main-background;
     border-radius: 12px;
     position: relative;
     user-select: none;
 
-    &::-webkit-scrollbar {
-        background: transparent;
-        width: 12px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        background-color: rgba(233, 250, 255, 0.1);
-    }
+    @include scroll-bar();
 
     .description-wrap {
         width: 100%;
@@ -52,6 +47,7 @@
                 flex-direction: column;
                 justify-content: flex-end;
                 height: 240px;
+
                 .type {
                     font-weight: 600;
                 }
@@ -70,7 +66,7 @@
 
     .tracks {
         height: 100%;
-        background: linear-gradient(180deg, var(--custom-bg-color) 0%, rgb(40, 40, 40) 40%);
+        background: linear-gradient(180deg, var(--custom-bg-color, $main-background) 0%, rgb(40, 40, 40) 40%);
         border-bottom-left-radius: 12px;
         border-bottom-right-radius: 12px;
         display: flex;
@@ -170,6 +166,7 @@
 
         .track {
             width: calc(100% - 30px);
+
             .track-table {
                 margin: 10px 0px 30px 0px;
                 width: 100%;
@@ -201,6 +198,7 @@
                         .tdname {
                             padding-left: 20px;
                             min-width: 230px;
+
                             .name {
                                 padding-left: 12px;
 
@@ -306,7 +304,7 @@
                         .time {
                             max-width: 60px;
                         }
-                        
+
                         .album,
                         .date {
                             min-width: 100px;

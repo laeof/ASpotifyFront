@@ -2,10 +2,12 @@
 
 .footer-wrap {
     .wrap {
-        display: grid;
+        // display: grid;
+        // grid-template-columns: repeat(auto-fill, clamp(calc(100% / 5.5), 40vw, 120px));
+        display: flex;
+        flex-wrap: wrap;
         border-top: 1px solid rgb(80, 80, 80);
-        grid-template-columns: repeat(auto-fill, clamp(calc(100% / 5.5), 40vw, 120px));
-        gap: 10px;
+        gap: 100px;
         row-gap: 30px;
         margin-left: 10px;
         padding: 40px 10px;
