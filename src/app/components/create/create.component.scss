@@ -1,0 +1,56 @@
+.main-wrap {
+    overflow-y: auto;
+    height: 100%;
+    background-color: rgb(40, 40, 40);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    user-select: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 700px);
+    gap: 20px;
+    .form-wrap {
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        .form {
+            .title {
+                font-size: 25px;
+            }
+
+            .text {
+                display: flex;
+                flex-direction: column;
+
+                .label-for {
+                    padding: 20px 20px 5px;
+                }
+
+                .input-text {
+                    outline: none;
+                    border: none;
+                    padding: 15px 20px;
+                    border-radius: 12px;
+                    font-size: 18px;
+                    font-weight: 400;
+                    background-color: rgba(40, 40, 40, 0.6);
+                    color: rgba(255, 255, 255, 0.8);
+                    &:focus {
+                        background-color: rgba(40, 40, 40, 1);
+                    }
+                }
+
+                .input-select {
+                    outline: none;
+                    border: none;
+                    padding: 15px 20px;
+                    border-radius: 12px;
+                    font-size: 18px;
+                    font-weight: 400;
+                    background-color: rgba(40, 40, 40, 0.6);
+                    color: rgba(255, 255, 255, 0.8);
+                }
+            }
+        }
+    }
+}
