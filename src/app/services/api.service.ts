@@ -1,11 +1,11 @@
 export class ApiService {
     private authApi: string = "";
     private playlistsApi: string = "";
-    private musicApi: string = "";
+    private mediaApi: string = "";
     constructor() {
         this.authApi = "";
         this.playlistsApi = "";
-        this.musicApi = "http://localhost:5283/Audio";
+        this.mediaApi = "http://localhost:5283/Audio/";
     }
 
     getAuthApi() {
@@ -17,6 +17,6 @@ export class ApiService {
     }
 
     getMusicApi() {
-        return this.musicApi;
+        return this.mediaApi;
     }
 }

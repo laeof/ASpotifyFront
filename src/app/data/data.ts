@@ -11,7 +11,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 188,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "devochkaapfs.mp3"
+        Path: "devochkaapfs.mp3"
     },
     {
         Id: "track6",
@@ -21,7 +21,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 192,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "opiatyapfs.mp3"
+        Path: "opiatyapfs.mp3"
     },
     {
         Id: "track7",
@@ -31,7 +31,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 122,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "sonniyapfs.mp3"
+        Path: "sonniyapfs.mp3"
     },
     {
         Id: "track8",
@@ -41,7 +41,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 161,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "afapfs.mp3"
+        Path: "afapfs.mp3"
     },
     {
         Id: "track9",
@@ -51,7 +51,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 158,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "pornoapfs.mp3"
+        Path: "pornoapfs.mp3"
     },
     {
         Id: "track10",
@@ -61,7 +61,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 166,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "metadonapfs.mp3"
+        Path: "metadonapfs.mp3"
     },
     {
         Id: "track11",
@@ -71,7 +71,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 102,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "tabletkiafps.mp3"
+        Path: "tabletkiafps.mp3"
     },
     {
         Id: "track12",
@@ -81,7 +81,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 110,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "davaypopravimsyaapfs.mp3"
+        Path: "davaypopravimsyaapfs.mp3"
     },
     {
         Id: "track13",
@@ -91,7 +91,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "3",
         Duration: 204,
         Image: "/assets/imgs/loveaddiction.jpg",
-        Url: "01. Демоны.mp3"
+        Path: "01. Демоны.mp3"
     },
     {
         Id: "track14",
@@ -101,7 +101,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "3",
         Duration: 209,
         Image: "/assets/imgs/loveaddiction.jpg",
-        Url: "02. Малышка рок-н-ролл.mp3"
+        Path: "02. Малышка рок-н-ролл.mp3"
     },
     {
         Id: "track15",
@@ -111,7 +111,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "3",
         Duration: 136,
         Image: "/assets/imgs/loveaddiction.jpg",
-        Url: "03. Про любовь.mp3"
+        Path: "03. Про любовь.mp3"
     },
     {
         Id: "track16",
@@ -121,7 +121,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 150,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "03 - Опианариум.mp3"
+        Path: "03 - Опианариум.mp3"
     },
     {
         Id: "track17",
@@ -131,7 +131,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 117,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "05 - Слепые.mp3"
+        Path: "05 - Слепые.mp3"
     },
     {
         Id: "track18",
@@ -141,7 +141,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 149,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "09 - Мам, я умираю.mp3"
+        Path: "09 - Мам, я умираю.mp3"
     },
     {
         Id: "track19",
@@ -151,7 +151,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 131,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "11 - Голая, красивая.mp3"
+        Path: "11 - Голая, красивая.mp3"
     },
     {
         Id: "track20",
@@ -161,7 +161,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 209,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "12 - Оргазм.mp3"
+        Path: "12 - Оргазм.mp3"
     },
     {
         Id: "track21",
@@ -171,7 +171,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 164,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "14 - Панацея.mp3"
+        Path: "14 - Панацея.mp3"
     },
     {
         Id: "track22",
@@ -181,7 +181,7 @@ export const TRACKS: ITrack[] = [
         AlbumId: "2",
         Duration: 237,
         Image: "../assets/imgs/webp/apfs.webp",
-        Url: "15 - Я некрасивый.mp3"
+        Path: "15 - Я некрасивый.mp3"
     },
     {
         Id: "track23",
@@ -191,14 +191,14 @@ export const TRACKS: ITrack[] = [
         AlbumId: "6",
         Duration: 210,
         Image: "../assets/imgs/webp/dogwaltz.webp",
-        Url: "01 - идите нахуй.mp3"
+        Path: "01 - идите нахуй.mp3"
     },
 ];
 
 export const PLAYLISTS: IPlaylist[] = [
     { Id: "1", AuthorId: '1', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
-    { Id: "2", AuthorId: '2', Image: "/assets/imgs/webp/apfs.webp", Name: "Опианариум", Type: 1, TrackIds: TRACKS.slice(0, 8).map(track => track.Id).concat(TRACKS.slice(11, 18).map(track => track.Id)) },
-    { Id: "3", AuthorId: '3', Image: "/assets/imgs/loveaddiction.jpg", Name: "Любовь, аддикция и марафоны", Type: 1, TrackIds: TRACKS.slice(8, 11).map(track => track.Id) },
+    { Id: "2", AuthorId: '1', Image: "/assets/imgs/webp/apfs.webp", Name: "Опианариум", Type: 1, TrackIds: TRACKS.slice(0, 8).map(track => track.Id).concat(TRACKS.slice(11, 18).map(track => track.Id)) },
+    { Id: "3", AuthorId: '1', Image: "/assets/imgs/loveaddiction.jpg", Name: "Любовь, аддикция и марафоны", Type: 1, TrackIds: TRACKS.slice(8, 11).map(track => track.Id) },
     { Id: "4", AuthorId: '2', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
     { Id: "5", AuthorId: '3', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
     { Id: "6", AuthorId: '2', Image: "/assets/imgs/webp/dogwaltz.webp", Name: "Собачий вальс", Type: 1, TrackIds: TRACKS.slice(18, 24).map(track => track.Id) },

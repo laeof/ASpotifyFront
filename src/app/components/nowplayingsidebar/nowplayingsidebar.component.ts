@@ -34,7 +34,7 @@ export class NowplayingsidebarComponent {
         Date: new Date,
         Duration: 0,
         Image: '',
-        Url: ''
+        Path: ''
     };
 
     nextTrack: ITrack = {
@@ -45,7 +45,7 @@ export class NowplayingsidebarComponent {
         Date: new Date,
         Duration: 0,
         Image: '',
-        Url: ''
+        Path: ''
     };
 
     playlist: IPlaylist = {

@@ -76,7 +76,7 @@ export class PlaylistComponent implements OnDestroy {
         AlbumId: '',
         Duration: 0,
         Image: '',
-        Url: ''
+        Path: ''
     };
 
     constructor(private colorService: ColorService,

@@ -11,7 +11,7 @@ export class TrackService {
         AlbumId: "",
         Duration: 0,
         Image: "",
-        Url: ""
+        Path: ""
     }
 
     getTracks() {

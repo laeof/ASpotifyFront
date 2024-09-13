@@ -30,6 +30,7 @@ import { LyricsComponent } from './components/lyrics/lyrics.component';
 import { QueueComponent } from './components/queue/queue.component';
 import { FooterInfoComponent } from './components/footer-info/footer-info.component';
 import { CreateComponent } from './components/create/create.component';
+import { MediaService } from './services/media.service';
 
 @Component({
     selector: 'app-root',
@@ -66,6 +67,7 @@ import { CreateComponent } from './components/create/create.component';
         PlayerService,
         ContextMenuService,
         LocalStorageService,
+        MediaService
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
@@ -80,7 +82,7 @@ export class AppComponent {
         Date: new Date,
         Duration: 0,
         Image: '',
-        Url: ''
+        Path: ''
     };
     constructor(private queueService: QueueService,
         private trackService: TrackService

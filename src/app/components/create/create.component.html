@@ -7,22 +7,77 @@
                 <input type="text" class="input-text" placeholder="Name">
             </div>
             <div class="text">
-                <label class="label-for">Type of playlist:</label>
-                <select class="input-select">
-                    <option value="0" class="input-select-item">Playlist</option>
-                    <option value="1" class="input-select-item">Album</option>
-                    <option value="2" class="input-select-item">Single</option>
-                </select>
+                <label class="label-for">Playlist type:</label>
+                <mat-form-field>
+                    <mat-select [value]="0">
+                        <mat-option [value]="0">Playlist</mat-option>
+                        <mat-option [value]="1">Album</mat-option>
+                        <mat-option [value]="2">Single</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="text" id="afteroptions">
+                <label class="label-for">Drag or paste image:</label>
+                <div class="file-container" [ngClass]="{'drag': dragImg}">
+                    <input type="file" (change)="getfile($event)" (dragenter)="dragFileImage()"
+                        (dragleave)="noDragFileImage()" (mouseleave)="noDragFileImage()" class="input-file" />
+                    <p class="drag-msg" [ngClass]="{'show': !dragImg}">Drag your file here</p>
+                </div>
+                @if (file) {
+                <p>File name: {{ file?.name }}</p>
+                <button (click)="imageFile()">Clear file</button><br>
+                <div class="text">
+                    <input type="submit" class="button" value="Submit">
+                </div>
+                }
             </div>
         </form>
     </div>
     <div class="form-wrap">
-        <form class="form">
-            <p class="title">Create new track</p>
+        <form class="form" enctype='multipart/form-data'>
+            <p class="title">Upload tracks</p>
             <div class="text">
+                <label class="label-for">Drag or paste your tracks:</label>
+                <div class="file-container" [ngClass]="{'drag': drag}">
+                    <input type="file" (change)="getfiles($event)" (dragenter)="dragFile()" (dragleave)="noDragFile()"
+                        (mouseleave)="noDragFile()" class="input-file" multiple />
+                    <p class="drag-msg" [ngClass]="{'show': !drag}">Drag your files here</p>
+                </div>
+                <p>Загружено файлов: {{ files.length }}</p>
+                <div *ngIf="files">
+                    @for (item of files; track item; let i = $index) {
+                    File name: {{item.name}}
+                    <button (click)="spliceFile(item, i)">Clear file</button><br>
+                    }
+                </div>
+            </div>
+            @if (files.length != 0) {
+            <div class="text">
+                <label class="label-for">Album:</label>
+                <mat-form-field>
+                    <mat-select [value]="0">
+                        @for (item of artist.albums; track item;) {
+                        <mat-option [value]="0">{{getPlaylistById(item)}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="text">
+                <input type="submit" class="button" value="Submit">
+            </div>
+            }
+        </form>
+    </div>
+    @if(tracks) {
+    @for(item of tracks; track item; let i = $index) {
+    <div class="form-wrap">
+        <form class="form">
+            <div class="text">
+                <label class="label-for">Track {{item.Name}}:</label>
                 <label class="label-for">Name:</label>
-                <input type="text" class="input-text" placeholder="Name">
+                <input type="text" class="input-text" value='{{item.Name}}' placeholder="Name">
             </div>
         </form>
     </div>
+    }}
 </div>
