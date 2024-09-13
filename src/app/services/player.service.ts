@@ -47,8 +47,8 @@ export class PlayerService {
     toggleAudio(trackId: string, playlistId: string, lockPlaylistCheck: boolean = false) {
         if (this.nowPlayingPlaylistId != playlistId) {
             this.queueService.setQueue(
-                this.playlistService.getPlaylistById(
-                    playlistId).TrackIds)
+                (this.playlistService.getPlaylistById(
+                    playlistId)).TrackIds)
         }
 
         this.audioService.toggleAudio(

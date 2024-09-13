@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { IPlaylist, PlaylistType } from '../../dtos/playlist';
 import { PlaylistService } from '../../services/playlist.service';
 import { UserService } from '../../services/user.service';
@@ -39,14 +39,10 @@ export class LeftsidebarComponent {
         private userService: UserService,
         private urlService: UrlService,
         private audioService: AudioService,
-        private contextMenuService: ContextMenuService
+        private contextMenuService: ContextMenuService,
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.user = user;
-            playlistService.getAllPlaylistsUserId(this.user.Id).map(playlist => {
-                if (!this.items.includes(this.playlistService.getPlaylistById(playlist)))
-                    this.items.push(this.playlistService.getPlaylistById(playlist))
-            });
         });
 
         this.playlistService.getActiveId().subscribe(id => {
@@ -61,10 +57,17 @@ export class LeftsidebarComponent {
             this.isPaused = pause
         });
 
+        this.playlistService.getAllMyPlaylists().subscribe((playlists: IPlaylist[]) => {
+            this.items = playlists;
+        })
     }
-    
+
     getPlaylistType(type: PlaylistType) {
         return this.playlistService.getPlaylistType(type);
+    }
+
+    getPlaylistLength(item: IPlaylist) {
+        return item.TrackIds?.length ?? 0;
     }
 
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
@@ -96,7 +99,7 @@ export class LeftsidebarComponent {
     }
 
     createNewPlaylist() {
-        this.playlistService.createNewPlaylist();
+        this.playlistService.createNewEmptyPlaylist();
         // this.items.push(this.playlistService.getPlaylistById());
     }
 }

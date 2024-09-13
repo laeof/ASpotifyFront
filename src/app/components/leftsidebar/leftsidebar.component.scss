@@ -27,6 +27,7 @@
             @include scroll-bar();
 
             .playlist {
+                min-width: 300px;
                 display: flex;
                 align-items: center;
                 padding: 10px 20px 10px 20px;
@@ -105,6 +106,7 @@
                     display: none;
                     align-items: center;
                     justify-content: center;
+                    padding-left: 15px;
 
                     svg {
                         .svg {
@@ -174,7 +176,7 @@
                         border-radius: 8px;
 
                         &.pause {
-                            animation-iteration-count: 0; 
+                            animation-iteration-count: 0;
                         }
                     }
 
@@ -201,6 +203,12 @@
                     &.playing {
                         display: flex;
                     }
+                }
+            }
+
+            @media screen and (max-width: 1400px) {
+                .playlist {
+                    min-width: 200px;
                 }
             }
         }

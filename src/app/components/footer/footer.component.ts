@@ -111,6 +111,7 @@ export class FooterComponent {
 
         this.playlistService.getPlayingPlaylistId().subscribe((playlist) => {
             this.playlist = this.playlistService.getPlaylistById(playlist)
+            console.log('footer get playing')
         })
 
         this.sidebarService.isNowPlayingVisible().subscribe(visible => {

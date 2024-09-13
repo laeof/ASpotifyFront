@@ -196,27 +196,26 @@ export const TRACKS: ITrack[] = [
 ];
 
 export const PLAYLISTS: IPlaylist[] = [
-    { Id: "1", AuthorId: '1', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
+    { Id: "c5f38099-382b-4ccb-a8a5-c8bc98241cb2", AuthorId: 'bf1d50fd-3d82-4cac-b0bd-322768ff2873', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
     { Id: "2", AuthorId: '1', Image: "/assets/imgs/webp/apfs.webp", Name: "Опианариум", Type: 1, TrackIds: TRACKS.slice(0, 8).map(track => track.Id).concat(TRACKS.slice(11, 18).map(track => track.Id)) },
     { Id: "3", AuthorId: '1', Image: "/assets/imgs/loveaddiction.jpg", Name: "Любовь, аддикция и марафоны", Type: 1, TrackIds: TRACKS.slice(8, 11).map(track => track.Id) },
     { Id: "4", AuthorId: '2', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
     { Id: "5", AuthorId: '3', Image: "/assets/imgs/1111.jpg", Name: "Liked songs", Type: 0, TrackIds: TRACKS.slice(0, 10).map(track => track.Id) },
     { Id: "6", AuthorId: '2', Image: "/assets/imgs/webp/dogwaltz.webp", Name: "Собачий вальс", Type: 1, TrackIds: TRACKS.slice(18, 24).map(track => track.Id) },
-
 ];
 
 export const USERS: IUser[] = [
     {
-        Id: "1",
+        Id: "bf1d50fd-3d82-4cac-b0bd-322768ff2873",
         UserName: 'wandered thoughts',
         Email: 'laoef@example.com',
         Image: '/assets/imgs/bg.png',
-        lovedPlaylistId: '1',
-        FirstName: null,
-        LastName: null,
-        latestPlayingPlaylist: '2',
+        lovedPlaylistId: 'c5f38099-382b-4ccb-a8a5-c8bc98241cb2',
+        FirstName: "First",
+        LastName: "Last",
+        latestPlayingPlaylist: 'c5f38099-382b-4ccb-a8a5-c8bc98241cb2',
         latestPlayingTrack: 'track5',
-        Playlists: PLAYLISTS.slice(0, 3).map(playlist => playlist.Id).concat(PLAYLISTS.slice(5, 6).map(playlist => playlist.Id)),
+        Playlists: PLAYLISTS.slice(0, 1).map(playlist => playlist.Id)
     },
     {
         Id: "2",

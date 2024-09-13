@@ -1,15 +1,15 @@
 <div class="main-wrap">
     <div class="form-wrap">
-        <form class="form">
+        <form class="form" [formGroup]="playlistForm" (submit)="onSubmitPlaylist()" enctype='multipart/form-data'>
             <p class="title">Create new playlist or album</p>
             <div class="text">
                 <label class="label-for">Name:</label>
-                <input type="text" class="input-text" placeholder="Name">
+                <input type="text" class="input-text" placeholder="Name" formControlName="name">
             </div>
             <div class="text">
                 <label class="label-for">Playlist type:</label>
                 <mat-form-field>
-                    <mat-select [value]="0">
+                    <mat-select [value]="0" formControlName="types">
                         <mat-option [value]="0">Playlist</mat-option>
                         <mat-option [value]="1">Album</mat-option>
                         <mat-option [value]="2">Single</mat-option>
@@ -19,17 +19,17 @@
             <div class="text" id="afteroptions">
                 <label class="label-for">Drag or paste image:</label>
                 <div class="file-container" [ngClass]="{'drag': dragImg}">
-                    <input type="file" (change)="getfile($event)" (dragenter)="dragFileImage()"
-                        (dragleave)="noDragFileImage()" (mouseleave)="noDragFileImage()" class="input-file" />
+                    <input type="file" formControlName="file" (change)="getfile($event)" (dragenter)="dragFileImage()"
+                        (dragleave)="noDragFileImage()" (mouseleave)="noDragFileImage()" class="input-file" [value]="file?.name" />
                     <p class="drag-msg" [ngClass]="{'show': !dragImg}">Drag your file here</p>
                 </div>
-                @if (file) {
-                <p>File name: {{ file?.name }}</p>
-                <button (click)="imageFile()">Clear file</button><br>
-                <div class="text">
+                <div *ngIf="file">
+                    <p>File name: {{ file.name }}</p>
+                    <button type="button" (click)="imageClearFile()">Clear file</button><br>
+                </div>
+                <div class="text" *ngIf="file">
                     <input type="submit" class="button" value="Submit">
                 </div>
-                }
             </div>
         </form>
     </div>

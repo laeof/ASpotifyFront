@@ -38,11 +38,11 @@ export class HomeComponent {
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.user = user;
-            playlistService.getAllPlaylistsUserId(this.user.Id).map(playlist => {
-                if (!this.playlists.includes(this.playlistService.getPlaylistById(playlist)))
-                    this.playlists.push(this.playlistService.getPlaylistById(playlist))
-            });
         });
+
+        this.playlistService.getAllMyPlaylists().subscribe(playlists => {
+            this.playlists = playlists;
+        })
     }
 
     redirectToPlaylist(id: string) {

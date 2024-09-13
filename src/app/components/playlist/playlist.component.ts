@@ -10,7 +10,7 @@ import { ArtistService } from '../../services/artist.service';
 import { AlbumService } from '../../services/album.service';
 import { CommonModule } from '@angular/common';
 import { AudioService } from '../../services/audio.service';
-import { Subscription } from 'rxjs';
+import { Subscription, switchMap } from 'rxjs';
 import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
@@ -100,7 +100,7 @@ export class PlaylistComponent implements OnDestroy {
             let id = params.get('id') || "";
             this.playlistService.setActiveId(id);
             setTimeout(() => this.extractColor(), 1);
-        });
+        }); 
 
         this.playlistService.getActiveId().subscribe(playlist => {
             this.playlist = this.playlistService.getPlaylistById(playlist)

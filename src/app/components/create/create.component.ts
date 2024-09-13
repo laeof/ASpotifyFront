@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, FormBuilder, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,6 +10,8 @@ import { IArtist } from '../../dtos/artist';
 import { UserService } from '../../services/user.service';
 import { PlaylistService } from '../../services/playlist.service';
 import { MediaService } from '../../services/media.service';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { IPlaylist } from '../../dtos/playlist';
 
 @Component({
     selector: 'app-create',
@@ -19,6 +21,7 @@ import { MediaService } from '../../services/media.service';
         MatInputModule,
         FormsModule,
         MatIcon,
+        ReactiveFormsModule,
         CommonModule],
     templateUrl: './create.component.html',
     styleUrl: './create.component.scss'
@@ -40,13 +43,19 @@ export class CreateComponent {
 
     drag: boolean = false;
 
-    file: any;
+    file: File | undefined = undefined;
     dragImg: boolean = false;
+
+    playlistForm = new FormGroup({
+        name: new FormControl('YourPlaylistName'),
+        types: new FormControl<number>(0),
+        file: new FormControl()
+    });
 
     constructor(
         private userService: UserService,
         private playlistService: PlaylistService,
-        private mediaService: MediaService
+        private mediaService: MediaService,
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.artist.Id = user.Id;
@@ -55,14 +64,15 @@ export class CreateComponent {
             this.artist.UserName = user.UserName
             user.Playlists.map(playlist => {
                 let tmp = this.playlistService.getPlaylistById(playlist);
-                if (tmp.Type === 1 && tmp.AuthorId == user.Id)
-                    this.artist.albums.push(tmp.Id);
+                console.log('create get playlist')
+                if ((tmp).Type === 1 && (tmp).AuthorId == user.Id)
+                    this.artist.albums.push((tmp).Id);
             })
         });
     }
 
     getPlaylistById(id: string) {
-        return this.playlistService.getPlaylistById(id).Name;
+        return (this.playlistService.getPlaylistById(id)).Name;
     }
 
     chunkArray<T>(array: T[], size: number): T[][] {
@@ -92,7 +102,6 @@ export class CreateComponent {
                         Image: this.image
                     }
                     newtrack.Name = newtrack.Name.charAt(0).toUpperCase() + newtrack.Name.slice(1)
-                    console.log(newtrack.Name)
                     this.tracks.push(newtrack)
                 });
                 results.push(tracks);
@@ -145,16 +154,40 @@ export class CreateComponent {
         file = undefined;
     }
 
-    getfile(event: any) {
+    async getfile(event: any) {
+        console.log('1')
         this.file = event.target.files[0];
+        this.image = await this.mediaService.uploadImage(this.file!).toPromise() || '';
     }
+
     dragFileImage() {
         this.dragImg = true;
     }
     noDragFileImage() {
         this.dragImg = false;
     }
-    imageFile() {
+    imageClearFile() {
         this.file = undefined;
+        this.image = '';
+    }
+
+    onSubmitPlaylist() {
+        console.log(this.playlistForm.value.name ?? '')
+        console.log(this.playlistForm.value.types ?? '')
+        console.log(this.image ?? '')
+        console.log(this.artist.Id ?? '')
+        
+        let img = this.image as any
+
+        const playlist: IPlaylist = {
+            Id: "00000000-0000-0000-0000-000000000000",
+            AuthorId: this.artist.Id ?? '',
+            Image: img.filePath,
+            Name: this.playlistForm.value.name ?? '',
+            Type: this.playlistForm.value.types ?? 0,
+            TrackIds: []
+        }
+
+        this.playlistService.createNewPlaylist(playlist);
     }
 }
