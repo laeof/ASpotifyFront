@@ -20,7 +20,8 @@
                 <label class="label-for">Drag or paste image:</label>
                 <div class="file-container" [ngClass]="{'drag': dragImg}">
                     <input type="file" formControlName="file" (change)="getfile($event)" (dragenter)="dragFileImage()"
-                        (dragleave)="noDragFileImage()" (mouseleave)="noDragFileImage()" class="input-file" [value]="file?.name" />
+                        (dragleave)="noDragFileImage()" (mouseleave)="noDragFileImage()" class="input-file"
+                        [value]="file?.name" />
                     <p class="drag-msg" [ngClass]="{'show': !dragImg}">Drag your file here</p>
                 </div>
                 <div *ngIf="file">
@@ -34,7 +35,7 @@
         </form>
     </div>
     <div class="form-wrap">
-        <form class="form" enctype='multipart/form-data'>
+        <form class="form" [formGroup]="trackForm" (submit)="onSubmitTrack()" enctype='multipart/form-data'>
             <p class="title">Upload tracks</p>
             <div class="text">
                 <label class="label-for">Drag or paste your tracks:</label>
@@ -55,9 +56,9 @@
             <div class="text">
                 <label class="label-for">Album:</label>
                 <mat-form-field>
-                    <mat-select [value]="0">
-                        @for (item of artist.albums; track item;) {
-                        <mat-option [value]="0">{{getPlaylistById(item)}}</mat-option>
+                    <mat-select [value]="0" formControlName="album">
+                        @for (item of albums; track item;) {
+                        <mat-option [value]="item">{{item.Name}}</mat-option>
                         }
                     </mat-select>
                 </mat-form-field>
@@ -75,9 +76,11 @@
             <div class="text">
                 <label class="label-for">Track {{item.Name}}:</label>
                 <label class="label-for">Name:</label>
-                <input type="text" class="input-text" value='{{item.Name}}' placeholder="Name">
+                <input type="text" class="input-text" [(ngModel)]="item.Name" name="trackName{{item.Name}}"
+                    placeholder="Name">
             </div>
         </form>
     </div>
-    }}
+    }
+    }
 </div>

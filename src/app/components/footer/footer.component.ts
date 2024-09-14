@@ -40,6 +40,7 @@ export class FooterComponent {
         Type: PlaylistType.Playlist,
         TrackIds: []
     };
+    playingPlaylistId: string = ''
     volume: number = 0;
     trackPosition: number = 0;
     paused: boolean = true;
@@ -87,14 +88,37 @@ export class FooterComponent {
 
         if (latestPlayingSong != null && latestPlayingPlaylist != null) {
             this.playlistService.setPlayingPlaylistId(latestPlayingPlaylist)
-            this.queueService.setQueue(this.playlistService.getPlaylistById(latestPlayingPlaylist).TrackIds)
-            this.queueService.setCurrentTrack(latestPlayingSong)
-            this.audioService.setTrackPosition(latestSongTrackPosition)
-            this.audioService.setTrackPause();
+            let playlistPlayed: IPlaylist;
+            this.playlistService.getPlaylistByIdDev(latestPlayingPlaylist).subscribe((playlist: any) => {
+                playlistPlayed = {
+                    Id: playlist.id,
+                    AuthorId: playlist.authorId,
+                    Image: playlist.imagePath,
+                    Name: playlist.name,
+                    Type: playlist.types,
+                    TrackIds: playlist.tracks
+                }
+                this.queueService.setQueue(playlistPlayed.TrackIds)
+                this.queueService.setCurrentTrack(latestPlayingSong)
+                this.audioService.setTrackPosition(latestSongTrackPosition)
+                this.audioService.setTrackPause();
+            })
         }
 
         this.queueService.getCurrentTrackId().subscribe(track => {
-            this.track = this.trackService.getTrackById(track);
+            this.trackService.getTrackByIdDev(track).subscribe((response: any) => {
+                let play: ITrack = {
+                    Id: response.id,
+                    ArtistId: response.artistId,
+                    Image: response.imagePath,
+                    Name: response.name,
+                    AlbumId: response.albumId,
+                    Path: response.urlPath,
+                    Duration: response.duration,
+                    Date: response.createdDate
+                };
+                this.track = play;
+            })
         });
 
         this.audioService.getTrackPosition().subscribe(trackpos => {
@@ -110,8 +134,18 @@ export class FooterComponent {
         })
 
         this.playlistService.getPlayingPlaylistId().subscribe((playlist) => {
-            this.playlist = this.playlistService.getPlaylistById(playlist)
-            console.log('footer get playing')
+            this.playingPlaylistId = playlist
+        })
+
+        this.playlistService.getPlaylistByIdDev(this.playingPlaylistId).subscribe((playlist: any) => {
+            this.playlist = {
+                Id: playlist.id,
+                AuthorId: playlist.authorId,
+                Image: playlist.imagePath,
+                Name: playlist.name,
+                Type: playlist.types,
+                TrackIds: playlist.tracks
+            }
         })
 
         this.sidebarService.isNowPlayingVisible().subscribe(visible => {

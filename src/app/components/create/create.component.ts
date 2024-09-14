@@ -12,6 +12,7 @@ import { PlaylistService } from '../../services/playlist.service';
 import { MediaService } from '../../services/media.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { IPlaylist } from '../../dtos/playlist';
+import { TrackService } from '../../services/track.service';
 
 @Component({
     selector: 'app-create',
@@ -52,10 +53,18 @@ export class CreateComponent {
         file: new FormControl()
     });
 
+    trackForm = new FormGroup({
+        album: new FormControl(),
+        files: new FormControl()
+    });
+
+    albums: IPlaylist[] = []
+
     constructor(
         private userService: UserService,
         private playlistService: PlaylistService,
         private mediaService: MediaService,
+        private trackService: TrackService
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.artist.Id = user.Id;
@@ -63,16 +72,15 @@ export class CreateComponent {
             this.artist.LastName = user.LastName || ''
             this.artist.UserName = user.UserName
             user.Playlists.map(playlist => {
-                let tmp = this.playlistService.getPlaylistById(playlist);
-                console.log('create get playlist')
-                if ((tmp).Type === 1 && (tmp).AuthorId == user.Id)
-                    this.artist.albums.push((tmp).Id);
+                if (playlist)
+                    this.artist.albums.push(playlist)
             })
         });
-    }
-
-    getPlaylistById(id: string) {
-        return (this.playlistService.getPlaylistById(id)).Name;
+        this.playlistService.getAllMyPlaylists().subscribe(
+            (playlists: IPlaylist[]) => {
+                this.albums = playlists.filter(playlist => playlist.Type === 1);
+            }
+        )
     }
 
     chunkArray<T>(array: T[], size: number): T[][] {
@@ -176,7 +184,7 @@ export class CreateComponent {
         console.log(this.playlistForm.value.types ?? '')
         console.log(this.image ?? '')
         console.log(this.artist.Id ?? '')
-        
+
         let img = this.image as any
 
         const playlist: IPlaylist = {
@@ -189,5 +197,15 @@ export class CreateComponent {
         }
 
         this.playlistService.createNewPlaylist(playlist);
+    }
+
+    onSubmitTrack() {
+        this.tracks.forEach((element: ITrack) => {
+            element.AlbumId = this.trackForm.value.album.Id
+            element.Image = this.trackForm.value.album.Image           
+        });
+
+        
+        this.trackService.createNewTrack(this.tracks);
     }
 }

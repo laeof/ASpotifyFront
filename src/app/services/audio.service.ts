@@ -22,7 +22,27 @@ export class AudioService {
     private volume = new BehaviorSubject<number>(0.1);
     private isPaused = new BehaviorSubject<boolean>(false);
     private trackid: string = "";
+    private track: ITrack = {
+        Id: '',
+        Name: '',
+        ArtistId: '',
+        Date: new Date,
+        AlbumId: '',
+        Duration: 0,
+        Image: '',
+        Path: ''
+    }
     private nextTrackId: string = '';
+    private nextTrack: ITrack = {
+        Id: '',
+        Name: '',
+        ArtistId: '',
+        Date: new Date,
+        AlbumId: '',
+        Duration: 0,
+        Image: '',
+        Path: ''
+    }
     private playlistActiveId = '';
 
     constructor(private http: HttpClient,
@@ -35,10 +55,38 @@ export class AudioService {
         this.musicApi = this.api.getMusicApi();
         this.queueService.getNextTrack().subscribe(nextId => {
             this.nextTrackId = nextId
+            const sub = this.trackService.getTrackByIdDev(nextId).subscribe((response: any) => {
+                let play: ITrack = {
+                    Id: response.id,
+                    ArtistId: response.artistId,
+                    Image: response.imagePath,
+                    Name: response.name,
+                    AlbumId: response.albumId,
+                    Path: response.urlPath,
+                    Duration: response.duration,
+                    Date: response.createdDate
+                };
+                this.nextTrack = play;
+            })
+            sub.unsubscribe();
         })
 
         this.queueService.getCurrentTrackId().subscribe(trackId => {
             this.trackid = trackId
+            const sub = this.trackService.getTrackByIdDev(trackId).subscribe((response: any) => {
+                let play: ITrack = {
+                    Id: response.id,
+                    ArtistId: response.artistId,
+                    Image: response.imagePath,
+                    Name: response.name,
+                    AlbumId: response.albumId,
+                    Path: response.urlPath,
+                    Duration: response.duration,
+                    Date: response.createdDate
+                };
+                this.track = play;
+            })
+            sub.unsubscribe();
         })
 
         this.playlistService.getActiveId().subscribe(value => {
@@ -65,9 +113,8 @@ export class AudioService {
 
             this.setTrackPositionTracking(currentTime);
 
-            if (this.trackService.getTrackById(this.trackid).Duration == currentTime)
-                this.playTrack(
-                    this.trackService.getTrackById(this.nextTrackId));
+            if (this.track.Duration == currentTime)
+                this.playTrack(this.nextTrack);
         }, 1000);
     }
 
@@ -113,7 +160,7 @@ export class AudioService {
         let time = this.audio.currentTime ?? this.trackPosition.value;
 
         if (this.audio.src == "")
-            this.playAudio(this.trackService.getTrackById(this.trackid));
+            this.playAudio(this.track);
         else
             this.audio.play();
 
@@ -129,9 +176,8 @@ export class AudioService {
 
             this.setTrackPositionTracking(currentTime);
 
-            if (this.trackService.getTrackById(this.trackid).Duration == currentTime)
-                this.playTrack(
-                    this.trackService.getTrackById(this.nextTrackId));
+            if (this.track.Duration == currentTime)
+                this.playTrack(this.nextTrack);
         }, 1000);
     }
 
@@ -166,7 +212,7 @@ export class AudioService {
     }
 
     streamAudioFromServer(path: string): Observable<Blob> {
-        return this.http.get(`${this.musicApi}/stream/` + path, { responseType: 'blob' });
+        return this.http.get(`${this.musicApi}Audio/Stream/` + path, { responseType: 'blob' });
     }
 
     streamAudio(path: string): Observable<Blob> {

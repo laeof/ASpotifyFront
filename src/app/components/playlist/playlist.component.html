@@ -7,8 +7,8 @@
             </div>
             <div class="descr">
                 <p class="type">{{getPlaylistType()}}</p>
-                <h2 class="title">{{playlist.Name}}</h2>
-                <p class="author">{{getArtistName(playlist.AuthorId)}} - {{playlist.TrackIds.length}} tracks</p>
+                <h2 class="title">{{ playlist.Name }}</h2>
+                <p class="author">{{getArtistName(playlist.AuthorId)}} - {{playlist.TrackIds.length || 0}} tracks</p>
             </div>
         </div>
     </div>
@@ -78,14 +78,14 @@
                             </svg>
                         </td>
                     </tr>
-                    @for (item of playlist.TrackIds; track item; let i = $index) {
-                    <tr [ngClass]="{'active': isActive(item)}" (contextmenu)="onTrackClick($event, item)">
-                        <td class="number" [ngClass]="{'playing': isActive(item), 'paused': paused}">
+                    @for (item of tracks; track item; let i = $index) {
+                    <tr [ngClass]="{'active': isActive(item.Id)}" (contextmenu)="onTrackClick($event, item.Id)">
+                        <td class="number" [ngClass]="{'playing': isActive(item.Id), 'paused': paused}">
                             <p id="number">{{i + 1}}</p>
                             <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18" x="0" y="0"
                                 viewBox="0 0 163.861 163.861" style="enable-background:new 0 0 512 512"
-                                xml:space="preserve" class="play" (click)="toggleAudio(item)">
+                                xml:space="preserve" class="play" (click)="toggleAudio(item.Id)">
                                 <g>
                                     <path
                                         d="M34.857 3.613C20.084-4.861 8.107 2.081 8.107 19.106v125.637c0 17.042 11.977 23.975 26.75 15.509L144.67 97.275c14.778-8.477 14.778-22.211 0-30.686L34.857 3.613z"
@@ -96,7 +96,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18" x="0" y="0"
                                 viewBox="0 0 101.08 116.43" style="enable-background:new 0 0 512 512"
-                                xml:space="preserve" class="pause" (click)="toggleAudio(item)">
+                                xml:space="preserve" class="pause" (click)="toggleAudio(item.Id)">
                                 <g>
                                     <g data-name="Layer 2">
                                         <path
@@ -109,25 +109,25 @@
                         </td>
                         <td class="tdname">
                             <div class="wrap-img">
-                                <img src={{getTrackById(item).Image}}>
+                                <img src={{item.Image}}>
                             </div>
                             <div class="name">
                                 <div class="title">
-                                    {{getTrackById(item).Name}}
+                                    {{item.Name}}
                                 </div>
                                 <div class="subtitle">
-                                    {{this.getArtistName(getTrackById(item).ArtistId)}}
+                                    {{this.getArtistName(item.ArtistId)}}
                                 </div>
                             </div>
                         </td>
                         <td class="album">
-                            {{this.getAlbumName(getTrackById(item).AlbumId)}}
+                            {{this.getAlbumName(item.AlbumId)}}
                         </td>
                         <td class="date">
-                            {{getTrackById(item).Date.toLocaleDateString()}}
+                            {{item.Date.toDateString}}
                         </td>
-                        <td class="like" (click)="toggleLikedSongs(item)"
-                            [ngClass]="{'isLoved': getLikedSongsState(item)}">
+                        <td class="like" (click)="toggleLikedSongs(item.Id)"
+                            [ngClass]="{'isLoved': getLikedSongsState(item.Id)}">
                             <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" x="0" y="0"
                                 viewBox="0 0 512.001 512.001" style="enable-background:new 0 0 512 512"
@@ -140,7 +140,7 @@
                             </svg>
                         </td>
                         <td class="time">
-                            {{getDuration(getTrackById(item).Duration)}}
+                            {{getDuration(item.Duration)}}
                         </td>
                     </tr>
                     }

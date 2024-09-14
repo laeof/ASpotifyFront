@@ -57,6 +57,8 @@ export class NowplayingsidebarComponent {
         TrackIds: []
     };
 
+    playlistId: string = ''
+
     private user: IUser = {
         Id: '',
         UserName: '',
@@ -88,15 +90,52 @@ export class NowplayingsidebarComponent {
         });
 
         this.queueService.getCurrentTrackId().subscribe(trackId => {
-            this.track = this.trackService.getTrackById(trackId);
+            const sub = this.trackService.getTrackByIdDev(trackId).subscribe((response: any) => {
+                let play: ITrack = {
+                    Id: response.id,
+                    ArtistId: response.artistId,
+                    Image: response.imagePath,
+                    Name: response.name,
+                    AlbumId: response.albumId,
+                    Path: response.urlPath,
+                    Duration: response.duration,
+                    Date: response.createdDate
+                };
+                this.track = play;
+            })
+            sub.unsubscribe();
         })
 
         this.queueService.getNextTrack().subscribe(trackId => {
-            this.nextTrack = this.trackService.getTrackById(trackId)
+            const sub = this.trackService.getTrackByIdDev(trackId).subscribe((response: any) => {
+                let play: ITrack = {
+                    Id: response.id,
+                    ArtistId: response.artistId,
+                    Image: response.imagePath,
+                    Name: response.name,
+                    AlbumId: response.albumId,
+                    Path: response.urlPath,
+                    Duration: response.duration,
+                    Date: response.createdDate
+                };
+                this.nextTrack = play;
+            })
+            sub.unsubscribe();
         })
 
         this.playlistService.getPlayingPlaylistId().subscribe((playlist) => {
-            this.playlist = this.playlistService.getPlaylistById(playlist)
+            this.playlistId = playlist
+        })
+
+        this.playlistService.getPlaylistByIdDev(this.playlistId).subscribe((playlist: any) => {
+            this.playlist = {
+                Id: playlist.id,
+                AuthorId: playlist.authorId,
+                Image: playlist.imagePath,
+                Name: playlist.name,
+                Type: playlist.types,
+                TrackIds: playlist.tracks
+            }
         })
     }
 

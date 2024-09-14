@@ -88,7 +88,19 @@ export class AppComponent {
         private trackService: TrackService
     ) {
         this.queueService.getCurrentTrackId().subscribe(track => {
-            this.track = this.trackService.getTrackById(track);
+            this.trackService.getTrackByIdDev(track).subscribe((response: any) => {
+                let play: ITrack = {
+                    Id: response.id,
+                    ArtistId: response.artistId,
+                    Image: response.imagePath,
+                    Name: response.name,
+                    AlbumId: response.albumId,
+                    Path: response.urlPath,
+                    Duration: response.duration,
+                    Date: response.createdDate
+                };
+                this.track = play;
+            })
         });
     }
 
