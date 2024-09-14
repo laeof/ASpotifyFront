@@ -31,6 +31,7 @@ import { QueueComponent } from './components/queue/queue.component';
 import { FooterInfoComponent } from './components/footer-info/footer-info.component';
 import { CreateComponent } from './components/create/create.component';
 import { MediaService } from './services/media.service';
+import { first } from 'rxjs';
 
 @Component({
     selector: 'app-root',
@@ -75,37 +76,27 @@ import { MediaService } from './services/media.service';
 export class AppComponent {
     title = 'ASpotifyFront';
     track: ITrack = {
-        AlbumId: "",
-        Id: '',
-        Name: '',
-        ArtistId: '',
-        Date: new Date,
-        Duration: 0,
-        Image: '',
-        Path: ''
+        id: '',
+        name: '',
+        artistId: '',
+        createdDate: new Date,
+        albumId: '',
+        duration: 0,
+        imagePath: '',
+        urlPath: ''
     };
     constructor(private queueService: QueueService,
         private trackService: TrackService
     ) {
         this.queueService.getCurrentTrackId().subscribe(track => {
-            this.trackService.getTrackByIdDev(track).subscribe((response: any) => {
-                let play: ITrack = {
-                    Id: response.id,
-                    ArtistId: response.artistId,
-                    Image: response.imagePath,
-                    Name: response.name,
-                    AlbumId: response.albumId,
-                    Path: response.urlPath,
-                    Duration: response.duration,
-                    Date: response.createdDate
-                };
-                this.track = play;
+            this.trackService.getTrackById(track).pipe(first()).subscribe((response: any) => {
+                this.track = response;
             })
         });
     }
 
     isActive() {
-        return this.track.Id != '';
+        return this.track.id != '';
     }
 
 }

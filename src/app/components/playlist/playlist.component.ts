@@ -10,7 +10,7 @@ import { ArtistService } from '../../services/artist.service';
 import { AlbumService } from '../../services/album.service';
 import { CommonModule } from '@angular/common';
 import { AudioService } from '../../services/audio.service';
-import { Observable, Subscription, switchMap } from 'rxjs';
+import { first, Observable, of, Subscription, switchMap, take } from 'rxjs';
 import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
@@ -46,24 +46,24 @@ export class PlaylistComponent implements OnDestroy {
 
     //active
     playlist: IPlaylist = {
-        Id: '',
-        AuthorId: '',
-        Image: '',
-        Name: '',
-        Type: PlaylistType.Playlist,
-        TrackIds: []
+        id: '',
+        authorId: '',
+        imagePath: '',
+        name: '',
+        types: PlaylistType.Playlist,
+        tracks: []
     };
 
     activePlaylistId: string = ''
 
     //playing
     currentPlaylist: IPlaylist = {
-        Id: '',
-        AuthorId: '',
-        Image: '',
-        Name: '',
-        Type: PlaylistType.Playlist,
-        TrackIds: []
+        id: '',
+        authorId: '',
+        imagePath: '',
+        name: '',
+        types: PlaylistType.Playlist,
+        tracks: []
     };
 
     tracks: ITrack[] = []
@@ -77,19 +77,18 @@ export class PlaylistComponent implements OnDestroy {
     SubCurrent: Subscription | undefined;
 
 
-    trackId: string = '';
+    track: ITrack = {
+        id: '',
+        name: '',
+        artistId: '',
+        createdDate: new Date,
+        albumId: '',
+        duration: 0,
+        imagePath: '',
+        urlPath: ''
+    };
     paused: boolean = false;
     trackDuration: number = 0;
-    currentTrack: ITrack = {
-        Id: '',
-        Name: '',
-        ArtistId: '',
-        Date: new Date,
-        AlbumId: '',
-        Duration: 0,
-        Image: '',
-        Path: ''
-    };
 
     constructor(private colorService: ColorService,
         private playlistService: PlaylistService,
@@ -115,54 +114,39 @@ export class PlaylistComponent implements OnDestroy {
 
         this.subActive0 = this.playlistService.getActiveId().subscribe(playlist => {
             this.activePlaylistId = playlist
-            this.subActive = this.playlistService.getPlaylistByIdDev(this.activePlaylistId).subscribe((playlist: any) => {
-                this.playlist = {
-                    Id: playlist.id,
-                    AuthorId: playlist.authorId,
-                    Image: playlist.imagePath,
-                    Name: playlist.name,
-                    Type: playlist.types,
-                    TrackIds: playlist.tracks
-                }
+            this.subActive = this.playlistService.getPlaylistById(this.activePlaylistId).pipe(first()).subscribe(
+                (playlist: IPlaylist) => {
+                    this.playlist = playlist
 
-                this.playlist.TrackIds.forEach(element => {
-                    console.log(element)
-                    this.trackService.getTrackByIdDev(element).subscribe((response: any) => {
-                        let play: ITrack = {
-                            Id: response.id,
-                            ArtistId: response.artistId,
-                            Image: response.imagePath,
-                            Name: response.name,
-                            AlbumId: response.albumId,
-                            Path: response.urlPath,
-                            Duration: response.duration,
-                            Date: response.createdDate
-                        };
-                        this.tracks.push(play);
-                    })
-                });
-                setTimeout(() => this.extractColor(), 1);
-            })
+                    let trackList: ITrack[] = []
+                    this.playlist.tracks.forEach(element => {
+
+                        this.trackService.getTrackById(element).pipe(first()).subscribe(
+                            (response: ITrack) => {
+                                trackList.push(response);
+                            })
+                    });
+                    this.tracks = trackList
+                    setTimeout(() => this.extractColor(), 1);
+                })
         })
 
         console.log(this.tracks)
 
         this.subCurrent0 = this.playlistService.getPlayingPlaylistId().subscribe(playlist => {
             this.currentPlaylistId = playlist
-            this.SubCurrent = this.playlistService.getPlaylistByIdDev(this.currentPlaylistId).subscribe((playlist: any) => {
-                this.currentPlaylist = {
-                    Id: playlist.id,
-                    AuthorId: playlist.authorId,
-                    Image: playlist.imagePath,
-                    Name: playlist.name,
-                    Type: playlist.types,
-                    TrackIds: playlist.tracks
-                }
-            })
+            this.SubCurrent = this.playlistService.getPlaylistById(this.currentPlaylistId).pipe(first()).subscribe(
+                (playlist: IPlaylist) => {
+                    this.currentPlaylist = playlist
+                })
         })
 
         this.queueService.getCurrentTrackId().subscribe((trackId) => {
-            this.trackId = trackId;
+            this.trackService.getTrackById(trackId).pipe(first()).subscribe(
+                (track: ITrack) => {
+                    this.track = track;
+                }
+            )
         });
 
         this.audioService.isTrackPaused().subscribe((ispaused) => {
@@ -183,16 +167,16 @@ export class PlaylistComponent implements OnDestroy {
             this.subCurrent0.unsubscribe();
     }
 
-    toggleLikedSongs(trackId: string) {
-        if (this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId)) {
-            this.playlistService.removeFromPlaylist(this.user.lovedPlaylistId, trackId);
+    toggleLikedSongs(track: ITrack) {
+        if (this.playlistService.getLovedTrackState(track)) {
+            this.playlistService.removeFromPlaylist(this.user.lovedPlaylistId, track.id);
             return;
         }
-        this.playlistService.addToPlaylist(this.user.lovedPlaylistId, trackId);
+        this.playlistService.addToPlaylist(this.user.lovedPlaylistId, track.id);
     }
 
-    getLikedSongsState(trackId: string) {
-        return this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId);
+    getLikedSongsState(track: ITrack) {
+        return this.playlistService.getLovedTrackState(track);
     }
 
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
@@ -213,42 +197,51 @@ export class PlaylistComponent implements OnDestroy {
     }
 
     //big play button
-    getTrackForPlay(): string {
-        if (this.playlist.Id == this.currentPlaylist.Id)
-            return this.trackId;
+    getTrackForPlay(): ITrack {
+        if (this.playlist.id == this.currentPlaylist.id)
+            return this.track;
 
-        return this.playlist.TrackIds[0];
+        return this.tracks[0];
     }
 
     isActive(item: string): boolean {
-        return item == this.trackId && this.playlist.Id == this.currentPlaylist.Id;
+        return item == this.track.id && this.playlist.id == this.currentPlaylist.id;
     }
 
     isPaused(): any {
         return this.paused
     }
 
-    toggleAudio(item: string) {
-        this.trackId = item;
-        this.playerService.toggleAudio(item, this.playlist.Id)
+    toggleAudio(item: ITrack) {
+        this.track = item;
+        this.playerService.toggleAudio(item, this.playlist)
         console.log("tracK: " + item)
-        console.log("playing: " + this.currentPlaylist.Id)
-        console.log("activepl: " + this.playlist.Id)
+        console.log("playing: " + this.currentPlaylist.id)
+        console.log("activepl: " + this.playlist.id)
     }
 
     toggleContextMenu() {
         this.toggledContextMenu = !this.toggledContextMenu;
     }
 
-    getAlbumName(id: string) {
-        return this.albumService.getAlbumNameById(id);
+    getAlbumName(id: string): IPlaylist {
+        let pla: IPlaylist = {
+            id: '',
+            authorId: '',
+            imagePath: '',
+            name: '',
+            types: PlaylistType.Playlist,
+            tracks: []
+        }
+
+        return pla;
     }
 
     getArtistName(id: string) {
         return this.artistService.getArtistNameById(id);
     }
 
-    getPlaylistType(type: PlaylistType = this.playlist.Type) {
+    getPlaylistType(type: PlaylistType = this.playlist.types) {
         return this.playlistService.getPlaylistType(type);
     }
 
@@ -258,6 +251,8 @@ export class PlaylistComponent implements OnDestroy {
         this.downloadedImg.crossOrigin = 'AllowAngularApp';
         // this.downloadedImg.addEventListener("load", this.imageReceived, false);
         // this.downloadedImg.src = this.playlist.Image
+        const darkenedColor = `rgb(140, 42, 146)`;
+        document.documentElement.style.setProperty('--custom-bg-color', darkenedColor);
     }
 
     imageReceived() {

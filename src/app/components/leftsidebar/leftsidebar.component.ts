@@ -57,9 +57,10 @@ export class LeftsidebarComponent {
             this.isPaused = pause
         });
 
-        this.playlistService.getAllMyPlaylists().subscribe((playlists: IPlaylist[]) => {
-            this.items = playlists;
-        })
+        this.playlistService.getAllMyPlaylists().subscribe(
+            (playlists: IPlaylist[]) => {
+                this.items = playlists;
+            })
     }
 
     getPlaylistType(type: PlaylistType) {
@@ -67,7 +68,7 @@ export class LeftsidebarComponent {
     }
 
     getPlaylistLength(item: IPlaylist) {
-        return item.TrackIds?.length ?? 0;
+        return item.tracks?.length ?? 0;
     }
 
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;

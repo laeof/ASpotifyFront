@@ -1,39 +1,21 @@
 import { HttpClient } from "@angular/common/http";
-import { TRACKS } from "../data/data";
 import { ITrack } from "../dtos/track";
 import { ApiService } from "./api.service";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Observable, of, throwError } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
 })
 
 export class TrackService {
-    private tracks: ITrack[] = TRACKS;
-    private track: ITrack = {
-        Id: "",
-        Name: "",
-        ArtistId: "",
-        Date: new Date,
-        AlbumId: "",
-        Duration: 0,
-        Image: "",
-        Path: ""
-    }
-
     constructor(private http: HttpClient,
         private apiService: ApiService
-    ) {
+    ) { }
 
-
-    }
-
-    getTracks() {
-        return this.tracks;
-    }
-
-    getTrackByIdDev(id: string): Observable<ITrack> {
+    getTrackById(id: string): Observable<ITrack> {
+        if(id === undefined)
+            return throwError(() => new Error('Track ID is undefined'));
         return this.http.get<ITrack>(this.apiService.getPlaylistApi() + 'Track/' + id)
     }
 
@@ -55,29 +37,19 @@ export class TrackService {
 
     createNewTrack(dto: ITrack[]) {
         dto.forEach(track => {
-
-            const data = {
-                'Id': track.Id,
-                'ArtistId': track.ArtistId,
-                'Name': track.Name,
-                'AlbumId': track.AlbumId,
-                'ImagePath': track.Image,
-                'UrlPath': track.Path,
-                'Duration': track.Duration,
-            }
-
-            this.http.post<ITrack>(this.apiService.getPlaylistApi() + 'Track', data)
+            
+            this.http.post<ITrack>(this.apiService.getPlaylistApi() + 'Track', track)
                 .subscribe(
                     (response: any) => {
                         const track: ITrack = {
-                            Id: response.id,
-                            ArtistId: response.artistId,
-                            Image: response.imagePath,
-                            Name: response.name,
-                            AlbumId: response.albumId,
-                            Path: response.urlPath,
-                            Duration: response.duration,
-                            Date: response.createdDate
+                            id: response.id,
+                            artistId: response.artistId,
+                            imagePath: response.imagePath,
+                            name: response.name,
+                            albumId: response.albumId,
+                            urlPath: response.urlPath,
+                            duration: response.duration,
+                            createdDate: response.createdDate
                         }
 
                     },

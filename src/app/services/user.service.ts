@@ -4,18 +4,6 @@ import { IUser } from "../dtos/user";
 
 export class UserService {
     private users: IUser[] = USERS;
-    private user: IUser = {
-        Id: "",
-        UserName: "",
-        FirstName: null,
-        LastName: null,
-        Email: "",
-        lovedPlaylistId: "",
-        Image: "",
-        latestPlayingPlaylist: '',
-        latestPlayingTrack: '',
-        Playlists: []
-    }
 
     private currentUser = new BehaviorSubject<IUser>(
         {
@@ -39,8 +27,8 @@ export class UserService {
         return this.currentUser.asObservable();
     }
 
-    getUserInfoById(id: string): IUser {
-        return this.users.find(user => user.Id === id) || this.user
+    getUserInfoById(id: string): IUser | undefined {
+        return this.users.find(user => user.Id === id)
     }
 
     setLatestTrack(trackId: string) {

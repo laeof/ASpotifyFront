@@ -2,19 +2,19 @@
     <div class="songname">
         <div class="song">
             <div class="wrap-img">
-                <img src={{track.Image}}>
+                <img src={{track.imagePath}}>
             </div>
             <div class="name">
                 <p class="title">
-                    {{track.Name}}
+                    {{track.name}}
                 </p>
                 <p class="subtitle">
-                    {{getArtistById(track.ArtistId)}}
+                    {{getArtistById(track.artistId)}}
                 </p>
             </div>
         </div>
         <div class="features">
-            <svg (click)="toggleLikedSongs(track.Id)" [ngClass]="{'isLoved': getLikedSongsState(track.Id)}"
+            <svg (click)="toggleLikedSongs(track)" [ngClass]="{'isLoved': getLikedSongsState(track)}"
                 xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="25"
                 height="25" x="0" y="0" viewBox="0 0 512.001 512.001" style="enable-background:new 0 0 512 512"
                 xml:space="preserve" class="" id="like">
@@ -108,9 +108,9 @@
         </div>
         <div class="slider">
             <label class="time">{{getDuration(trackPosition)}}</label>
-            <input type="range" class="sound-slider" min="0" max="{{track.Duration}}" [value]="trackPosition"
+            <input type="range" class="sound-slider" min="0" max="{{track.duration}}" [value]="trackPosition"
                 (input)="onPositionChange($event)">
-            <label class="time">{{getDuration(track.Duration)}}</label>
+            <label class="time">{{getDuration(track.duration)}}</label>
         </div>
     </div>
     <div class="songfeatures">

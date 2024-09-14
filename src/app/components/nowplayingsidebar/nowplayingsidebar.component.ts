@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnDestroy, ViewChild } from '@angular/core';
 import { SidebarService } from '../../services/sidebar.service';
 import { CommonModule } from '@angular/common';
 import { ITrack } from '../../dtos/track';
@@ -6,7 +6,7 @@ import { AudioService } from '../../services/audio.service';
 import { ArtistService } from '../../services/artist.service';
 import { PlaylistService } from '../../services/playlist.service';
 import { IPlaylist, PlaylistType } from '../../dtos/playlist';
-import { findIndex } from 'rxjs';
+import { findIndex, first } from 'rxjs';
 import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
@@ -23,38 +23,38 @@ import { IUser } from '../../dtos/user';
     templateUrl: './nowplayingsidebar.component.html',
     styleUrl: './nowplayingsidebar.component.scss'
 })
-export class NowplayingsidebarComponent {
+export class NowplayingsidebarComponent implements OnDestroy {
     nowPlayingVisible = false;
     toggledContextMenu: boolean = false;
     track: ITrack = {
-        AlbumId: "",
-        Id: '',
-        Name: '',
-        ArtistId: '',
-        Date: new Date,
-        Duration: 0,
-        Image: '',
-        Path: ''
+        id: '',
+        name: '',
+        artistId: '',
+        createdDate: new Date,
+        albumId: '',
+        duration: 0,
+        imagePath: '',
+        urlPath: ''
     };
 
     nextTrack: ITrack = {
-        AlbumId: "",
-        Id: '',
-        Name: '',
-        ArtistId: '',
-        Date: new Date,
-        Duration: 0,
-        Image: '',
-        Path: ''
+        id: '',
+        name: '',
+        artistId: '',
+        createdDate: new Date,
+        albumId: '',
+        duration: 0,
+        imagePath: '',
+        urlPath: ''
     };
 
     playlist: IPlaylist = {
-        Id: '',
-        AuthorId: '',
-        Image: '',
-        Name: '',
-        Type: PlaylistType.Playlist,
-        TrackIds: []
+        id: '',
+        authorId: '',
+        imagePath: '',
+        name: '',
+        types: PlaylistType.Playlist,
+        tracks: []
     };
 
     playlistId: string = ''
@@ -90,65 +90,46 @@ export class NowplayingsidebarComponent {
         });
 
         this.queueService.getCurrentTrackId().subscribe(trackId => {
-            const sub = this.trackService.getTrackByIdDev(trackId).subscribe((response: any) => {
-                let play: ITrack = {
-                    Id: response.id,
-                    ArtistId: response.artistId,
-                    Image: response.imagePath,
-                    Name: response.name,
-                    AlbumId: response.albumId,
-                    Path: response.urlPath,
-                    Duration: response.duration,
-                    Date: response.createdDate
-                };
-                this.track = play;
-            })
-            sub.unsubscribe();
+            this.trackService.getTrackById(trackId).pipe(
+                first()
+            ).subscribe(
+                (response: ITrack) => {
+                    this.track = response;
+                })
         })
 
         this.queueService.getNextTrack().subscribe(trackId => {
-            const sub = this.trackService.getTrackByIdDev(trackId).subscribe((response: any) => {
-                let play: ITrack = {
-                    Id: response.id,
-                    ArtistId: response.artistId,
-                    Image: response.imagePath,
-                    Name: response.name,
-                    AlbumId: response.albumId,
-                    Path: response.urlPath,
-                    Duration: response.duration,
-                    Date: response.createdDate
-                };
-                this.nextTrack = play;
-            })
-            sub.unsubscribe();
+            this.trackService.getTrackById(trackId).pipe(
+                first()
+            ).subscribe(
+                (response: ITrack) => {
+                    this.nextTrack = response;
+                })
         })
 
         this.playlistService.getPlayingPlaylistId().subscribe((playlist) => {
             this.playlistId = playlist
         })
 
-        this.playlistService.getPlaylistByIdDev(this.playlistId).subscribe((playlist: any) => {
-            this.playlist = {
-                Id: playlist.id,
-                AuthorId: playlist.authorId,
-                Image: playlist.imagePath,
-                Name: playlist.name,
-                Type: playlist.types,
-                TrackIds: playlist.tracks
-            }
-        })
+        this.playlistService.getPlaylistById(this.playlistId).subscribe(
+            (playlist: IPlaylist) => {
+                this.playlist = playlist
+            })
+    }
+    ngOnDestroy(): void {
+        throw new Error('Method not implemented.');
     }
 
-    toggleLikedSongs(trackId: string) {
-        if (this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId)) {
-            this.playlistService.removeFromPlaylist(this.user.lovedPlaylistId, trackId);
+    toggleLikedSongs(track: ITrack) {
+        if (this.playlistService.getLovedTrackState(track)) {
+            this.playlistService.removeFromPlaylist(this.user.lovedPlaylistId, track.id);
             return;
         }
-        this.playlistService.addToPlaylist(this.user.lovedPlaylistId, trackId);
+        this.playlistService.addToPlaylist(this.user.lovedPlaylistId, track.id);
     }
 
-    getLikedSongsState(trackId: string) {
-        return this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId);
+    getLikedSongsState(track: ITrack) {
+        return this.playlistService.getLovedTrackState(track);
     }
 
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
@@ -176,7 +157,7 @@ export class NowplayingsidebarComponent {
     }
 
     getPlaylistName() {
-        return this.playlist.Name
+        return this.playlist.name
     }
 
     toggleSideBar() {

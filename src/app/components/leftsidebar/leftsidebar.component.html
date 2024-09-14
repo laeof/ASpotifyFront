@@ -22,23 +22,23 @@
         <div class="playlists">
             @for (item of items; track item; let i = $index) {
             <span class="playlist" [ngClass]="{
-                'selected': isActive(item.Id),
-                'playing': isPlaying(item.Id),
-              }" (click)='redirectToPlaylist(item.Id)' (contextmenu)="onPlaylistClick($event)">
+                'selected': isActive(item.id),
+                'playing': isPlaying(item.id),
+              }" (click)='redirectToPlaylist(item.id)' (contextmenu)="onPlaylistClick($event)">
                 <div class="play-name">
                     <div class="wrap-img">
-                        <img src={{item.Image}}>
+                        <img src={{item.imagePath}}>
                     </div>
                     <div class="name">
                         <p class="title">
-                            {{item.Name}}
+                            {{item.name}}
                         </p>
                         <p class="subtitle">
-                            {{getPlaylistType(item.Type)}} - {{getPlaylistLength(item)}} треки
+                            {{getPlaylistType(item.types)}} - {{getPlaylistLength(item)}} треки
                         </p>
                     </div>
                 </div>
-                <div class="wrap-playing" [ngClass]="{'playing': isPlaying(item.Id)}">
+                <div class="wrap-playing" [ngClass]="{'playing': isPlaying(item.id)}">
                     <div class="boxContainer">
                         <div class="box box1" [ngClass]="{'pause': isPaused}"></div>
                         <div class="box box2" [ngClass]="{'pause': isPaused}"></div>

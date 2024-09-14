@@ -9,6 +9,8 @@ import { AudioService } from '../../services/audio.service';
 import { UrlService } from '../../services/url.service';
 import { PlayerService } from '../../services/player.service';
 import { FooterInfoComponent } from "../footer-info/footer-info.component";
+import { TrackService } from '../../services/track.service';
+import { first } from 'rxjs';
 
 @Component({
     selector: 'app-home',
@@ -34,7 +36,8 @@ export class HomeComponent {
     constructor(private userService: UserService,
         private playlistService: PlaylistService,
         private playerService: PlayerService,
-        private urlService: UrlService
+        private urlService: UrlService,
+        private trackService: TrackService
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.user = user;
@@ -51,7 +54,12 @@ export class HomeComponent {
         this.urlService.redirect(route);
     }
 
-    toggleAudio(item: string, playlist: string) {
-        this.playerService.toggleAudio(item, playlist)
+    toggleAudio(item: string, playlist: IPlaylist) {
+        this.trackService.getTrackById(item).pipe(
+            first()
+        ).subscribe(
+            (response: ITrack) => {
+                this.playerService.toggleAudio(response, playlist)
+            })
     }
 }

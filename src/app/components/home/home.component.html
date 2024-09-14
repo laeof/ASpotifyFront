@@ -11,10 +11,10 @@
         <div class="recentplaylists">
             @for (item of playlists; track item; let i = $index) {
             <div class="playlist-card-wrapper">
-                <span class="playlist-card" (click)="redirectToPlaylist(item.Id)">
-                    <img class="img" src="{{item.Image}}">
-                    <p class="title">{{item.Name}}</p>
-                    <span class="toggleplay" id="play" (click)="toggleAudio(item.TrackIds[0], item.Id)">
+                <span class="playlist-card" (click)="redirectToPlaylist(item.id)">
+                    <img class="img" src="{{item.imagePath}}">
+                    <p class="title">{{item.name}}</p>
+                    <span class="toggleplay" id="play" (click)="toggleAudio(item.tracks[0], item)">
                         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                             xmlns:svgjs="http://svgjs.com/svgjs" width="20" height="20" x="0" y="0"
                             viewBox="0 0 552.611 552.611" style="enable-background:new 0 0 512 512" xml:space="preserve"

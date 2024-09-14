@@ -1,5 +1,5 @@
 import { PlaylistService } from "./playlist.service";
-import { BehaviorSubject, iif, Observable } from "rxjs";
+import { BehaviorSubject, first, iif, Observable } from "rxjs";
 import { AudioService } from "./audio.service";
 import { QueueService } from "./queue.service";
 import { TrackService } from "./track.service";
@@ -17,12 +17,12 @@ export class PlayerService {
 
     private nowPlayingPlaylistId: string = '';
     private nowPlayingPlaylist: IPlaylist = {
-        Id: "",
-        AuthorId: "",
-        Image: "",
-        Name: "",
-        Type: PlaylistType.Playlist,
-        TrackIds: []
+        id: "",
+        authorId: "",
+        imagePath: "",
+        name: "",
+        types: PlaylistType.Playlist,
+        tracks: []
     };
     private nowPlayingTrackId: string = '';
 
@@ -37,94 +37,40 @@ export class PlayerService {
 
         this.playlistService.getPlayingPlaylistId().subscribe(playlistId => {
             this.nowPlayingPlaylistId = playlistId;
-        })
-
-        this.playlistService.getPlaylistByIdDev(this.nowPlayingPlaylistId).subscribe((playlist: any) => {
-            this.nowPlayingPlaylist = {
-                Id: playlist.id,
-                AuthorId: playlist.authorId,
-                Image: playlist.imagePath,
-                Name: playlist.name,
-                Type: playlist.types,
-                TrackIds: playlist.tracks
-            }
+            this.playlistService.getPlaylistById(this.nowPlayingPlaylistId).pipe(first()).subscribe(
+                (playlist: IPlaylist) => {
+                    this.nowPlayingPlaylist = playlist
+                })
         })
     }
 
     playBack() {
-        const sub = this.trackService.getTrackByIdDev(this.nowPlayingTrackId).subscribe((response: any) => {
-            let play: ITrack = {
-                Id: response.id,
-                ArtistId: response.artistId,
-                Image: response.imagePath,
-                Name: response.name,
-                AlbumId: response.albumId,
-                Path: response.urlPath,
-                Duration: response.duration,
-                Date: response.createdDate
-            };
-
-            this.queueService.prevTrack();
-            this.audioService.playTrack(play);
-        })
-
-        sub.unsubscribe();
+        this.trackService.getTrackById(this.nowPlayingTrackId).subscribe(
+            (track: ITrack) => {
+                this.queueService.prevTrack();
+                this.audioService.playTrack(track);
+            }
+        )
     }
 
     playNext() {
-        const sub = this.trackService.getTrackByIdDev(this.nowPlayingTrackId).subscribe((response: any) => {
-            let play: ITrack = {
-                Id: response.id,
-                ArtistId: response.artistId,
-                Image: response.imagePath,
-                Name: response.name,
-                AlbumId: response.albumId,
-                Path: response.urlPath,
-                Duration: response.duration,
-                Date: response.createdDate
-            };
-
-            this.queueService.nextTrack();
-            this.audioService.playTrack(play);
-        })
-
-        sub.unsubscribe();
+        this.trackService.getTrackById(this.nowPlayingTrackId).subscribe(
+            (track: ITrack) => {
+                this.queueService.nextTrack();
+                this.audioService.playTrack(track);
+            }
+        )
     }
 
-    toggleAudio(trackId: string, playlistId: string, lockPlaylistCheck: boolean = false) {
-        if (this.nowPlayingPlaylistId != playlistId) {
-            const sub = this.playlistService.getPlaylistByIdDev(playlistId).subscribe((playlist: any) => {
-                let play = {
-                    Id: playlist.id,
-                    AuthorId: playlist.authorId,
-                    Image: playlist.imagePath,
-                    Name: playlist.name,
-                    Type: playlist.types,
-                    TrackIds: playlist.tracks
-                }
-                this.queueService.setQueue(play.TrackIds)
-            })
-
-            sub.unsubscribe();
+    toggleAudio(track: ITrack, playlist: IPlaylist, lockPlaylistCheck: boolean = false) {
+        if (this.nowPlayingPlaylistId != playlist.id) {
+            this.queueService.setQueue(playlist.tracks)
         }
+        this.audioService.toggleAudio(
+            track, this.nowPlayingPlaylist, lockPlaylistCheck);
 
-        this.trackService.getTrackByIdDev(trackId).subscribe((response: any) => {
-            let play: ITrack = {
-                Id: response.id,
-                ArtistId: response.artistId,
-                Image: response.imagePath,
-                Name: response.name,
-                AlbumId: response.albumId,
-                Path: response.urlPath,
-                Duration: response.duration,
-                Date: response.createdDate
-            };
-            this.audioService.toggleAudio(
-                play, this.nowPlayingPlaylist, lockPlaylistCheck);
-        })
-
-        if (this.nowPlayingPlaylistId != playlistId)
-            this.playlistService.setPlayingPlaylistId(playlistId)
+        if (this.nowPlayingPlaylistId != playlist.id)
+            this.playlistService.setPlayingPlaylistId(playlist.id)
     }
 
     toggleRandom() {

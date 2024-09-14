@@ -5,13 +5,13 @@ export class AlbumService {
     private Albums: IPlaylist[] = PLAYLISTS;
 
     getAlbumById(id: string): IPlaylist | undefined {
-        return this.Albums.find(item => item.Id === id);
+        return this.Albums.find(item => item.id === id);
     }
     
     getAlbumNameById(id: string) {
-        const album = this.Albums.find(item => item.Id === id);
+        const album = this.Albums.find(item => item.id === id);
         if (album == undefined)
             return "";
-        return album.Name;
+        return album.name;
     }
 }

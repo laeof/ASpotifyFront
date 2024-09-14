@@ -13,6 +13,7 @@ import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
 import { LocalStorageService } from '../../services/localstorage.service';
 import { UrlService } from '../../services/url.service';
+import { first } from 'rxjs';
 
 @Component({
     selector: 'app-footer',
@@ -23,22 +24,22 @@ import { UrlService } from '../../services/url.service';
 })
 export class FooterComponent {
     track: ITrack = {
-        AlbumId: "",
-        Id: '',
-        Name: '',
-        ArtistId: '',
-        Date: new Date,
-        Duration: 0,
-        Image: '',
-        Path: ''
+        id: '',
+        name: '',
+        artistId: '',
+        createdDate: new Date,
+        albumId: '',
+        duration: 0,
+        imagePath: '',
+        urlPath: ''
     };
     playlist: IPlaylist = {
-        Id: '',
-        AuthorId: '',
-        Image: '',
-        Name: '',
-        Type: PlaylistType.Playlist,
-        TrackIds: []
+        id: '',
+        authorId: '',
+        imagePath: '',
+        name: '',
+        types: PlaylistType.Playlist,
+        tracks: []
     };
     playingPlaylistId: string = ''
     volume: number = 0;
@@ -89,36 +90,21 @@ export class FooterComponent {
         if (latestPlayingSong != null && latestPlayingPlaylist != null) {
             this.playlistService.setPlayingPlaylistId(latestPlayingPlaylist)
             let playlistPlayed: IPlaylist;
-            this.playlistService.getPlaylistByIdDev(latestPlayingPlaylist).subscribe((playlist: any) => {
-                playlistPlayed = {
-                    Id: playlist.id,
-                    AuthorId: playlist.authorId,
-                    Image: playlist.imagePath,
-                    Name: playlist.name,
-                    Type: playlist.types,
-                    TrackIds: playlist.tracks
-                }
-                this.queueService.setQueue(playlistPlayed.TrackIds)
-                this.queueService.setCurrentTrack(latestPlayingSong)
-                this.audioService.setTrackPosition(latestSongTrackPosition)
-                this.audioService.setTrackPause();
-            })
+            this.playlistService.getPlaylistById(latestPlayingPlaylist).pipe(first()).subscribe(
+                (playlist: IPlaylist) => {
+                    playlistPlayed = playlist
+                    this.queueService.setQueue(playlistPlayed.tracks)
+                    this.queueService.setCurrentTrack(latestPlayingSong)
+                    this.audioService.setTrackPosition(latestSongTrackPosition)
+                    this.audioService.setTrackPause();
+                })
         }
 
         this.queueService.getCurrentTrackId().subscribe(track => {
-            this.trackService.getTrackByIdDev(track).subscribe((response: any) => {
-                let play: ITrack = {
-                    Id: response.id,
-                    ArtistId: response.artistId,
-                    Image: response.imagePath,
-                    Name: response.name,
-                    AlbumId: response.albumId,
-                    Path: response.urlPath,
-                    Duration: response.duration,
-                    Date: response.createdDate
-                };
-                this.track = play;
-            })
+            this.trackService.getTrackById(track).pipe(first()).subscribe(
+                (response: any) => {
+                    this.track = response;
+                })
         });
 
         this.audioService.getTrackPosition().subscribe(trackpos => {
@@ -135,17 +121,10 @@ export class FooterComponent {
 
         this.playlistService.getPlayingPlaylistId().subscribe((playlist) => {
             this.playingPlaylistId = playlist
-        })
-
-        this.playlistService.getPlaylistByIdDev(this.playingPlaylistId).subscribe((playlist: any) => {
-            this.playlist = {
-                Id: playlist.id,
-                AuthorId: playlist.authorId,
-                Image: playlist.imagePath,
-                Name: playlist.name,
-                Type: playlist.types,
-                TrackIds: playlist.tracks
-            }
+            this.playlistService.getPlaylistById(this.playingPlaylistId).pipe(first()).subscribe(
+                (playlist: IPlaylist) => {
+                    this.playlist = playlist
+                })
         })
 
         this.sidebarService.isNowPlayingVisible().subscribe(visible => {
@@ -167,16 +146,16 @@ export class FooterComponent {
         this.urlService.redirect(route);
     }
 
-    toggleLikedSongs(trackId: string) {
-        if (this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId)) {
-            this.playlistService.removeFromPlaylist(this.user.lovedPlaylistId, trackId);
+    toggleLikedSongs(track: ITrack) {
+        if (this.playlistService.getLovedTrackState(track)) {
+            this.playlistService.removeFromPlaylist(this.user.lovedPlaylistId, track.id);
             return;
         }
-        this.playlistService.addToPlaylist(this.user.lovedPlaylistId, trackId);
+        this.playlistService.addToPlaylist(this.user.lovedPlaylistId, track.id);
     }
 
-    getLikedSongsState(trackId: string) {
-        return this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId);
+    getLikedSongsState(track: ITrack) {
+        return this.playlistService.getLovedTrackState(track);
     }
 
     toggleNowPlaying() {
@@ -188,7 +167,7 @@ export class FooterComponent {
     }
 
     isActive(): boolean {
-        return this.track.Id != '';
+        return this.track.id != '';
     }
 
     isPaused(): any {
@@ -196,7 +175,7 @@ export class FooterComponent {
     }
 
     toggleAudio() {
-        this.playerService.toggleAudio(this.track.Id, this.playlist.Id, true);
+        this.playerService.toggleAudio(this.track, this.playlist, true);
     }
 
     toggleRandom(): any {

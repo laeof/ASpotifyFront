@@ -58,7 +58,7 @@
                 <mat-form-field>
                     <mat-select [value]="0" formControlName="album">
                         @for (item of albums; track item;) {
-                        <mat-option [value]="item">{{item.Name}}</mat-option>
+                        <mat-option [value]="item">{{item.name}}</mat-option>
                         }
                     </mat-select>
                 </mat-form-field>
@@ -74,9 +74,9 @@
     <div class="form-wrap">
         <form class="form">
             <div class="text">
-                <label class="label-for">Track {{item.Name}}:</label>
+                <label class="label-for">Track {{item.name}}:</label>
                 <label class="label-for">Name:</label>
-                <input type="text" class="input-text" [(ngModel)]="item.Name" name="trackName{{item.Name}}"
+                <input type="text" class="input-text" [(ngModel)]="item.name" name="trackName{{item.name}}"
                     placeholder="Name">
             </div>
         </form>

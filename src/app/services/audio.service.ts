@@ -21,72 +21,50 @@ export class AudioService {
     private trackPosition = new BehaviorSubject<number>(0);
     private volume = new BehaviorSubject<number>(0.1);
     private isPaused = new BehaviorSubject<boolean>(false);
-    private trackid: string = "";
     private track: ITrack = {
-        Id: '',
-        Name: '',
-        ArtistId: '',
-        Date: new Date,
-        AlbumId: '',
-        Duration: 0,
-        Image: '',
-        Path: ''
+        id: '',
+        name: '',
+        artistId: '',
+        createdDate: new Date,
+        albumId: '',
+        duration: 0,
+        imagePath: '',
+        urlPath: ''
     }
-    private nextTrackId: string = '';
     private nextTrack: ITrack = {
-        Id: '',
-        Name: '',
-        ArtistId: '',
-        Date: new Date,
-        AlbumId: '',
-        Duration: 0,
-        Image: '',
-        Path: ''
+        id: '',
+        name: '',
+        artistId: '',
+        createdDate: new Date,
+        albumId: '',
+        duration: 0,
+        imagePath: '',
+        urlPath: ''
     }
     private playlistActiveId = '';
 
     constructor(private http: HttpClient,
         private api: ApiService,
-        private trackService: TrackService,
         private queueService: QueueService,
-        private playlistService: PlaylistService
+        private playlistService: PlaylistService,
+        private trackService: TrackService
     ) {
         this.audio = new Audio();
         this.musicApi = this.api.getMusicApi();
         this.queueService.getNextTrack().subscribe(nextId => {
-            this.nextTrackId = nextId
-            const sub = this.trackService.getTrackByIdDev(nextId).subscribe((response: any) => {
-                let play: ITrack = {
-                    Id: response.id,
-                    ArtistId: response.artistId,
-                    Image: response.imagePath,
-                    Name: response.name,
-                    AlbumId: response.albumId,
-                    Path: response.urlPath,
-                    Duration: response.duration,
-                    Date: response.createdDate
-                };
-                this.nextTrack = play;
-            })
-            sub.unsubscribe();
+            this.trackService.getTrackById(nextId).subscribe(
+                (track: ITrack) => {
+                    this.nextTrack = track;
+                }
+            )
         })
 
         this.queueService.getCurrentTrackId().subscribe(trackId => {
-            this.trackid = trackId
-            const sub = this.trackService.getTrackByIdDev(trackId).subscribe((response: any) => {
-                let play: ITrack = {
-                    Id: response.id,
-                    ArtistId: response.artistId,
-                    Image: response.imagePath,
-                    Name: response.name,
-                    AlbumId: response.albumId,
-                    Path: response.urlPath,
-                    Duration: response.duration,
-                    Date: response.createdDate
-                };
-                this.track = play;
-            })
-            sub.unsubscribe();
+            this.trackService.getTrackById(trackId).subscribe(
+                (track: ITrack) => {
+                    this.track = track;
+                }
+            )
         })
 
         this.playlistService.getActiveId().subscribe(value => {
@@ -102,8 +80,8 @@ export class AudioService {
             clearInterval(this.intervalId);
         }
 
-        if (this.trackid !== track.Id)
-            this.queueService.setCurrentTrack(track.Id);
+        if (this.track.id !== track.id)
+            this.queueService.setCurrentTrack(track.id);
 
         this.playAudio(track);
         this.setTrackPositionTracking(0);
@@ -113,27 +91,30 @@ export class AudioService {
 
             this.setTrackPositionTracking(currentTime);
 
-            if (this.track.Duration == currentTime)
+            if (this.track.duration == currentTime)
                 this.playTrack(this.nextTrack);
         }, 1000);
     }
 
     toggleAudio(item: ITrack, playlist: IPlaylist, lockPlaylistCheck: boolean = false) {
-        if (item.Id === this.trackid && (playlist.Id === this.playlistActiveId || lockPlaylistCheck)) {
+        if (item.id === this.track.id && (playlist.id == this.playlistActiveId || lockPlaylistCheck)) {
             if (!this.audio.paused) {
                 this.stopAudio();
                 console.log('stopped')
                 return;
             }
 
-            if (this.audio.src != "" || item.Id != '') {
+            if (this.audio.src != "" || item.id != '') {
                 this.resumeAudio();
                 console.log('resumed')
                 return;
             }
         }
 
-        if (this.trackid != item.Id)
+        console.log(this.track.id)
+        console.log(item.id)
+
+        if (this.track.id != item.id)
             this.setTrackPosition(0)
 
         this.playTrack(item);
@@ -142,7 +123,7 @@ export class AudioService {
 
     playAudio(item: ITrack) {
         this.isPaused.next(false);
-        this.streamAudioFromServer(item.Path).subscribe(blob => {
+        this.streamAudioFromServer(item.urlPath).subscribe(blob => {
             this.audio.src = URL.createObjectURL(blob);
             this.audio.volume = this.volume.value;
             this.audio.play();
@@ -176,7 +157,7 @@ export class AudioService {
 
             this.setTrackPositionTracking(currentTime);
 
-            if (this.track.Duration == currentTime)
+            if (this.track.duration == currentTime)
                 this.playTrack(this.nextTrack);
         }, 1000);
     }

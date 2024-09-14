@@ -78,7 +78,7 @@ export class CreateComponent {
         });
         this.playlistService.getAllMyPlaylists().subscribe(
             (playlists: IPlaylist[]) => {
-                this.albums = playlists.filter(playlist => playlist.Type === 1);
+                this.albums = playlists.filter(playlist => playlist.types === 1);
             }
         )
     }
@@ -100,16 +100,16 @@ export class CreateComponent {
                 let tracks = await this.mediaService.uploadFiles(chunk).toPromise();
                 tracks?.map((track: any) => {
                     let newtrack: ITrack = {
-                        Id: track.id,
-                        Name: track.name,
-                        Path: track.path,
-                        Duration: track.duration,
-                        ArtistId: this.artist.Id,
-                        Date: new Date(),
-                        AlbumId: this.albumId,
-                        Image: this.image
+                        id: track.id,
+                        name: track.name,
+                        urlPath: track.path,
+                        duration: track.duration,
+                        artistId: this.artist.Id,
+                        createdDate: new Date(),
+                        albumId: this.albumId,
+                        imagePath: this.image
                     }
-                    newtrack.Name = newtrack.Name.charAt(0).toUpperCase() + newtrack.Name.slice(1)
+                    newtrack.name = newtrack.name.charAt(0).toUpperCase() + newtrack.name.slice(1)
                     this.tracks.push(newtrack)
                 });
                 results.push(tracks);
@@ -188,12 +188,12 @@ export class CreateComponent {
         let img = this.image as any
 
         const playlist: IPlaylist = {
-            Id: "00000000-0000-0000-0000-000000000000",
-            AuthorId: this.artist.Id ?? '',
-            Image: img.filePath,
-            Name: this.playlistForm.value.name ?? '',
-            Type: this.playlistForm.value.types ?? 0,
-            TrackIds: []
+            id: "00000000-0000-0000-0000-000000000000",
+            authorId: this.artist.Id ?? '',
+            imagePath: img.filePath,
+            name: this.playlistForm.value.name ?? '',
+            types: this.playlistForm.value.types ?? 0,
+            tracks: []
         }
 
         this.playlistService.createNewPlaylist(playlist);
@@ -201,8 +201,8 @@ export class CreateComponent {
 
     onSubmitTrack() {
         this.tracks.forEach((element: ITrack) => {
-            element.AlbumId = this.trackForm.value.album.Id
-            element.Image = this.trackForm.value.album.Image           
+            element.albumId = this.trackForm.value.album.id
+            element.imagePath = this.trackForm.value.album.imagePath         
         });
 
         
