@@ -10,7 +10,7 @@ import { ArtistService } from '../../services/artist.service';
 import { AlbumService } from '../../services/album.service';
 import { CommonModule } from '@angular/common';
 import { AudioService } from '../../services/audio.service';
-import { first, Observable, of, Subscription, switchMap, take } from 'rxjs';
+import { first, firstValueFrom, map, Observable, of, Subscription, switchMap, take } from 'rxjs';
 import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
@@ -18,6 +18,7 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { ContextMenuService } from '../../services/context-menu.service';
 import { LocalStorageService } from '../../services/localstorage.service';
 import { FooterInfoComponent } from "../footer-info/footer-info.component";
+import { IArtist } from '../../dtos/artist';
 
 @Component({
     selector: 'app-playlist',
@@ -68,6 +69,10 @@ export class PlaylistComponent implements OnDestroy {
 
     tracks: ITrack[] = []
 
+    artistNames: { [key: string]: string } = {}
+    albumNames: { [key: string]: string } = {}
+    trackDates: { [key: string]: string } = {}
+
     currentPlaylistId: string = ''
 
     sub: Subscription;
@@ -112,26 +117,35 @@ export class PlaylistComponent implements OnDestroy {
             this.playlistService.setActiveId(id);
         });
 
+        console.log(this.artistNames)
+
         this.subActive0 = this.playlistService.getActiveId().subscribe(playlist => {
             this.activePlaylistId = playlist
             this.subActive = this.playlistService.getPlaylistById(this.activePlaylistId).pipe(first()).subscribe(
                 (playlist: IPlaylist) => {
                     this.playlist = playlist
-
                     let trackList: ITrack[] = []
                     this.playlist.tracks.forEach(element => {
-
                         this.trackService.getTrackById(element).pipe(first()).subscribe(
                             (response: ITrack) => {
                                 trackList.push(response);
+                                this.trackDates[response.id] = (new Date(response.createdDate).toDateString())
+                                if (!this.albumNames[response.albumId])
+                                    this.playlistService.getPlaylistById(response.albumId).pipe(first()).subscribe(
+                                        (response: IPlaylist) => {
+                                            this.albumNames[response.id] = response.name;
+                                            if (!this.artistNames[response.authorId])
+                                                this.getArtistNames(response.authorId)
+                                        })
+                                if (!this.artistNames[response.artistId]) {
+                                    this.getArtistNames(response.artistId)
+                                }
                             })
                     });
                     this.tracks = trackList
                     setTimeout(() => this.extractColor(), 1);
                 })
         })
-
-        console.log(this.tracks)
 
         this.subCurrent0 = this.playlistService.getPlayingPlaylistId().subscribe(playlist => {
             this.currentPlaylistId = playlist
@@ -165,6 +179,16 @@ export class PlaylistComponent implements OnDestroy {
             this.subActive0.unsubscribe();
         if (this.subCurrent0 != undefined)
             this.subCurrent0.unsubscribe();
+    }
+
+    dateToNormal(date: Date) {
+    }
+
+    getArtistNames(response: string) {
+        this.artistService.getArtistById(response).pipe(first()).subscribe(
+            (response: IArtist) => {
+                this.artistNames[response.id] = response.userName;
+            })
     }
 
     toggleLikedSongs(track: ITrack) {
@@ -222,23 +246,6 @@ export class PlaylistComponent implements OnDestroy {
 
     toggleContextMenu() {
         this.toggledContextMenu = !this.toggledContextMenu;
-    }
-
-    getAlbumName(id: string): IPlaylist {
-        let pla: IPlaylist = {
-            id: '',
-            authorId: '',
-            imagePath: '',
-            name: '',
-            types: PlaylistType.Playlist,
-            tracks: []
-        }
-
-        return pla;
-    }
-
-    getArtistName(id: string) {
-        return this.artistService.getArtistNameById(id);
     }
 
     getPlaylistType(type: PlaylistType = this.playlist.types) {

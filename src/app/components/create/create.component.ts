@@ -29,10 +29,10 @@ import { TrackService } from '../../services/track.service';
 })
 export class CreateComponent {
     artist: IArtist = {
-        Id: '',
-        UserName: '',
-        FirstName: '',
-        LastName: '',
+        id: '',
+        userName: '',
+        firstName: '',
+        lastName: '',
         albums: []
     };
 
@@ -67,10 +67,10 @@ export class CreateComponent {
         private trackService: TrackService
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
-            this.artist.Id = user.Id;
-            this.artist.FirstName = user.FirstName || ''
-            this.artist.LastName = user.LastName || ''
-            this.artist.UserName = user.UserName
+            this.artist.id = user.Id;
+            this.artist.firstName = user.FirstName || ''
+            this.artist.lastName = user.LastName || ''
+            this.artist.userName = user.UserName
             user.Playlists.map(playlist => {
                 if (playlist)
                     this.artist.albums.push(playlist)
@@ -104,7 +104,7 @@ export class CreateComponent {
                         name: track.name,
                         urlPath: track.path,
                         duration: track.duration,
-                        artistId: this.artist.Id,
+                        artistId: this.artist.id,
                         createdDate: new Date(),
                         albumId: this.albumId,
                         imagePath: this.image
@@ -183,13 +183,13 @@ export class CreateComponent {
         console.log(this.playlistForm.value.name ?? '')
         console.log(this.playlistForm.value.types ?? '')
         console.log(this.image ?? '')
-        console.log(this.artist.Id ?? '')
+        console.log(this.artist.id ?? '')
 
         let img = this.image as any
 
         const playlist: IPlaylist = {
             id: "00000000-0000-0000-0000-000000000000",
-            authorId: this.artist.Id ?? '',
+            authorId: this.artist.id ?? '',
             imagePath: img.filePath,
             name: this.playlistForm.value.name ?? '',
             types: this.playlistForm.value.types ?? 0,

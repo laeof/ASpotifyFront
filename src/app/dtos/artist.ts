@@ -1,7 +1,7 @@
 export interface IArtist {
-    Id: string,
-    UserName: string,
-    FirstName: string,
-    LastName: string,
+    id: string,
+    userName: string,
+    firstName: string,
+    lastName: string,
     albums: string[];
 }

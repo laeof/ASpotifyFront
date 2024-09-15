@@ -8,6 +8,8 @@ import { UserService } from "./user.service";
 import { HttpClient, HttpContext } from "@angular/common/http";
 import { ApiService } from "./api.service";
 import { ITrack } from "../dtos/track";
+import { ArtistService } from "./artist.service";
+import { IArtist } from "../dtos/artist";
 
 @Injectable({
     providedIn: 'root'
@@ -33,7 +35,8 @@ export class PlaylistService {
     constructor(private queueService: QueueService,
         private userService: UserService,
         private http: HttpClient,
-        private apiService: ApiService
+        private apiService: ApiService,
+        private artistService: ArtistService//temporary, need to use user
     ) {
         this.userService.getCurrentUserInfo().subscribe((user: any) => {
             this.user = user;
@@ -82,13 +85,13 @@ export class PlaylistService {
     }
 
     getAllMyPlaylists(): Observable<IPlaylist[]> {
-        return this.userService.getCurrentUserInfo().pipe(
-            switchMap((user: IUser) => {
-                const playlistObservables = user.Playlists.map((id: string) => this.getPlaylistById(id));
+        return this.artistService.getArtistById(this.user.Id).pipe(
+            switchMap((user: IArtist) => {
+                const playlistObservables = user.albums.map((id: string) => this.getPlaylistById(id));
     
                 return forkJoin(playlistObservables);
             })
-        );
+        )
     }
 
     createNewPlaylist(dto: IPlaylist) {

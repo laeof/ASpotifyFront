@@ -8,7 +8,7 @@
             <div class="descr">
                 <p class="type">{{getPlaylistType()}}</p>
                 <h2 class="title">{{ playlist.name }}</h2>
-                <p class="author">{{getArtistName(playlist.authorId)}} - {{playlist.tracks.length || 0}} tracks</p>
+                <p class="author">{{this.artistNames[playlist.authorId]}} - {{playlist.tracks.length || 0}} tracks</p>
             </div>
         </div>
     </div>
@@ -116,15 +116,15 @@
                                     {{item.name}}
                                 </div>
                                 <div class="subtitle">
-                                    {{this.getArtistName(item.artistId)}}
+                                    {{artistNames[item.artistId]}}
                                 </div>
                             </div>
                         </td>
                         <td class="album">
-                            {{this.getAlbumName(item.albumId).name}}
+                            {{albumNames[item.albumId]}}
                         </td>
                         <td class="date">
-                            {{item.createdDate.toDateString}}
+                            {{this.trackDates[item.id]}}
                         </td>
                         <td class="like" (click)="toggleLikedSongs(item)"
                             [ngClass]="{'isLoved': getLikedSongsState(item)}">

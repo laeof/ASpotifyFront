@@ -38,11 +38,11 @@ $main-background: rgb(40, 40, 40);
     user-select: none;
     display: flex;
     flex-direction: column;
-    min-width: 400px;
+    max-width: 375px;
     height: 100%;
 
     @media screen and (max-width: 1400px) {
-        min-width: 300px;
+        max-width: 300px;
     }
 }
 
