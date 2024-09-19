@@ -2,7 +2,7 @@
     <div class="bottom">
         <div class="head">
             <span class="nameandbutton">
-                {{getPlaylistName()}}
+                {{this.playlist.name}}
             </span>
             <span class="buttons">
                 <span class="dots" (click)="onActionsClick($event)" (click)="$event.stopPropagation()">

@@ -1,4 +1,18 @@
-<div class="main">
-    <router-outlet>
-    </router-outlet>
+<div class="wrapper">
+    <app-header>
+    </app-header>
+    <div class="top" [ngClass]="{'play': isActive()}">
+        <app-leftsidebar>
+
+        </app-leftsidebar>
+        <app-mainplayer style=" flex: 1; padding-left: 10px;">
+
+        </app-mainplayer>
+        <app-nowplayingsidebar>
+
+        </app-nowplayingsidebar>
+    </div>
+    <app-footer>
+
+    </app-footer>
 </div>

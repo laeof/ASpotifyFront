@@ -7,15 +7,38 @@ import { AccountComponent } from './components/account/account.component';
 import { LyricsComponent } from './components/lyrics/lyrics.component';
 import { CreateComponent } from './components/create/create.component';
 import { ProfilemodifyComponent } from './components/profilemodify/profilemodify.component';
+import { MainComponent } from './components/main/main.component';
+import { AuthComponent } from './components/auth/auth.component';
+import { SignupComponent } from './components/signup/signup.component';
+import { SigninComponent } from './components/signin/signin.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'home', pathMatch: 'full' },
-    { path: 'home', component: HomeComponent},
-    { path: 'playlists/:id', component: PlaylistComponent },
-    { path: 'profile', component: ProfileComponent},
-    { path: 'profile/modify', component: ProfilemodifyComponent},
-    { path: 'account', component: AccountComponent},
-    { path: 'artist', component: ArtistsettingsComponent},
-    { path: 'artist/create', component: CreateComponent},
-    { path: 'lyrics', component: LyricsComponent},
+    {
+        path: '',
+        redirectTo: 'Account', pathMatch: 'full'
+    },
+    {
+        path: 'Player',
+        component: MainComponent,
+        children: [
+            { path: '', redirectTo: 'home', pathMatch: 'full' },
+            { path: 'home', component: HomeComponent },
+            { path: 'playlists/:id', component: PlaylistComponent },
+            { path: 'profile', component: ProfileComponent },
+            { path: 'profile/modify', component: ProfilemodifyComponent },
+            { path: 'account', component: AccountComponent },
+            { path: 'artist', component: ArtistsettingsComponent },
+            { path: 'artist/create', component: CreateComponent },
+            { path: 'lyrics', component: LyricsComponent },
+        ]
+    },
+    {
+        path: 'Account',
+        component: AuthComponent,
+        children: [
+            { path: '', redirectTo: 'SignUp', pathMatch: 'full' },
+            { path: 'SignUp', component: SignupComponent },
+            { path: 'SignIn', component: SigninComponent }
+        ]
+    }
 ];

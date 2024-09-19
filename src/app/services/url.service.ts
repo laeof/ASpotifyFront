@@ -18,6 +18,8 @@ export class UrlService {
     nextroutes: string[] = [];
 
     redirect(route: string) {
+        route = 'Player/' + route;
+
         if (this.getCurrentUrl() === route)
             return;
 

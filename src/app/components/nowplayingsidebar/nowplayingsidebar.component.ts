@@ -109,12 +109,11 @@ export class NowplayingsidebarComponent implements OnDestroy {
 
         this.playlistService.getPlayingPlaylistId().subscribe((playlist) => {
             this.playlistId = playlist
-        })
-
-        this.playlistService.getPlaylistById(this.playlistId).subscribe(
-            (playlist: IPlaylist) => {
-                this.playlist = playlist
-            })
+            this.playlistService.getPlaylistById(playlist).pipe(first()).subscribe(
+                (playlist: IPlaylist) => {
+                    this.playlist = playlist
+                })
+        })        
     }
     ngOnDestroy(): void {
         throw new Error('Method not implemented.');
@@ -154,10 +153,6 @@ export class NowplayingsidebarComponent implements OnDestroy {
 
     getArtistName(id: string) {
         return this.artistService.getArtistNameById(id);
-    }
-
-    getPlaylistName() {
-        return this.playlist.name
     }
 
     toggleSideBar() {

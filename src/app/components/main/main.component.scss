@@ -1,4 +1,8 @@
-.main {
-    width: 100%;
-    height: 100%;
+.top {
+    display: flex;
+    height: calc(100vh - 70px);
+
+    &.play {
+        height: calc(100vh - 145px);
+    }
 }
