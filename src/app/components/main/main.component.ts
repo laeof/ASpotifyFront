@@ -29,9 +29,10 @@ import { UrlService } from '../../services/url.service';
 import { TrackService } from '../../services/track.service';
 import { first } from 'rxjs';
 import { ITrack } from '../../dtos/track';
-import { ColorService } from '../../services/color.service';
 import { PlaylistService } from '../../services/playlist.service';
 import { MainplayerComponent } from "../mainplayer/mainplayer.component";
+import { IUser } from '../../dtos/user';
+import { UserService } from '../../services/user.service';
 
 @Component({
     selector: 'app-main',
@@ -54,7 +55,6 @@ import { MainplayerComponent } from "../mainplayer/mainplayer.component";
     CreateComponent, 
     MainplayerComponent],
     providers: [
-        ColorService,
         TrackService,
         PlaylistService,
         ArtistService,
@@ -73,27 +73,43 @@ import { MainplayerComponent } from "../mainplayer/mainplayer.component";
     styleUrl: './main.component.scss'
 })
 export class MainComponent {
-    title = 'ASpotifyPlay';
     track: ITrack = {
         id: '',
         name: '',
         artistId: '',
-        createdDate: new Date,
+        createdDate: 0,
         albumId: '',
         duration: 0,
         imagePath: '',
         urlPath: ''
     };
+
+    user: IUser = {
+        Id: '',
+        UserName: '',
+        FirstName: null,
+        LastName: null,
+        Email: '',
+        Image: '',
+        lovedPlaylistId: '',
+        latestPlayingTrack: '',
+        latestPlayingPlaylist: '',
+        Playlists: []
+    }
     constructor(private queueService: QueueService,
-        private trackService: TrackService
+        private trackService: TrackService,
+        private userService: UserService
     ) {
         this.queueService.getCurrentTrackId().subscribe(track => {
             this.trackService.getTrackById(track).pipe(first()).subscribe((response: any) => {
                 this.track = response;
             })
         });
+        this.userService.getCurrentUserInfo().subscribe(user => {
+            this.user = user;
+        })
     }
     isActive() {
-        return this.track.id != '';
+        return this.track.id != '' && this.user.Id != '';
     }
 }

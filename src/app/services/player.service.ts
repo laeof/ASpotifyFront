@@ -15,14 +15,14 @@ export class PlayerService {
     private randomStateObs = new BehaviorSubject<boolean>(false);
     private repeatStateObs = new BehaviorSubject<boolean>(false);
 
-    private nowPlayingPlaylistId: string = '';
     private nowPlayingPlaylist: IPlaylist = {
         id: "",
         authorId: "",
         imagePath: "",
         name: "",
         types: PlaylistType.Playlist,
-        tracks: []
+        tracks: [],
+        color: ""
     };
     private nowPlayingTrackId: string = '';
 
@@ -35,42 +35,38 @@ export class PlayerService {
             this.nowPlayingTrackId = trackId;
         })
 
-        this.playlistService.getPlayingPlaylistId().subscribe(playlistId => {
-            this.nowPlayingPlaylistId = playlistId;
-            this.playlistService.getPlaylistById(this.nowPlayingPlaylistId).pipe(first()).subscribe(
-                (playlist: IPlaylist) => {
-                    this.nowPlayingPlaylist = playlist
-                })
+        this.playlistService.getPlayingPlaylist().subscribe(playlist => {
+            this.nowPlayingPlaylist = playlist;
         })
     }
 
     playBack() {
+        this.queueService.prevTrack();
         this.trackService.getTrackById(this.nowPlayingTrackId).subscribe(
             (track: ITrack) => {
-                this.queueService.prevTrack();
                 this.audioService.playTrack(track);
             }
         )
     }
 
     playNext() {
+        this.queueService.nextTrack();
         this.trackService.getTrackById(this.nowPlayingTrackId).subscribe(
             (track: ITrack) => {
-                this.queueService.nextTrack();
                 this.audioService.playTrack(track);
             }
         )
     }
 
     toggleAudio(track: ITrack, playlist: IPlaylist, lockPlaylistCheck: boolean = false) {
-        if (this.nowPlayingPlaylistId != playlist.id) {
-            this.queueService.setQueue(playlist.tracks)
+        if (this.nowPlayingPlaylist.id != playlist.id) {
+            this.queueService.setQueue(playlist.tracks.map(track => track.id))
         }
         this.audioService.toggleAudio(
             track, this.nowPlayingPlaylist, lockPlaylistCheck);
 
-        if (this.nowPlayingPlaylistId != playlist.id)
-            this.playlistService.setPlayingPlaylistId(playlist.id)
+        if (this.nowPlayingPlaylist.id != playlist.id)
+            this.playlistService.setPlayingPlaylist(playlist)
     }
 
     toggleRandom() {

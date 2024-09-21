@@ -47,6 +47,7 @@ export class QueueService {
         if (this.repeatTrack) {
             return;
         }
+
         this.currentIndex = (this.currentIndex + 1) % this.tracks.length;
 
         if (this.currentIndex + 1 == this.tracks.length) {

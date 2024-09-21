@@ -25,7 +25,7 @@ export class AudioService {
         id: '',
         name: '',
         artistId: '',
-        createdDate: new Date,
+        createdDate: 0,
         albumId: '',
         duration: 0,
         imagePath: '',
@@ -35,7 +35,7 @@ export class AudioService {
         id: '',
         name: '',
         artistId: '',
-        createdDate: new Date,
+        createdDate: 0,
         albumId: '',
         duration: 0,
         imagePath: '',
@@ -67,8 +67,8 @@ export class AudioService {
             )
         })
 
-        this.playlistService.getActiveId().subscribe(value => {
-            this.playlistActiveId = value;
+        this.playlistService.getActivePlaylist().subscribe(value => {
+            this.playlistActiveId = value.id;
         })
     }
 

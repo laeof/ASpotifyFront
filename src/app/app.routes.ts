@@ -19,6 +19,7 @@ export const routes: Routes = [
     },
     {
         path: 'Player',
+        title: 'ASpotifyPlayer',
         component: MainComponent,
         children: [
             { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -35,6 +36,7 @@ export const routes: Routes = [
     {
         path: 'Account',
         component: AuthComponent,
+        title: 'ASpotifyAuth',
         children: [
             { path: '', redirectTo: 'SignUp', pathMatch: 'full' },
             { path: 'SignUp', component: SignupComponent },

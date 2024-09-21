@@ -16,8 +16,24 @@ import { IArtist } from "../dtos/artist";
 })
 
 export class PlaylistService {
-    private currentPlaylistPlayingId = new BehaviorSubject<string>("");
-    private activePlaylistId = new BehaviorSubject<string>("");
+    private currentPlaylistPlaying = new BehaviorSubject<IPlaylist>({
+        id: '',
+        authorId: '',
+        name: '',
+        imagePath: '',
+        types: PlaylistType.Playlist,
+        tracks: [],
+        color: ''
+    });
+    private activePlaylist = new BehaviorSubject<IPlaylist>({
+        id: '',
+        authorId: '',
+        name: '',
+        imagePath: '',
+        types: PlaylistType.Playlist,
+        tracks: [],
+        color: ''
+    });
 
     private user: IUser = {
         Id: "",
@@ -41,11 +57,6 @@ export class PlaylistService {
         this.userService.getCurrentUserInfo().subscribe((user: any) => {
             this.user = user;
         });
-
-        this.user.Playlists.map(
-            (playlist: any) => {
-
-            })
     }
 
     getPlaylistById(id: string): Observable<IPlaylist> {
@@ -66,7 +77,7 @@ export class PlaylistService {
 
     addToPlaylist(playlistId: string, trackId: string) {
         this.addToPlaylist(playlistId, trackId)
-        if (playlistId == this.currentPlaylistPlayingId.value)
+        if (playlistId == this.currentPlaylistPlaying.value.id)
             this.queueService.addTrackAtIndex(trackId, 0);
     }
 
@@ -80,8 +91,14 @@ export class PlaylistService {
         return false;
     }
 
-    getAllPlaylistsUserId(id: string): string[] {
-        return this.userService.getUserInfoById(id)?.Playlists || [];
+    getAllPlaylistsUserId(id: string): Observable<IPlaylist[]> {
+        return this.artistService.getArtistById(id).pipe(
+            switchMap((user: IArtist) => {
+                const playlistObservables = user.albums.map((id: string) => this.getPlaylistById(id));
+    
+                return forkJoin(playlistObservables);
+            })
+        )
     }
 
     getAllMyPlaylists(): Observable<IPlaylist[]> {
@@ -95,14 +112,6 @@ export class PlaylistService {
     }
 
     createNewPlaylist(dto: IPlaylist) {
-        // const data = {
-        //     'Tracks': dto.TrackIds,
-        //     'Id': dto.Id,
-        //     'Name': dto.Name,
-        //     'AuthorId': dto.AuthorId,
-        //     'ImagePath': dto.Image,
-        //     'Types': dto.Type
-        // }
 
         this.http.post<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', dto)
             .subscribe(
@@ -123,7 +132,8 @@ export class PlaylistService {
             imagePath: "",
             name: "",
             types: PlaylistType.Playlist,
-            tracks: []
+            tracks: [],
+            color: ""
         }
 
         const formData = new FormData();
@@ -143,20 +153,20 @@ export class PlaylistService {
             );
     }
 
-    setActiveId(id: string) {
-        this.activePlaylistId.next(id);
+    setActivePlaylist(id: IPlaylist) {
+        this.activePlaylist.next(id);
     }
 
-    getActiveId(): Observable<string> {
-        return this.activePlaylistId.asObservable();
+    getActivePlaylist(): Observable<IPlaylist> {
+        return this.activePlaylist.asObservable();
     }
 
-    setPlayingPlaylistId(id: string) {
-        this.currentPlaylistPlayingId.next(id);
+    setPlayingPlaylist(id: IPlaylist) {
+        this.currentPlaylistPlaying.next(id);
     }
 
-    getPlayingPlaylistId(): Observable<string> {
-        return this.currentPlaylistPlayingId.asObservable();
+    getPlayingPlaylist(): Observable<IPlaylist> {
+        return this.currentPlaylistPlaying.asObservable();
     }
 
     getPlaylistType(type: PlaylistType): string {

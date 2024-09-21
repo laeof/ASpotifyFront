@@ -27,7 +27,7 @@ export class FooterComponent {
         id: '',
         name: '',
         artistId: '',
-        createdDate: new Date,
+        createdDate: 0,
         albumId: '',
         duration: 0,
         imagePath: '',
@@ -39,7 +39,8 @@ export class FooterComponent {
         imagePath: '',
         name: '',
         types: PlaylistType.Playlist,
-        tracks: []
+        tracks: [],
+        color: ''
     };
     playingPlaylistId: string = ''
     volume: number = 0;
@@ -88,12 +89,12 @@ export class FooterComponent {
         console.log("latest playlist: " + latestPlayingPlaylist)
 
         if (latestPlayingSong != null && latestPlayingPlaylist != null) {
-            this.playlistService.setPlayingPlaylistId(latestPlayingPlaylist)
             let playlistPlayed: IPlaylist;
             this.playlistService.getPlaylistById(latestPlayingPlaylist).pipe(first()).subscribe(
                 (playlist: IPlaylist) => {
                     playlistPlayed = playlist
-                    this.queueService.setQueue(playlistPlayed.tracks)
+                    this.playlistService.setPlayingPlaylist(playlist)
+                    this.queueService.setQueue(playlistPlayed.tracks.map(track => track.id))
                     this.queueService.setCurrentTrack(latestPlayingSong)
                     this.audioService.setTrackPosition(latestSongTrackPosition)
                     this.audioService.setTrackPause();
@@ -119,12 +120,8 @@ export class FooterComponent {
             this.paused = ispaused
         })
 
-        this.playlistService.getPlayingPlaylistId().subscribe((playlist) => {
-            this.playingPlaylistId = playlist
-            this.playlistService.getPlaylistById(this.playingPlaylistId).pipe(first()).subscribe(
-                (playlist: IPlaylist) => {
-                    this.playlist = playlist
-                })
+        this.playlistService.getPlayingPlaylist().subscribe((playlist) => {
+            this.playlist = playlist
         })
 
         this.sidebarService.isNowPlayingVisible().subscribe(visible => {
@@ -167,7 +164,7 @@ export class FooterComponent {
     }
 
     isActive(): boolean {
-        return this.track.id != '';
+        return this.track.id != '' && this.user.Id != '';
     }
 
     isPaused(): any {

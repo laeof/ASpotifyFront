@@ -23,12 +23,12 @@ export class LocalStorageService {
             this.userService.setLatestTrack(track);
         })
 
-        this.playlistService.getPlayingPlaylistId().subscribe(playlist => {
-            if (playlist === '')
+        this.playlistService.getPlayingPlaylist().subscribe(playlist => {
+            if (playlist.id === '')
                 return
 
-            this.setLatestPlaylist(playlist);
-            this.userService.setLatestPlaylist(playlist);
+            this.setLatestPlaylist(playlist.id);
+            this.userService.setLatestPlaylist(playlist.id);
         })
 
         this.audioService.getTrackPosition().subscribe(trackPos => {

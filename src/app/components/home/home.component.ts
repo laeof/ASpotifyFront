@@ -11,15 +11,17 @@ import { PlayerService } from '../../services/player.service';
 import { FooterInfoComponent } from "../footer-info/footer-info.component";
 import { TrackService } from '../../services/track.service';
 import { first } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [FooterInfoComponent],
+    imports: [FooterInfoComponent, CommonModule],
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss'
 })
 export class HomeComponent {
+    hover: boolean = false;
     playlists: IPlaylist[] = [];
     private user: IUser = {
         Id: '',
@@ -43,9 +45,19 @@ export class HomeComponent {
             this.user = user;
         });
 
-        this.playlistService.getAllMyPlaylists().subscribe(playlists => {
+        this.playlistService.getAllPlaylistsUserId("bf1d50fd-3d82-4cac-b0bd-322768ff2873").subscribe(playlists => {
             this.playlists = playlists;
         })
+    }
+
+    mouseMove(playlist: IPlaylist) {
+        console.log('moved')
+        document.documentElement.style.setProperty('--custom-bg-color', playlist.color);
+        this.hover = true;
+    }
+
+    mouseLeave() {
+        this.hover = false;
     }
 
     redirectToPlaylist(id: string) {

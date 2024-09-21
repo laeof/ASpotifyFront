@@ -1,21 +1,47 @@
+@import "../../shared/mixin.scss";
+
 .header {
     user-select: none;
     height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-bottom: 10px;
-    margin: 0 20px;
+    margin: -5px 20px 5px;
+
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
 
     .actions {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
+
+        &:nth-child(1) {
+            justify-content: flex-start;
+        }
+
+        &:nth-child(3) {
+            justify-content: flex-end;
+        }
 
         .item {
             padding: 5px;
             padding-bottom: 0px;
             transition: transform 0.6s;
+
+            &.signbutton {
+                background-color: rgba(75, 75, 75, 0.6);
+                padding: 8px 30px;
+                border-radius: 20px;
+                transition: background-color .3s, font-size .1s, letter-spacing .1s;
+
+                &.register {
+                    background-color: rgba($maincolor, 0.8)
+                }
+
+                &:hover {
+                    font-size: 18.5px;
+                    letter-spacing: 1px;
+                    background-color: rgba($maincolor, 0.8);
+                }
+            }
 
             &:not(:last-child) {
                 margin-right: 10px;
@@ -42,8 +68,8 @@
                 justify-content: center;
                 align-items: center;
                 border-radius: 50%;
-                width: 50px;
-                height: 50px;
+                width: 45px;
+                height: 45px;
                 margin-top: -5px;
                 transition: background-color 0.3s;
 

@@ -26,6 +26,45 @@
 
             @include scroll-bar();
 
+            .Options {
+                min-width: 300px;
+                display: flex;
+                padding: 20px 20px;
+                margin: 0 10px 15px 10px;
+                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.08);
+                flex-direction: column;
+
+                .title {
+                    font-size: 18px;
+                    margin-top: 0px;
+                }
+
+                .subtitle {
+                    font-size: 16px;
+                }
+
+                .button {
+                    background-color: rgba(100, 100, 100, 0.6);
+                    padding: 8px 30px;
+                    border-radius: 20px;
+                    transition: background-color .3s, font-size .1s, letter-spacing .1s;
+                    margin-top: 20px;
+                    cursor: pointer;
+                    text-align: center;
+
+                    &.register {
+                        background-color: rgba($maincolor, 0.8)
+                    }
+
+                    &:hover {
+                        font-size: 18.5px;
+                        letter-spacing: 1px;
+                        background-color: rgba($maincolor, 0.8);
+                    }
+                }
+            }
+
             .playlist {
                 min-width: 300px;
                 display: flex;

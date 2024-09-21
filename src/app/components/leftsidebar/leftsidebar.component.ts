@@ -20,7 +20,7 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
 })
 export class LeftsidebarComponent {
     items: IPlaylist[] = [];
-    private user: IUser = {
+    user: IUser = {
         Id: '',
         UserName: '',
         FirstName: null,
@@ -45,12 +45,12 @@ export class LeftsidebarComponent {
             this.user = user;
         });
 
-        this.playlistService.getActiveId().subscribe(id => {
-            this.activeId = id;
+        this.playlistService.getActivePlaylist().subscribe(playlist => {
+            this.activeId = playlist.id;
         });
 
-        this.playlistService.getPlayingPlaylistId().subscribe(play => {
-            this.playingId = play;
+        this.playlistService.getPlayingPlaylist().subscribe(play => {
+            this.playingId = play.id;
         });
 
         this.audioService.isTrackPaused().subscribe(pause => {

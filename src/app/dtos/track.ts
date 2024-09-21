@@ -2,7 +2,7 @@ export interface ITrack {
     id: string,
     name: string,
     artistId: string,
-    createdDate: Date,
+    createdDate: number,
     albumId: string,
     duration: number,
     imagePath: string,

@@ -6,7 +6,8 @@ export interface IPlaylist {
     imagePath: string,
     name: string,
     types: PlaylistType,
-    tracks: string[]
+    tracks: ITrack[],
+    color: string
 }
 
 export enum PlaylistType {

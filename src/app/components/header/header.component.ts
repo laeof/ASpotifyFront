@@ -20,6 +20,8 @@ import { QueueService } from '../../services/queue.service';
     styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
+    authorized: boolean = false;
+
     user: IUser = {
         Id: '',
         UserName: '',
@@ -63,6 +65,13 @@ export class HeaderComponent {
     @HostListener('document:click', ['$event'])
     onDocumentClick(event: MouseEvent) {
         this.contextMenu.close();
+    }
+
+    redirectToSignIn() {
+        window.location.href = "Account/SignIn"
+    }
+    redirectToSignUp() {
+        window.location.href = "Account"
     }
 
     redirectToHome() {

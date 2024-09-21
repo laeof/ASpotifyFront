@@ -13,6 +13,7 @@ import { MediaService } from '../../services/media.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { IPlaylist } from '../../dtos/playlist';
 import { TrackService } from '../../services/track.service';
+import { IImage } from '../../dtos/image';
 
 @Component({
     selector: 'app-create',
@@ -35,6 +36,11 @@ export class CreateComponent {
         lastName: '',
         albums: []
     };
+
+    iimage: IImage = {
+        filePath: '',
+        color: ''
+    }
 
     albumId: string = '';
     image: string = '';
@@ -105,7 +111,7 @@ export class CreateComponent {
                         urlPath: track.path,
                         duration: track.duration,
                         artistId: this.artist.id,
-                        createdDate: new Date(),
+                        createdDate: 0,
                         albumId: this.albumId,
                         imagePath: this.image
                     }
@@ -165,7 +171,8 @@ export class CreateComponent {
     async getfile(event: any) {
         console.log('1')
         this.file = event.target.files[0];
-        this.image = await this.mediaService.uploadImage(this.file!).toPromise() || '';
+        this.iimage = await this.mediaService.uploadImage(this.file!).toPromise() || this.iimage;
+        console.log(this.iimage)
     }
 
     dragFileImage() {
@@ -193,7 +200,8 @@ export class CreateComponent {
             imagePath: img.filePath,
             name: this.playlistForm.value.name ?? '',
             types: this.playlistForm.value.types ?? 0,
-            tracks: []
+            tracks: [],
+            color: ''
         }
 
         this.playlistService.createNewPlaylist(playlist);

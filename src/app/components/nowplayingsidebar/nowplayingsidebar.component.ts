@@ -30,7 +30,7 @@ export class NowplayingsidebarComponent implements OnDestroy {
         id: '',
         name: '',
         artistId: '',
-        createdDate: new Date,
+        createdDate: 0,
         albumId: '',
         duration: 0,
         imagePath: '',
@@ -41,7 +41,7 @@ export class NowplayingsidebarComponent implements OnDestroy {
         id: '',
         name: '',
         artistId: '',
-        createdDate: new Date,
+        createdDate: 0,
         albumId: '',
         duration: 0,
         imagePath: '',
@@ -54,10 +54,9 @@ export class NowplayingsidebarComponent implements OnDestroy {
         imagePath: '',
         name: '',
         types: PlaylistType.Playlist,
-        tracks: []
+        tracks: [],
+        color: ''
     };
-
-    playlistId: string = ''
 
     private user: IUser = {
         Id: '',
@@ -107,12 +106,8 @@ export class NowplayingsidebarComponent implements OnDestroy {
                 })
         })
 
-        this.playlistService.getPlayingPlaylistId().subscribe((playlist) => {
-            this.playlistId = playlist
-            this.playlistService.getPlaylistById(playlist).pipe(first()).subscribe(
-                (playlist: IPlaylist) => {
-                    this.playlist = playlist
-                })
+        this.playlistService.getPlayingPlaylist().subscribe((playlist) => {
+            this.playlist = playlist
         })        
     }
     ngOnDestroy(): void {

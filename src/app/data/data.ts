@@ -196,7 +196,7 @@ import { IUser } from "../dtos/user";
 // ];
 
 export const PLAYLISTS: IPlaylist[] = [
-    { id: "c5f38099-382b-4ccb-a8a5-c8bc98241cb2", authorId: 'bf1d50fd-3d82-4cac-b0bd-322768ff2873', imagePath: "/assets/imgs/1111.jpg", name: "Liked songs", types: 0, tracks: [] }
+    { id: "c5f38099-382b-4ccb-a8a5-c8bc98241cb2", authorId: 'bf1d50fd-3d82-4cac-b0bd-322768ff2873', imagePath: "/assets/imgs/1111.jpg", name: "Liked songs", types: 0, tracks: [], color: '' }
 ];
 
 export const USERS: IUser[] = [

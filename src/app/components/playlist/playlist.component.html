@@ -78,7 +78,7 @@
                             </svg>
                         </td>
                     </tr>
-                    @for (item of tracks; track item; let i = $index) {
+                    @for (item of playlist.tracks; track item; let i = $index) {
                     <tr [ngClass]="{'active': isActive(item.id)}" (contextmenu)="onTrackClick($event, item.id)">
                         <td class="number" [ngClass]="{'playing': isActive(item.id), 'paused': paused}">
                             <p id="number">{{i + 1}}</p>
