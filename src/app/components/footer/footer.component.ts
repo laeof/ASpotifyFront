@@ -51,16 +51,16 @@ export class FooterComponent {
     repeat: boolean = false;
 
     private user: IUser = {
-        Id: '',
-        UserName: '',
-        FirstName: null,
-        LastName: null,
-        Email: '',
+        id: '',
+        userName: '',
+        firstName: null,
+        lastName: null,
+        email: '',
+        avatarUrl: '',
         lovedPlaylistId: '',
-        Image: '',
-        latestPlayingPlaylist: '',
-        latestPlayingTrack: '',
-        Playlists: []
+        latestTrackId: '',
+        latestPlaylistId: '',
+        playlists: []
     };
 
     constructor(private artistService: ArtistService,
@@ -81,8 +81,8 @@ export class FooterComponent {
         todo:
             save latest data to user
         */
-        let latestPlayingPlaylist = this.localStorageService.getLatestPlaylistId() ?? this.user.latestPlayingPlaylist;
-        let latestPlayingSong = this.localStorageService.getLatestSongId() ?? this.user.latestPlayingTrack;
+        let latestPlayingPlaylist = this.localStorageService.getLatestPlaylistId() ?? this.user.latestPlaylistId;
+        let latestPlayingSong = this.localStorageService.getLatestSongId() ?? this.user.latestTrackId;
         let latestSongTrackPosition = this.localStorageService.getLatestSongTrackPosition() ?? 0;
 
         console.log("latest song: " + latestPlayingSong)
@@ -164,7 +164,7 @@ export class FooterComponent {
     }
 
     isActive(): boolean {
-        return this.track.id != '' && this.user.Id != '';
+        return this.track.id != '' && this.user.id != '';
     }
 
     isPaused(): any {

@@ -30,16 +30,16 @@ import { IArtist } from '../../dtos/artist';
 })
 export class PlaylistComponent implements OnDestroy {
     private user: IUser = {
-        Id: '',
-        UserName: '',
-        FirstName: null,
-        LastName: null,
-        Email: '',
+        id: '',
+        userName: '',
+        firstName: null,
+        lastName: null,
+        email: '',
+        avatarUrl: '',
         lovedPlaylistId: '',
-        Image: '',
-        latestPlayingPlaylist: '',
-        latestPlayingTrack: '',
-        Playlists: []
+        latestTrackId: '',
+        latestPlaylistId: '',
+        playlists: []
     };
     toggledContextMenu: boolean = false;
     @ViewChild('imageElement', { static: false }) imageElement!: ElementRef;

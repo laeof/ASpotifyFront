@@ -11,11 +11,11 @@ import { MainComponent } from './components/main/main.component';
 import { AuthComponent } from './components/auth/auth.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { SigninComponent } from './components/signin/signin.component';
+import { Guard } from './services/guard.service';
 
 export const routes: Routes = [
     {
-        path: '',
-        redirectTo: 'Account', pathMatch: 'full'
+        path: '', redirectTo: 'Player', pathMatch: 'full'
     },
     {
         path: 'Player',
@@ -35,8 +35,9 @@ export const routes: Routes = [
     },
     {
         path: 'Account',
-        component: AuthComponent,
         title: 'ASpotifyAuth',
+        component: AuthComponent,
+        canActivate: [Guard],
         children: [
             { path: '', redirectTo: 'SignUp', pathMatch: 'full' },
             { path: 'SignUp', component: SignupComponent },

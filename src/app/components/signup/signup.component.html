@@ -21,17 +21,17 @@
                 <input type="password" class="input" placeholder="********" formControlName="Password">
 
                 <label class="for-input">Username:</label>
-                <input type="text" class="input" placeholder="Username" formControlName="Username">
+                <input type="text" class="input" placeholder="Username" formControlName="Username" [ngClass]="{'ng-invalid': validUsername}">
                 <label class="for-input">Gender</label>
                 <div class="gender">
-                    <input type="radio" class="radio" id="1" name="gender">
+                    <input type="radio" class="radio" formControlName="gender" id="1" name="gender" value="male">
                     <label for="1" class="for-input">Male</label>
-                    <input type="radio" class="radio" id="2" name="gender">
+                    <input type="radio" class="radio" formControlName="gender" id="2" name="gender" value="female">
                     <label for="2" class="for-input">Female</label>
-                    <input type="radio" class="radio" id="3" name="gender" checked>
+                    <input type="radio" class="radio" formControlName="gender" id="3" name="gender" value="unspecified" checked>
                     <label for="3" class="for-input">Don't say</label>
                 </div>
-                <input type="submit" class="button" value="Create an account">
+                <input type="submit" class="button" value="Create an account" (click)="register()">
             </form>
         </div>
         <div class="footer">

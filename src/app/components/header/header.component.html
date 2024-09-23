@@ -57,7 +57,7 @@
         </span>
     </div>
     <div class="actions">
-        @if(user.Id != '') {
+        @if(user.id != '') {
         <span class="item">
             <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="25"
                 height="25" x="0" y="0" viewBox="0 0 371.263 371.263" style="enable-background:new 0 0 512 512"
@@ -93,7 +93,7 @@
         </span>
         <span class="item" (click)="onProfileClick($event)" (click)="$event.stopPropagation()">
             <span class="wrap-img">
-                <img src="{{user.Image}}" class="img">
+                <img src="{{user.avatarUrl}}" class="img">
             </span>
         </span>
         }

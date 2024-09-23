@@ -56,18 +56,14 @@ import { UserService } from '../../services/user.service';
     MainplayerComponent],
     providers: [
         TrackService,
-        PlaylistService,
-        ArtistService,
         AlbumService,
         AudioService,
         UrlService,
-        ApiService,
         SidebarService,
-        QueueService,
         PlayerService,
         ContextMenuService,
-        LocalStorageService,
         MediaService,
+        LocalStorageService
     ],
     templateUrl: './main.component.html',
     styleUrl: './main.component.scss'
@@ -85,16 +81,16 @@ export class MainComponent {
     };
 
     user: IUser = {
-        Id: '',
-        UserName: '',
-        FirstName: null,
-        LastName: null,
-        Email: '',
-        Image: '',
+        id: '',
+        userName: '',
+        firstName: null,
+        lastName: null,
+        email: '',
+        avatarUrl: '',
         lovedPlaylistId: '',
-        latestPlayingTrack: '',
-        latestPlayingPlaylist: '',
-        Playlists: []
+        latestTrackId: '',
+        latestPlaylistId: '',
+        playlists: []
     }
     constructor(private queueService: QueueService,
         private trackService: TrackService,
@@ -110,6 +106,6 @@ export class MainComponent {
         })
     }
     isActive() {
-        return this.track.id != '' && this.user.Id != '';
+        return this.track.id != '' && this.user.id != '';
     }
 }

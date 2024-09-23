@@ -11,8 +11,7 @@
                 </span>
             </div>
             <div class="recentplaylists">
-                @for (item of playlists; track item; let i = $index) {
-                <div class="playlist-card-wrapper">
+                <div class="playlist-card-wrapper" *ngFor="let item of playlists;">
                     <span class="playlist-card" (mouseenter)="mouseMove(item)" (mouseleave)="mouseLeave()" (click)="redirectToPlaylist(item.id)">
                         <img class="img" src="{{item.imagePath}}">
                         <p class="title">{{item.name}}</p>
@@ -30,7 +29,6 @@
                         </span>
                     </span>
                 </div>
-                }
             </div>
         </div>
         <app-footer-info></app-footer-info>

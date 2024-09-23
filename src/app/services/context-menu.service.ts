@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import { MenuItem } from "../dtos/menuItem";
 import { QueueService } from "./queue.service";
 import { PlaylistService } from "./playlist.service";
-import { BehaviorSubject } from "rxjs";
 import { UrlService } from "./url.service";
+import { AccountService } from "./account.service";
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +13,8 @@ export class ContextMenuService {
 
     constructor(private queueService: QueueService,
         private playlistService: PlaylistService,
-        private urlService: UrlService
+        private urlService: UrlService,
+        private accountService: AccountService
     ) {
 
     }
@@ -63,7 +64,7 @@ export class ContextMenuService {
             {
                 svg: '',
                 label: 'Log out',
-                action: () => console.log('Action 4 clicked')
+                action: () => {this.accountService.Logout();}
             },
         ];
     }

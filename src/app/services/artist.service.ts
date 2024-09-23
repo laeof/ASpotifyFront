@@ -1,5 +1,4 @@
 import { Observable } from "rxjs";
-import { USERS } from "../data/data";
 import { IUser } from "../dtos/user";
 import { ApiService } from "./api.service";
 import { HttpClient } from "@angular/common/http";
@@ -11,7 +10,6 @@ import { IArtist } from "../dtos/artist";
 })
 
 export class ArtistService {
-    Artists: IUser[] = USERS;
     // getArtistById(id: string): string {
     // }
 
@@ -22,10 +20,7 @@ export class ArtistService {
     }
 
     getArtistNameById(id: string) {
-        const artist = this.Artists.find(item => item.Id === id);
-        if (artist == undefined)
-            return "";
-        return artist.UserName;
+        return ""
     }
 
     getArtistById(id: string): Observable<IArtist> {

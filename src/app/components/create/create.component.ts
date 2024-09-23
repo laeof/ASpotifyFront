@@ -73,11 +73,11 @@ export class CreateComponent {
         private trackService: TrackService
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
-            this.artist.id = user.Id;
-            this.artist.firstName = user.FirstName || ''
-            this.artist.lastName = user.LastName || ''
-            this.artist.userName = user.UserName
-            user.Playlists.map(playlist => {
+            this.artist.id = user.id;
+            this.artist.firstName = user.firstName || ''
+            this.artist.lastName = user.lastName || ''
+            this.artist.userName = user.userName
+            user.playlists.map(playlist => {
                 if (playlist)
                     this.artist.albums.push(playlist)
             })

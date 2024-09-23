@@ -3,7 +3,7 @@ export class ApiService {
     private playlistsApi: string = "";
     private mediaApi: string = "";
     constructor() {
-        this.authApi = "";
+        this.authApi = "http://localhost:5206/";
         this.playlistsApi = "http://localhost:5059/";
         this.mediaApi = "http://localhost:5283/";
     }

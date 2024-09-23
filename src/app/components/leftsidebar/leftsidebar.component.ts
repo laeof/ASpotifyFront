@@ -8,6 +8,7 @@ import { UrlService } from '../../services/url.service';
 import { AudioService } from '../../services/audio.service';
 import { ContextMenuService } from '../../services/context-menu.service';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { first } from 'rxjs';
 
 @Component({
     selector: 'app-leftsidebar',
@@ -21,16 +22,16 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
 export class LeftsidebarComponent {
     items: IPlaylist[] = [];
     user: IUser = {
-        Id: '',
-        UserName: '',
-        FirstName: null,
-        LastName: null,
-        Email: '',
+        id: '',
+        userName: '',
+        firstName: null,
+        lastName: null,
+        email: '',
+        avatarUrl: '',
         lovedPlaylistId: '',
-        Image: '',
-        latestPlayingPlaylist: '',
-        latestPlayingTrack: '',
-        Playlists: []
+        latestTrackId: '',
+        latestPlaylistId: '',
+        playlists: []
     };
     isPaused: boolean = false;
     activeId: string | null = null;
@@ -43,6 +44,10 @@ export class LeftsidebarComponent {
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.user = user;
+            this.playlistService.getAllMyPlaylists().pipe(first()).subscribe(
+                (playlists: IPlaylist[]) => {
+                    this.items = playlists;
+                })
         });
 
         this.playlistService.getActivePlaylist().subscribe(playlist => {

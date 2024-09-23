@@ -20,20 +20,20 @@
             </svg>
         </span>
         <div class="playlists">
-            @if (user.Id == '') {
-                <span class="Options">
-                    <p class="title">Create your first playlist</p>
-                    <p class="subtitle">It's easy, we'll help you</p>
-                    <span class="button">Create playlist</span>
-                </span>
-                <span class="Options">
-                    <p class="title">Browse some popular albums & playlists</p>
-                    <p class="subtitle">We'll keep you updated on new episodes</p>
-                    <span class="button">Browse albums & playlists</span>
-                </span>
+            @if (user.id == '') {
+            <span class="Options">
+                <p class="title">Create your first playlist</p>
+                <p class="subtitle">It's easy, we'll help you</p>
+                <span class="button">Create playlist</span>
+            </span>
+            <span class="Options">
+                <p class="title">Browse some popular albums & playlists</p>
+                <p class="subtitle">We'll keep you updated on new episodes</p>
+                <span class="button">Browse albums & playlists</span>
+            </span>
             }
-            @for (item of items; track item; let i = $index) {
-            <span class="playlist" [ngClass]="{
+            @else {
+            <span *ngFor="let item of items;" class="playlist" [ngClass]="{
                 'selected': isActive(item.id),
                 'playing': isPlaying(item.id),
               }" (click)='redirectToPlaylist(item.id)' (contextmenu)="onPlaylistClick($event)">

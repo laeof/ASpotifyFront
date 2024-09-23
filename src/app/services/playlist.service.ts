@@ -1,5 +1,4 @@
 import { BehaviorSubject, catchError, first, forkJoin, map, Observable, switchMap, throwError } from "rxjs";
-import { PLAYLISTS, USERS } from "../data/data";
 import { IPlaylist, PlaylistType } from "../dtos/playlist";
 import { QueueService } from "./queue.service";
 import { Injectable } from "@angular/core";
@@ -36,16 +35,16 @@ export class PlaylistService {
     });
 
     private user: IUser = {
-        Id: "",
-        UserName: "",
-        FirstName: null,
-        LastName: null,
-        Email: "",
+        id: "",
+        userName: "",
+        firstName: null,
+        lastName: null,
+        email: "",
+        avatarUrl: "",
         lovedPlaylistId: "",
-        Image: "",
-        latestPlayingPlaylist: '',
-        latestPlayingTrack: '',
-        Playlists: []
+        latestTrackId: "",
+        latestPlaylistId: "",
+        playlists: []
     };
 
     constructor(private queueService: QueueService,
@@ -86,7 +85,7 @@ export class PlaylistService {
     }
 
     getLovedTrackState(track: ITrack): boolean {
-        if(this.user.Playlists.findIndex(trackId => trackId === track.id) != -1)
+        if(this.user.playlists.findIndex(trackId => trackId === track.id) != -1)
             return true
         return false;
     }
@@ -102,13 +101,7 @@ export class PlaylistService {
     }
 
     getAllMyPlaylists(): Observable<IPlaylist[]> {
-        return this.artistService.getArtistById(this.user.Id).pipe(
-            switchMap((user: IArtist) => {
-                const playlistObservables = user.albums.map((id: string) => this.getPlaylistById(id));
-    
-                return forkJoin(playlistObservables);
-            })
-        )
+        return forkJoin(this.user.playlists.map((id: string) => this.getPlaylistById(id)));
     }
 
     createNewPlaylist(dto: IPlaylist) {
@@ -123,34 +116,43 @@ export class PlaylistService {
                 }
             );
     }
-
-    createNewEmptyPlaylist() {
-
+    createNewLovedPlaylist(userid: string) {
         const playlist: IPlaylist = {
-            id: "",
-            authorId: "",
-            imagePath: "",
-            name: "",
+            id: "00000000-0000-0000-0000-000000000000",
+            authorId: userid,
+            imagePath: "http://localhost:5283/Image/loved.webp",
+            name: "Loved Songs",
             types: PlaylistType.Playlist,
             tracks: [],
-            color: ""
+            color: "rgb(61,50,154)"
         }
 
         const formData = new FormData();
-        // formData.append('Id', playlist.Id);
-        // formData.append('CreatedDate', new Date().toString());
-        // formData.append('Tracks', [].toString());
-        // formData.append('Name', playlist.Name);
-        // formData.append('AuthorId', playlist.AuthorId);
-        // formData.append('ImagePath', playlist.Image);
-        // formData.append('Types', playlist.Type.toString());
 
-        this.http.post<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', playlist)
-            .subscribe(
-                (response: any) => {
-                    this.userService.addPlaylistToUserById(response.AuthorId, response.Id);
-                }
-            );
+        this.http.post<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', playlist).subscribe({
+            next: ((response: any) => {
+                console.log(response)
+            }),
+            error: ((response: Error) => {
+                console.log(response)
+            })
+        });
+    }
+    
+    createNewEmptyPlaylist() {
+        const playlist: IPlaylist = {
+            id: "",
+            authorId: this.user.id,
+            imagePath: "http://localhost:5283/Image/loved.webp",
+            name: "Loved Songs",
+            types: PlaylistType.Playlist,
+            tracks: [],
+            color: "rgb(15,0,148)"
+        }
+
+        const formData = new FormData();
+
+        this.http.post<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', playlist).subscribe();
     }
 
     setActivePlaylist(id: IPlaylist) {

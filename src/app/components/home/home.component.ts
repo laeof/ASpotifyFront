@@ -3,9 +3,7 @@ import { IPlaylist } from '../../dtos/playlist';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
 import { PlaylistService } from '../../services/playlist.service';
-import { Router } from '@angular/router';
 import { ITrack } from '../../dtos/track';
-import { AudioService } from '../../services/audio.service';
 import { UrlService } from '../../services/url.service';
 import { PlayerService } from '../../services/player.service';
 import { FooterInfoComponent } from "../footer-info/footer-info.component";
@@ -24,16 +22,16 @@ export class HomeComponent {
     hover: boolean = false;
     playlists: IPlaylist[] = [];
     private user: IUser = {
-        Id: '',
-        UserName: '',
-        FirstName: null,
-        LastName: null,
-        Email: '',
+        id: '',
+        userName: '',
+        firstName: null,
+        lastName: null,
+        email: '',
+        avatarUrl: '',
         lovedPlaylistId: '',
-        Image: '',
-        latestPlayingPlaylist: '',
-        latestPlayingTrack: '',
-        Playlists: []
+        latestTrackId: '',
+        latestPlaylistId: '',
+        playlists: []
     };
     constructor(private userService: UserService,
         private playlistService: PlaylistService,
@@ -43,11 +41,11 @@ export class HomeComponent {
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.user = user;
+            this.playlistService.getAllMyPlaylists().pipe(first()).subscribe(
+                (playlists: IPlaylist[]) => {
+                    this.playlists = playlists;
+                })
         });
-
-        this.playlistService.getAllPlaylistsUserId("bf1d50fd-3d82-4cac-b0bd-322768ff2873").subscribe(playlists => {
-            this.playlists = playlists;
-        })
     }
 
     mouseMove(playlist: IPlaylist) {

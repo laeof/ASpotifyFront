@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { SigninComponent } from "../signin/signin.component";
 import { SignupComponent } from "../signup/signup.component";
 import { RouterOutlet } from '@angular/router';
-import { AccountService } from '../../services/account.service';
+import { ApiService } from '../../services/api.service';
 
 @Component({
     selector: 'app-auth',
@@ -11,7 +11,7 @@ import { AccountService } from '../../services/account.service';
         SignupComponent,
         RouterOutlet],
     providers: [
-        AccountService
+        ApiService
     ],
     templateUrl: './auth.component.html',
     styleUrl: './auth.component.scss'
