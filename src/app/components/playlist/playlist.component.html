@@ -2,18 +2,18 @@
     <div class="description-wrap" (contextmenu)="onPlaylistClick($event)">
         <div class="description">
             <div class="img">
-                <img #imageElement src="{{playlist.Image}}" alt="Your Image">
+                <img #imageElement src="{{playlist.imagePath}}" alt="Your Image">
                 <canvas #canvas style="display: none;"></canvas>
             </div>
             <div class="descr">
                 <p class="type">{{getPlaylistType()}}</p>
-                <h2 class="title">{{playlist.Name}}</h2>
-                <p class="author">{{getArtistName(playlist.AuthorId)}} - {{playlist.TrackIds.length}} tracks</p>
+                <h2 class="title">{{ playlist.name }}</h2>
+                <p class="author">{{this.artistNames[playlist.authorId]}} - {{playlist.tracks.length || 0}} tracks</p>
             </div>
         </div>
     </div>
     <div class="tracks">
-        <div class="actions" [ngClass]="{'playing': currentPlaylist.Id === playlist.Id && !paused, 'paused': paused}"
+        <div class="actions" [ngClass]="{'playing': currentPlaylist.id === playlist.id && !paused, 'paused': paused}"
             (contextmenu)="onPlaylistClick($event)">
             <span class="toggleplay" id="play" (click)="toggleAudio(getTrackForPlay())">
                 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -78,9 +78,9 @@
                             </svg>
                         </td>
                     </tr>
-                    @for (item of playlist.TrackIds; track item; let i = $index) {
-                    <tr [ngClass]="{'active': isActive(item)}" (contextmenu)="onTrackClick($event, item)">
-                        <td class="number" [ngClass]="{'playing': isActive(item), 'paused': paused}">
+                    @for (item of playlist.tracks; track item; let i = $index) {
+                    <tr [ngClass]="{'active': isActive(item.id)}" (contextmenu)="onTrackClick($event, item.id)">
+                        <td class="number" [ngClass]="{'playing': isActive(item.id), 'paused': paused}">
                             <p id="number">{{i + 1}}</p>
                             <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
                                 xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18" x="0" y="0"
@@ -109,28 +109,28 @@
                         </td>
                         <td class="tdname">
                             <div class="wrap-img">
-                                <img src={{getTrackById(item).Image}}>
+                                <img src={{item.imagePath}}>
                             </div>
                             <div class="name">
                                 <div class="title">
-                                    {{getTrackById(item).Name}}
+                                    {{item.name}}
                                 </div>
                                 <div class="subtitle">
-                                    {{this.getArtistName(getTrackById(item).ArtistId)}}
+                                    {{artistNames[item.artistId]}}
                                 </div>
                             </div>
                         </td>
                         <td class="album">
-                            {{this.getAlbumName(getTrackById(item).AlbumId)}}
+                            {{albumNames[item.albumId]}}
                         </td>
                         <td class="date">
-                            {{getTrackById(item).Date.toLocaleDateString()}}
+                            {{this.trackDates[item.id]}}
                         </td>
                         <td class="like" (click)="toggleLikedSongs(item)"
                             [ngClass]="{'isLoved': getLikedSongsState(item)}">
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" x="0"
-                                y="0" viewBox="0 0 512.001 512.001" style="enable-background:new 0 0 512 512"
+                            <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="25" x="0" y="0"
+                                viewBox="0 0 512.001 512.001" style="enable-background:new 0 0 512 512"
                                 xml:space="preserve" class="">
                                 <g>
                                     <path
@@ -140,13 +140,15 @@
                             </svg>
                         </td>
                         <td class="time">
-                            {{getDuration(getTrackById(item).Duration)}}
+                            {{getDuration(item.duration)}}
                         </td>
                     </tr>
                     }
                 </tbody>
             </table>
         </div>
+        <app-footer-info style="width: 100%; padding: 0px 30px;"></app-footer-info>
     </div>
 </div>
+
 <app-context-menu #contextMenu></app-context-menu>

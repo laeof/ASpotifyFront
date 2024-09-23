@@ -20,17 +20,19 @@ import { QueueService } from '../../services/queue.service';
     styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
+    authorized: boolean = false;
+
     user: IUser = {
-        Id: '',
-        UserName: '',
-        FirstName: null,
-        LastName: null,
-        Email: '',
+        id: '',
+        userName: '',
+        firstName: null,
+        lastName: null,
+        email: '',
+        avatarUrl: '',
         lovedPlaylistId: '',
-        Image: '',
-        latestPlayingPlaylist: '',
-        latestPlayingTrack: '',
-        Playlists: []
+        latestTrackId: '',
+        latestPlaylistId: '',
+        playlists: []
     };
 
     backRouteState: boolean = false;
@@ -63,6 +65,13 @@ export class HeaderComponent {
     @HostListener('document:click', ['$event'])
     onDocumentClick(event: MouseEvent) {
         this.contextMenu.close();
+    }
+
+    redirectToSignIn() {
+        window.location.href = "Account/SignIn"
+    }
+    redirectToSignUp() {
+        window.location.href = "Account"
     }
 
     redirectToHome() {

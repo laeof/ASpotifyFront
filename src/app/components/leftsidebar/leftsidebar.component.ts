@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { IPlaylist, PlaylistType } from '../../dtos/playlist';
 import { PlaylistService } from '../../services/playlist.service';
 import { UserService } from '../../services/user.service';
@@ -8,6 +8,7 @@ import { UrlService } from '../../services/url.service';
 import { AudioService } from '../../services/audio.service';
 import { ContextMenuService } from '../../services/context-menu.service';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
+import { first } from 'rxjs';
 
 @Component({
     selector: 'app-leftsidebar',
@@ -20,17 +21,17 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
 })
 export class LeftsidebarComponent {
     items: IPlaylist[] = [];
-    private user: IUser = {
-        Id: '',
-        UserName: '',
-        FirstName: null,
-        LastName: null,
-        Email: '',
+    user: IUser = {
+        id: '',
+        userName: '',
+        firstName: null,
+        lastName: null,
+        email: '',
+        avatarUrl: '',
         lovedPlaylistId: '',
-        Image: '',
-        latestPlayingPlaylist: '',
-        latestPlayingTrack: '',
-        Playlists: []
+        latestTrackId: '',
+        latestPlaylistId: '',
+        playlists: []
     };
     isPaused: boolean = false;
     activeId: string | null = null;
@@ -39,32 +40,40 @@ export class LeftsidebarComponent {
         private userService: UserService,
         private urlService: UrlService,
         private audioService: AudioService,
-        private contextMenuService: ContextMenuService
+        private contextMenuService: ContextMenuService,
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.user = user;
-            playlistService.getAllPlaylistsUserId(this.user.Id).map(playlist => {
-                if (!this.items.includes(this.playlistService.getPlaylistById(playlist)))
-                    this.items.push(this.playlistService.getPlaylistById(playlist))
-            });
+            this.playlistService.getAllMyPlaylists().pipe(first()).subscribe(
+                (playlists: IPlaylist[]) => {
+                    this.items = playlists;
+                })
         });
 
-        this.playlistService.getActiveId().subscribe(id => {
-            this.activeId = id;
+        this.playlistService.getActivePlaylist().subscribe(playlist => {
+            this.activeId = playlist.id;
         });
 
-        this.playlistService.getPlayingPlaylistId().subscribe(play => {
-            this.playingId = play;
+        this.playlistService.getPlayingPlaylist().subscribe(play => {
+            this.playingId = play.id;
         });
 
         this.audioService.isTrackPaused().subscribe(pause => {
             this.isPaused = pause
         });
 
+        this.playlistService.getAllMyPlaylists().subscribe(
+            (playlists: IPlaylist[]) => {
+                this.items = playlists;
+            })
     }
-    
+
     getPlaylistType(type: PlaylistType) {
         return this.playlistService.getPlaylistType(type);
+    }
+
+    getPlaylistLength(item: IPlaylist) {
+        return item.tracks?.length ?? 0;
     }
 
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
@@ -96,7 +105,7 @@ export class LeftsidebarComponent {
     }
 
     createNewPlaylist() {
-        this.playlistService.createNewPlaylist();
+        this.playlistService.createNewEmptyPlaylist();
         // this.items.push(this.playlistService.getPlaylistById());
     }
 }

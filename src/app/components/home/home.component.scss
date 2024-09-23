@@ -1,105 +1,114 @@
-@mixin background {
-    background-color: rgba(150, 150, 150, 0.15);
-    transition: background-color 0.3s;
-    cursor: pointer;
-    border-radius: 12px;
-
-    &:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-    }
-}
+@import "../../shared/mixin.scss";
 
 .main-wrap {
+    position: relative;
+    background: linear-gradient(180deg, #282828 0%, rgb(40, 40, 40) 40%);
     overflow-y: auto;
     height: 100%;
     border-radius: 12px;
-    position: relative;
     padding: 5px;
-    padding-top: 40px;
-    background: linear-gradient(180deg, var(--custom-bg-color, rgb(40, 40, 40)) 0%, rgb(40, 40, 40) 40%);
-    transition: background-color 0.3s;
     padding-left: 10px;
+    transition: opacity 0.5s ease;
+    opacity: 1;
+    z-index: 0;
 
-    &::-webkit-scrollbar {
-        background: transparent;
-        width: 12px;
-    }
+    @include scroll-bar();
 
-    &::-webkit-scrollbar-thumb {
-        background-color: rgba(233, 250, 255, 0.1);
-    }
-
-    .header {
-        .badges {
-            display: flex;
-
-            .badge {
-                padding: 7px 25px;
-                font-weight: 400;
-                font-size: 16px;
-
-                @include background();
-
-                &.active {
-                    background-color: rgba(255, 255, 255, 0.3);
-                }
-
-                &:not(:last-child) {
-                    margin-right: 10px;
-                }
-            }
+    .wrap {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1;
+        opacity: 0;
+        transition: opacity .4s ease;
+        background: linear-gradient(180deg, var(--custom-bg-color) 0%, rgb(40, 40, 40) 40%);
+        &.moved {
+            opacity: 1;
         }
+    }
 
-        .recentplaylists {
-            margin-top: 30px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, 350px);
-            gap: 10px;
+    .wrap-page {
+        position: relative;
+        z-index: 2;
+        background: transparent;
+        height: 100%;
 
-            .playlist-card-wrapper {
-                .playlist-card {
-                    display: flex;
-                    align-items: center;
-                    height: 70px;
+        .header {
+            padding: 30px 5px;
+
+            .badges {
+                display: flex;
+
+                .badge {
+                    padding: 7px 25px;
+                    font-weight: 400;
+                    font-size: 16px;
+
                     @include background();
 
-                    .img {
-                        width: 70px;
-                        height: 70px;
-                        border-top-left-radius: 12px;
-                        border-bottom-left-radius: 12px;
+                    &.active {
+                        background-color: rgba(255, 255, 255, 0.3);
                     }
 
-                    .title {
-                        padding-left: 13px;
-                        font-size: 18px;
-                        font-weight: 400;
-                        width: 220px;
+                    &:not(:last-child) {
+                        margin-right: 10px;
                     }
+                }
+            }
 
-                    .toggleplay {
+            .recentplaylists {
+                margin-top: 30px;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, 350px);
+                gap: 10px;
+
+                .playlist-card-wrapper {
+                    .playlist-card {
                         display: flex;
                         align-items: center;
-                        justify-content: center;
-                        border-radius: 50%;
-                        width: 50px;
-                        height: 50px;
-                        cursor: pointer;
-                        background-color: rgba(255, 255, 255, 0.2);
-                        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
-                        margin-right: 10px;
+                        height: 70px;
+                        @include background();
 
-                        svg {
-                            margin-left: 3px;
-
-                            .svg {
-                                transition: fill 0.6s;
-                                fill: rgba(255, 255, 255, 1);
-                            }
+                        .img {
+                            width: 70px;
+                            height: 70px;
+                            border-top-left-radius: 12px;
+                            border-bottom-left-radius: 12px;
                         }
 
-                        &:hover {
-                            transform: scale(1.05);
+                        .title {
+                            padding-left: 13px;
+                            font-size: 18px;
+                            font-weight: 400;
+                            width: 220px;
+                        }
+
+                        .toggleplay {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            border-radius: 50%;
+                            width: 50px;
+                            height: 50px;
+                            cursor: pointer;
+                            background-color: rgba(255, 255, 255, 0.2);
+                            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
+                            margin-right: 10px;
+
+                            svg {
+                                margin-left: 3px;
+
+                                .svg {
+                                    transition: fill 0.6s;
+                                    fill: rgba(255, 255, 255, 1);
+                                }
+                            }
+
+                            &:hover {
+                                transform: scale(1.05);
+                            }
                         }
                     }
                 }

@@ -1,12 +1,12 @@
 export interface IUser {
-    Id: string,
-    UserName: string,
-    FirstName: string | null,
-    LastName: string | null,
-    Email: string,
-    Image: string,
+    id: string,
+    userName: string,
+    firstName: string | null,
+    lastName: string | null,
+    email: string,
+    avatarUrl: string,
     lovedPlaylistId: string;
-    latestPlayingTrack: string;
-    latestPlayingPlaylist: string;
-    Playlists: string[]
+    latestTrackId: string;
+    latestPlaylistId: string;
+    playlists: string[];
 }

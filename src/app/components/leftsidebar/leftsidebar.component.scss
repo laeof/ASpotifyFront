@@ -1,11 +1,7 @@
 @import "../../shared/mixin.scss";
 
 .sidebar {
-    user-select: none;
-    width: 400px;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+    @include sidebar();
 
     .top {
         @include sidebar-style();
@@ -28,16 +24,49 @@
         .playlists {
             overflow-y: auto;
 
-            &::-webkit-scrollbar {
-                background: transparent;
-                width: 12px;
-            }
+            @include scroll-bar();
 
-            &::-webkit-scrollbar-thumb {
-                background-color: rgba(233, 250, 255, 0.1);
+            .Options {
+                min-width: 300px;
+                display: flex;
+                padding: 20px 20px;
+                margin: 0 10px 15px 10px;
+                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.08);
+                flex-direction: column;
+
+                .title {
+                    font-size: 18px;
+                    margin-top: 0px;
+                }
+
+                .subtitle {
+                    font-size: 16px;
+                }
+
+                .button {
+                    background-color: rgba(100, 100, 100, 0.6);
+                    padding: 8px 30px;
+                    border-radius: 20px;
+                    transition: background-color .3s, font-size .1s, letter-spacing .1s;
+                    margin-top: 20px;
+                    cursor: pointer;
+                    text-align: center;
+
+                    &.register {
+                        background-color: rgba($maincolor, 0.8)
+                    }
+
+                    &:hover {
+                        font-size: 18.5px;
+                        letter-spacing: 1px;
+                        background-color: rgba($maincolor, 0.8);
+                    }
+                }
             }
 
             .playlist {
+                min-width: 300px;
                 display: flex;
                 align-items: center;
                 padding: 10px 20px 10px 20px;
@@ -79,15 +108,15 @@
                     display: flex;
 
                     .wrap-img {
-                        width: 55px;
-                        height: 55px;
+                        width: 50px;
+                        height: 50px;
                         display: flex;
                         justify-content: center;
                         align-items: center;
 
                         img {
-                            height: 50px;
-                            width: 50px;
+                            min-height: 50px;
+                            min-width: 50px;
                         }
                     }
 
@@ -116,6 +145,7 @@
                     display: none;
                     align-items: center;
                     justify-content: center;
+                    padding-left: 15px;
 
                     svg {
                         .svg {
@@ -185,7 +215,7 @@
                         border-radius: 8px;
 
                         &.pause {
-                            animation-iteration-count: 0; 
+                            animation-iteration-count: 0;
                         }
                     }
 
@@ -212,6 +242,12 @@
                     &.playing {
                         display: flex;
                     }
+                }
+            }
+
+            @media screen and (max-width: 1400px) {
+                .playlist {
+                    min-width: 200px;
                 }
             }
         }

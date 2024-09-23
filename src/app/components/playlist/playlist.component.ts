@@ -1,6 +1,5 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ITrack } from '../../dtos/track';
-import { ColorService } from '../../services/color.service';
 import { IPlaylist, PlaylistType } from '../../dtos/playlist';
 import { PlaylistService } from '../../services/playlist.service';
 import { UserService } from '../../services/user.service';
@@ -10,79 +9,100 @@ import { ArtistService } from '../../services/artist.service';
 import { AlbumService } from '../../services/album.service';
 import { CommonModule } from '@angular/common';
 import { AudioService } from '../../services/audio.service';
-import { Subscription } from 'rxjs';
+import { first, firstValueFrom, map, Observable, of, Subscription, switchMap, take } from 'rxjs';
 import { QueueService } from '../../services/queue.service';
 import { TrackService } from '../../services/track.service';
 import { PlayerService } from '../../services/player.service';
 import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { ContextMenuService } from '../../services/context-menu.service';
 import { LocalStorageService } from '../../services/localstorage.service';
+import { FooterInfoComponent } from "../footer-info/footer-info.component";
+import { IArtist } from '../../dtos/artist';
 
 @Component({
     selector: 'app-playlist',
     standalone: true,
     imports: [CommonModule,
-        ContextMenuComponent
-    ],
+        ContextMenuComponent,
+        FooterInfoComponent],
     templateUrl: './playlist.component.html',
     styleUrl: './playlist.component.scss'
 })
 export class PlaylistComponent implements OnDestroy {
     private user: IUser = {
-        Id: '',
-        UserName: '',
-        FirstName: null,
-        LastName: null,
-        Email: '',
+        id: '',
+        userName: '',
+        firstName: null,
+        lastName: null,
+        email: '',
+        avatarUrl: '',
         lovedPlaylistId: '',
-        Image: '',
-        latestPlayingPlaylist: '',
-        latestPlayingTrack: '',
-        Playlists: []
+        latestTrackId: '',
+        latestPlaylistId: '',
+        playlists: []
     };
     toggledContextMenu: boolean = false;
     @ViewChild('imageElement', { static: false }) imageElement!: ElementRef;
 
     //active
     playlist: IPlaylist = {
-        Id: '',
-        AuthorId: '',
-        Image: '',
-        Name: '',
-        Type: PlaylistType.Playlist,
-        TrackIds: []
+        id: '',
+        authorId: '',
+        imagePath: '',
+        name: '',
+        types: PlaylistType.Playlist,
+        tracks: [],
+        color: ''
     };
+
     //playing
     currentPlaylist: IPlaylist = {
-        Id: '',
-        AuthorId: '',
-        Image: '',
-        Name: '',
-        Type: PlaylistType.Playlist,
-        TrackIds: []
+        id: '',
+        authorId: '',
+        imagePath: '',
+        name: '',
+        types: PlaylistType.Playlist,
+        tracks: [],
+        color: ''
     };
+
+    activePlaylist: IPlaylist = {
+        id: '',
+        authorId: '',
+        imagePath: '',
+        name: '',
+        types: PlaylistType.Playlist,
+        tracks: [],
+        color: ''
+    };
+
+    artistNames: { [key: string]: string } = {}
+    albumNames: { [key: string]: string } = {}
+    trackDates: { [key: string]: string } = {}
 
     sub: Subscription;
+    subActive0: Subscription | undefined
+    subActive: Subscription | undefined;
+    subCurrent0: Subscription | undefined
+    SubCurrent: Subscription | undefined;
 
-    trackId: string = '';
+    track: ITrack = {
+        id: '',
+        name: '',
+        artistId: '',
+        createdDate: 0,
+        albumId: '',
+        duration: 0,
+        imagePath: '',
+        urlPath: ''
+    };
     paused: boolean = false;
     trackDuration: number = 0;
-    currentTrack: ITrack = {
-        Id: '',
-        Name: '',
-        ArtistId: '',
-        Date: new Date,
-        AlbumId: '',
-        Duration: 0,
-        Image: '',
-        Url: ''
-    };
 
-    constructor(private colorService: ColorService,
+    constructor(
         private playlistService: PlaylistService,
         private userService: UserService,
         private artistService: ArtistService,
-        private albumService: AlbumService,
         private audioService: AudioService,
         private playerService: PlayerService,
         private queueService: QueueService,
@@ -97,37 +117,90 @@ export class PlaylistComponent implements OnDestroy {
 
         this.sub = this.route.paramMap.subscribe(params => {
             let id = params.get('id') || "";
-            this.playlistService.setActiveId(id);
-            setTimeout(() => this.extractColor(), 1);
+            this.playlistService.getPlaylistById(id).pipe(first()).subscribe((response: IPlaylist) => {
+                this.playlistService.setActivePlaylist(response)
+            })
         });
 
-        this.playlistService.getActiveId().subscribe(playlist => {
-            this.playlist = this.playlistService.getPlaylistById(playlist)
+        this.subActive0 = this.playlistService.getActivePlaylist().subscribe((playlist: IPlaylist) => {
+            this.playlist = playlist
+            this.getArtistNames(this.playlist.authorId)
+
+            this.playlist.tracks.forEach(element => {
+                this.trackDates[element.id] = (new Date(element.createdDate).toDateString());
+                if (!this.albumNames[element.albumId])
+                    this.playlistService.getPlaylistById(element.albumId).pipe(first()).subscribe(
+                        (response: IPlaylist) => {
+                            this.albumNames[response.id] = response.name;
+                            if (!this.artistNames[response.authorId])
+                                this.getArtistNames(response.authorId)
+                        })
+                if (!this.artistNames[element.artistId]) {
+                    this.getArtistNames(element.artistId)
+                }
+            })
+
+            setTimeout(() => this.extractColor(), 1);
         })
 
-        this.playlistService.getPlayingPlaylistId().subscribe(playlist => {
-            this.currentPlaylist = this.playlistService.getPlaylistById(playlist)
+        this.subCurrent0 = this.playlistService.getPlayingPlaylist().subscribe(playlist => {
+            this.currentPlaylist = playlist
         })
 
         this.queueService.getCurrentTrackId().subscribe((trackId) => {
-            this.trackId = trackId;
+            this.trackService.getTrackById(trackId).pipe(first()).subscribe(
+                (track: ITrack) => {
+                    this.track = track;
+                }
+            )
         });
 
         this.audioService.isTrackPaused().subscribe((ispaused) => {
             this.paused = ispaused
         })
+
     }
 
-    toggleLikedSongs(trackId: string) {
-        if (this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId)) {
-            this.playlistService.removeFromPlaylist(this.user.lovedPlaylistId, trackId);
+    ngOnDestroy(): void {
+        this.playlistService.setActivePlaylist({
+            id: '',
+            authorId: '',
+            imagePath: '',
+            name: '',
+            types: PlaylistType.Playlist,
+            tracks: [],
+            color: ''
+        });
+        if (this.subActive != undefined)
+            this.subActive.unsubscribe();
+        if (this.SubCurrent != undefined)
+            this.SubCurrent.unsubscribe();
+        if (this.subActive0 != undefined)
+            this.subActive0.unsubscribe();
+        if (this.subCurrent0 != undefined)
+            this.subCurrent0.unsubscribe();
+    }
+
+    dateToNormal(date: Date) {
+    }
+
+    getArtistNames(response: string) {
+        this.artistService.getArtistById(response).pipe(first()).subscribe(
+            (response: IArtist) => {
+                this.artistNames[response.id] = response.userName;
+            })
+    }
+
+    toggleLikedSongs(track: ITrack) {
+        if (this.playlistService.getLovedTrackState(track)) {
+            this.playlistService.removeFromPlaylist(this.user.lovedPlaylistId, track.id);
             return;
         }
-        this.playlistService.addToPlaylist(this.user.lovedPlaylistId, trackId);
+        this.playlistService.addToPlaylist(this.user.lovedPlaylistId, track.id);
     }
 
-    getLikedSongsState(trackId: string) {
-        return this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId);
+    getLikedSongsState(track: ITrack) {
+        return this.playlistService.getLovedTrackState(track);
     }
 
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
@@ -147,71 +220,44 @@ export class PlaylistComponent implements OnDestroy {
         this.contextMenu.close();
     }
 
-    ngOnDestroy(): void {
-        this.playlistService.setActiveId("");
-    }
-
     //big play button
-    getTrackForPlay(): string {
-        if (this.playlist.Id == this.currentPlaylist.Id)
-            return this.trackId;
+    getTrackForPlay(): ITrack {
+        if (this.playlist.id == this.currentPlaylist.id)
+            return this.track;
 
-        return this.playlist.TrackIds[0];
+        return this.playlist.tracks[0];
     }
 
     isActive(item: string): boolean {
-        return item == this.trackId && this.playlist.Id == this.currentPlaylist.Id;
+        return item == this.track.id && this.playlist.id == this.currentPlaylist.id;
     }
 
     isPaused(): any {
         return this.paused
     }
 
-    toggleAudio(item: string) {
-        this.trackId = item;
-        this.playerService.toggleAudio(item, this.playlist.Id)
+    toggleAudio(item: ITrack) {
+        this.track = item;
+        this.playerService.toggleAudio(item, this.playlist)
         console.log("tracK: " + item)
-        console.log("playing: " + this.currentPlaylist.Id)
-        console.log("activepl: " + this.playlist.Id)
+        console.log("playing: " + this.currentPlaylist.id)
+        console.log("activepl: " + this.playlist.id)
     }
 
     toggleContextMenu() {
         this.toggledContextMenu = !this.toggledContextMenu;
     }
 
-    getAlbumName(id: string) {
-        return this.albumService.getAlbumNameById(id);
-    }
-
-    getArtistName(id: string) {
-        return this.artistService.getArtistNameById(id);
-    }
-
-    getPlaylistType(type: PlaylistType = this.playlist.Type) {
+    getPlaylistType(type: PlaylistType = this.playlist.types) {
         return this.playlistService.getPlaylistType(type);
     }
 
     extractColor() {
-        const image = this.imageElement.nativeElement;
-        this.colorService.extractColor(image).then(mostFrequentColor => {
-            console.log('Most Frequent Color:', mostFrequentColor);
-
-            const rgb = mostFrequentColor.match(/\d+/g)?.map(Number);
-            if (rgb && rgb.length === 3) {
-                const darkenedColor = `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
-                document.documentElement.style.setProperty('--custom-bg-color', darkenedColor);
-            }
-        }).catch(error => {
-            console.error('Error extracting color:', error);
-        });
+        document.documentElement.style.setProperty('--custom-bg-color', this.playlist.color);
     }
 
     getDuration(duration: number) {
         return this.trackService.getDuration(duration);
-    }
-
-    getTrackById(id: string): ITrack {
-        return this.trackService.getTrackById(id);
     }
 }
 

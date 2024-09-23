@@ -3,3 +3,32 @@
 @import "./common.scss";
 @import "./wrapper.scss";
 @import "./title.scss";
+
+:root {
+    --mdc-filled-text-field-container-color: rgba(40, 40, 40, 0.6); // select 
+    --mat-select-panel-background-color: rgba(40, 40, 40, 1); // down list
+    --mat-select-disabled-trigger-text-color: rgba(255, 255, 255, 0.8);
+    --mat-select-placeholder-text-color: rgba(255, 255, 255, 0.6);
+    --mdc-filled-text-field-label-text-color: rgba(255, 255, 255, 0.6); //select text color
+    --mdc-filled-text-field-hover-label-text-color: rgba(255, 255, 255, 0.8); //hover select text color
+    --mat-select-enabled-arrow-color: rgba(255, 255, 255, 0.6); //arrow default
+    --mat-select-focused-arrow-color: #D66EDE; //arrow when selected
+    --mdc-filled-text-field-focus-active-indicator-color: #D66EDE; // bot border color
+    --mdc-filled-text-field-focus-label-text-color: #D66EDE; // select label color
+
+    //option
+    --mat-option-label-text-color: #D66EDE; // option color
+    --mat-option-selected-state-label-text-color: #D66EDE; //option selected color
+    --mat-select-enabled-trigger-text-color: rgba(255, 255, 255, 0.8); //selected option
+    --mat-option-hover-state-layer-color: rgba(0, 0, 0, 0.1);
+    --mat-option-focus-state-layer-color: rgba(0, 0, 0, 0.1);
+    --mat-option-selected-state-layer-color: rgba(0, 0, 0, 0.1);
+
+    .mat-primary {
+        --mat-minimal-pseudo-checkbox-selected-checkmark-color: #D66EDE; //checkmark
+    }
+
+    .mat-mdc-text-field-wrapper {
+        border-radius: 12px;
+    }
+}

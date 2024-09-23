@@ -1,0 +1,86 @@
+<div class="main-wrap">
+    <div class="form-wrap">
+        <form class="form" [formGroup]="playlistForm" (submit)="onSubmitPlaylist()" enctype='multipart/form-data'>
+            <p class="title">Create new playlist or album</p>
+            <div class="text">
+                <label class="label-for">Name:</label>
+                <input type="text" class="input-text" placeholder="Name" formControlName="name">
+            </div>
+            <div class="text">
+                <label class="label-for">Playlist type:</label>
+                <mat-form-field>
+                    <mat-select [value]="0" formControlName="types">
+                        <mat-option [value]="0">Playlist</mat-option>
+                        <mat-option [value]="1">Album</mat-option>
+                        <mat-option [value]="2">Single</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="text" id="afteroptions">
+                <label class="label-for">Drag or paste image:</label>
+                <div class="file-container" [ngClass]="{'drag': dragImg}">
+                    <input type="file" formControlName="file" (change)="getfile($event)" (dragenter)="dragFileImage()"
+                        (dragleave)="noDragFileImage()" (mouseleave)="noDragFileImage()" class="input-file"
+                        [value]="file?.name" />
+                    <p class="drag-msg" [ngClass]="{'show': !dragImg}">Drag your file here</p>
+                </div>
+                <div *ngIf="file">
+                    <p>File name: {{ file.name }}</p>
+                    <button type="button" (click)="imageClearFile()">Clear file</button><br>
+                </div>
+                <div class="text" *ngIf="file">
+                    <input type="submit" class="button" value="Submit">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="form-wrap">
+        <form class="form" [formGroup]="trackForm" (submit)="onSubmitTrack()" enctype='multipart/form-data'>
+            <p class="title">Upload tracks</p>
+            <div class="text">
+                <label class="label-for">Drag or paste your tracks:</label>
+                <div class="file-container" [ngClass]="{'drag': drag}">
+                    <input type="file" (change)="getfiles($event)" (dragenter)="dragFile()" (dragleave)="noDragFile()"
+                        (mouseleave)="noDragFile()" class="input-file" multiple />
+                    <p class="drag-msg" [ngClass]="{'show': !drag}">Drag your files here</p>
+                </div>
+                <p>Загружено файлов: {{ files.length }}</p>
+                <div *ngIf="files">
+                    @for (item of files; track item; let i = $index) {
+                    File name: {{item.name}}
+                    <button (click)="spliceFile(item, i)">Clear file</button><br>
+                    }
+                </div>
+            </div>
+            @if (files.length != 0) {
+            <div class="text">
+                <label class="label-for">Album:</label>
+                <mat-form-field>
+                    <mat-select [value]="0" formControlName="album">
+                        @for (item of albums; track item;) {
+                        <mat-option [value]="item">{{item.name}}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="text">
+                <input type="submit" class="button" value="Submit">
+            </div>
+            }
+        </form>
+    </div>
+    @if(tracks) {
+    @for(item of tracks; track item; let i = $index) {
+    <div class="form-wrap">
+        <form class="form">
+            <div class="text">
+                <label class="label-for">Track {{item.name}}:</label>
+                <label class="label-for">Name:</label>
+                <input type="text" class="input-text" [(ngModel)]="item.name" name="trackName{{item.name}}"
+                    placeholder="Name">
+            </div>
+        </form>
+    </div>
+    }
+    }
+</div>

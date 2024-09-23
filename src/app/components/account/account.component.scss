@@ -1,0 +1,15 @@
+@import "../../shared/mixin.scss";
+@import "../../shared/settings.scss";
+
+.main-wrap {
+    @include scroll-bar();
+    @include menu-group-settings();
+    overflow-y: auto;
+    height: 100%;
+    background-color: $main-background;
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    user-select: none;
+    display: grid;
+}

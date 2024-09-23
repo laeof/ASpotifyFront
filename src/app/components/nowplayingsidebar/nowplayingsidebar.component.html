@@ -2,7 +2,7 @@
     <div class="bottom">
         <div class="head">
             <span class="nameandbutton">
-                {{getPlaylistName()}}
+                {{this.playlist.name}}
             </span>
             <span class="buttons">
                 <span class="dots" (click)="onActionsClick($event)" (click)="$event.stopPropagation()">
@@ -15,7 +15,7 @@
                         width="15" height="15" x="0" y="0" viewBox="0 0 512 512"
                         style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
                         <g>
-                            <g data-name="02 User">
+                            <g>
                                 <path
                                     d="M25 512a25 25 0 0 1-17.68-42.68l462-462a25 25 0 0 1 35.36 35.36l-462 462A24.93 24.93 0 0 1 25 512z"
                                     fill="rgba(255,255,255,0.8)" opacity="1" data-original="#000000" class=""></path>
@@ -30,19 +30,19 @@
         </div>
         <div class="track">
             <div class="wrap-img">
-                <img class="img" src="{{track.Image}}">
+                <img class="img" src="{{track.imagePath}}">
             </div>
             <div class="trackinfo">
                 <span class="trackname">
-                    <p class="name">{{track.Name}}</p>
-                    <p class="author">{{getArtistName(track.ArtistId)}}</p>
+                    <p class="name">{{track.name}}</p>
+                    <p class="author">{{getArtistName(track.artistId)}}</p>
                 </span>
-                <span class="wrap-svg" (click)="toggleLikedSongs(track.Id)">
+                <span class="wrap-svg" (click)="toggleLikedSongs(track)">
                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
                         width="25" height="25" x="0" y="0" viewBox="0 0 512.001 512.001"
                         style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
                         <g>
-                            <path [ngClass]="{'isLoved': getLikedSongsState(track.Id)}"
+                            <path [ngClass]="{'isLoved': getLikedSongsState(track)}"
                                 d="M256.001 477.407c-2.59 0-5.179-.669-7.499-2.009-2.52-1.454-62.391-36.216-123.121-88.594-35.994-31.043-64.726-61.833-85.396-91.513C13.237 256.885-.214 219.943.003 185.49c.254-40.09 14.613-77.792 40.435-106.162 26.258-28.848 61.3-44.734 98.673-44.734 47.897 0 91.688 26.83 116.891 69.332 25.203-42.501 68.994-69.332 116.891-69.332 35.308 0 68.995 14.334 94.859 40.362 28.384 28.563 44.511 68.921 44.247 110.724-.218 34.393-13.921 71.279-40.728 109.632-20.734 29.665-49.426 60.441-85.279 91.475-60.508 52.373-119.949 87.134-122.45 88.588a15.008 15.008 0 0 1-7.541 2.032z"
                                 fill="rgba(255,255,255,0.3)" opacity="1" data-original="#000000" class="svg"></path>
                         </g>
@@ -57,7 +57,7 @@
             </span>
             <span class="artist-card">
                 <p style="font-size: 16px; color: rgba(255, 255, 255, 0.9); margin-bottom: 2px">
-                    {{getArtistName(track.ArtistId)}}</p>
+                    {{getArtistName(track.artistId)}}</p>
                 <p style="font-size: 14px; color: rgba(255, 255, 255, 0.7)">Main artist</p>
             </span>
         </div>
@@ -90,14 +90,14 @@
                     </svg>
                 </div>
                 <div class="wrap-img">
-                    <img src={{nextTrack.Image}}>
+                    <img src={{nextTrack.imagePath}}>
                 </div>
                 <div class="name">
                     <p class="title">
-                        {{nextTrack.Name}}
+                        {{nextTrack.name}}
                     </p>
                     <p class="subtitle">
-                        {{getArtistName(nextTrack.ArtistId)}}
+                        {{getArtistName(nextTrack.artistId)}}
                     </p>
                 </div>
             </span>

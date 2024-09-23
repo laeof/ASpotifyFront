@@ -1,84 +1,79 @@
 import { Component } from '@angular/core';
-import { FooterComponent } from './components/footer/footer.component';
-import { LeftsidebarComponent } from './components/leftsidebar/leftsidebar.component';
 import { MainComponent } from './components/main/main.component';
-import { ColorService } from './services/color.service';
-import { TrackService } from './services/track.service';
-import { PlaylistService } from './services/playlist.service';
 import { UserService } from './services/user.service';
-import { ArtistService } from './services/artist.service';
-import { AlbumService } from './services/album.service';
-import { HttpClientModule } from '@angular/common/http';
-import { AudioService } from './services/audio.service';
-import { UrlService } from './services/url.service';
-import { ApiService } from './services/api.service';
-import { CommonModule } from '@angular/common';
-import { ITrack } from './dtos/track';
-import { HeaderComponent } from './components/header/header.component';
-import { SidebarService } from './services/sidebar.service';
-import { NowplayingsidebarComponent } from "./components/nowplayingsidebar/nowplayingsidebar.component";
-import { HomeComponent } from './components/home/home.component';
-import { QueueService } from './services/queue.service';
-import { PlayerService } from './services/player.service';
-import { ContextMenuComponent } from './components/context-menu/context-menu.component';
-import { ContextMenuService } from './services/context-menu.service';
+import { HttpClient, HttpClientModule, provideHttpClient, withFetch, } from '@angular/common/http';
+import { RouterOutlet } from '@angular/router';
 import { LocalStorageService } from './services/localstorage.service';
+import { AccountService } from './services/account.service';
+import { SpotifyCookieService } from './services/spotifycookie.service';
+import { ApiService } from './services/api.service';
+import { IUser } from './dtos/user';
+import { debounceTime, first, interval, switchMap } from 'rxjs';
+import { ITokens } from './dtos/tokens';
+import { Guard } from './services/guard.service';
+import { PlaylistService } from './services/playlist.service';
+import { QueueService } from './services/queue.service';
+import { ArtistService } from './services/artist.service';
 
 @Component({
     selector: 'app-root',
     standalone: true,
     imports: [
-        HeaderComponent,
-        FooterComponent,
-        LeftsidebarComponent,
         MainComponent,
-        HttpClientModule,
-        CommonModule,
-        NowplayingsidebarComponent,
-        HomeComponent,
-        ContextMenuComponent
+        RouterOutlet,
     ],
     providers: [
-        ColorService,
-        TrackService,
-        PlaylistService,
         UserService,
-        ArtistService,
-        AlbumService,
-        AudioService,
-        UrlService,
+        SpotifyCookieService,
+        AccountService,
         ApiService,
-        SidebarService,
+        Guard,
+        PlaylistService,
         QueueService,
-        PlayerService,
-        ContextMenuService,
-        LocalStorageService,
+        ArtistService
     ],
     templateUrl: './app.component.html',
     styleUrl: './app.component.scss'
 })
 export class AppComponent {
-    title = 'ASpotifyFront';
-    track: ITrack = {
-        AlbumId: "",
-        Id: '',
-        Name: '',
-        ArtistId: '',
-        Date: new Date,
-        Duration: 0,
-        Image: '',
-        Url: ''
-    };
-    constructor(private queueService: QueueService,
-        private trackService: TrackService
+    title = 'ASpotify';
+
+    constructor(private cookieService: SpotifyCookieService,
+        private accountService: AccountService,
+        private userService: UserService
     ) {
-        this.queueService.getCurrentTrackId().subscribe(track => {
-            this.track = this.trackService.getTrackById(track);
-        });
+        this.userService.getUserInfo().pipe(first()).subscribe(
+            (response: IUser) => this.userService.setCurrentUser(response)
+        );
+
+        if (this.accountService.accessToken != '')
+            this.checkUserInfo();
     }
 
-    isActive() {
-        return this.track.Id != '';
+    private checkUserInfo() {
+        interval(5000)
+            .pipe(
+                switchMap(() => this.userService.getUserInfo())
+            )
+            .subscribe({
+                next: (response: IUser) => {
+                    this.userService.setCurrentUser(response);
+                },
+                error: (error: Error) => {
+                    const tokens: ITokens = {
+                        accessToken: this.cookieService.accessToken.value,
+                        refreshToken: this.cookieService.refreshToken.value
+                    }
+                    this.accountService.RegenerateAccessToken(tokens).pipe(first()).subscribe({
+                        next: (response: ITokens) => {
+                            this.cookieService.setAccessToken(response.accessToken);
+                            this.cookieService.setRefreshToken(response.refreshToken);
+                        },
+                        error: (response: Error) => {
+                            this.userService.setCurrentUser(this.userService.emptyUser);
+                        }
+                    });
+                }
+            })
     }
-
 }

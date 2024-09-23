@@ -1,12 +1,13 @@
 import { ITrack } from './track';
 
 export interface IPlaylist {
-    Id: string,
-    AuthorId: string,
-    Image: string,
-    Name: string,
-    Type: PlaylistType,
-    TrackIds: string[]
+    id: string,
+    authorId: string,
+    imagePath: string,
+    name: string,
+    types: PlaylistType,
+    tracks: ITrack[],
+    color: string
 }
 
 export enum PlaylistType {

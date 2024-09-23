@@ -1,108 +1,174 @@
-import { BehaviorSubject, Observable } from "rxjs";
-import { PLAYLISTS, USERS } from "../data/data";
+import { BehaviorSubject, catchError, first, forkJoin, map, Observable, switchMap, throwError } from "rxjs";
 import { IPlaylist, PlaylistType } from "../dtos/playlist";
 import { QueueService } from "./queue.service";
 import { Injectable } from "@angular/core";
 import { IUser } from "../dtos/user";
 import { UserService } from "./user.service";
+import { HttpClient, HttpContext } from "@angular/common/http";
+import { ApiService } from "./api.service";
+import { ITrack } from "../dtos/track";
+import { ArtistService } from "./artist.service";
+import { IArtist } from "../dtos/artist";
 
 @Injectable({
     providedIn: 'root'
 })
 
 export class PlaylistService {
-    private currentPlaylistPlayingId = new BehaviorSubject<string>("");
-    private activePlaylistId = new BehaviorSubject<string>("");
-
-    private playlists: IPlaylist[] = PLAYLISTS;
+    private currentPlaylistPlaying = new BehaviorSubject<IPlaylist>({
+        id: '',
+        authorId: '',
+        name: '',
+        imagePath: '',
+        types: PlaylistType.Playlist,
+        tracks: [],
+        color: ''
+    });
+    private activePlaylist = new BehaviorSubject<IPlaylist>({
+        id: '',
+        authorId: '',
+        name: '',
+        imagePath: '',
+        types: PlaylistType.Playlist,
+        tracks: [],
+        color: ''
+    });
 
     private user: IUser = {
-        Id: "",
-        UserName: "",
-        FirstName: null,
-        LastName: null,
-        Email: "",
+        id: "",
+        userName: "",
+        firstName: null,
+        lastName: null,
+        email: "",
+        avatarUrl: "",
         lovedPlaylistId: "",
-        Image: "",
-        latestPlayingPlaylist: '',
-        latestPlayingTrack: '',
-        Playlists: []
+        latestTrackId: "",
+        latestPlaylistId: "",
+        playlists: []
     };
 
-    private playlist: IPlaylist = {
-        Id: "",
-        AuthorId: "",
-        Image: "",
-        Name: "",
-        Type: PlaylistType.Playlist,
-        TrackIds: []
-    }
-
     constructor(private queueService: QueueService,
-        private userService: UserService
+        private userService: UserService,
+        private http: HttpClient,
+        private apiService: ApiService,
+        private artistService: ArtistService//temporary, need to use user
     ) {
-        this.userService.getCurrentUserInfo().subscribe(user => {
+        this.userService.getCurrentUserInfo().subscribe((user: any) => {
             this.user = user;
         });
     }
 
-    getLastPlaylistId() {
-        return this.playlists.length + 1;
+    getPlaylistById(id: string): Observable<IPlaylist> {
+        if(id === '' || id === undefined)
+            return throwError(() => new Error('Playlist ID is undefined'));
+        return this.http.get<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist/' + id)
     }
 
-    getPlaylistById(id: string): IPlaylist {
-        return this.playlists.find(pl => pl.Id === id) || this.playlist;
+    addTrackToPlaylist(playlistId: string, trackId: string) {
+        return this.http.put<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', { playlistId, trackId })
+    }
+
+    //todo
+    //add to backend
+    removeTrackFromPlaylist(playlistId: string, trackId: string) {
+        return this.http.put<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', { playlistId, trackId })
     }
 
     addToPlaylist(playlistId: string, trackId: string) {
-        this.getPlaylistById(playlistId).TrackIds.unshift(trackId);
-        
-        if(playlistId == this.currentPlaylistPlayingId.value)
+        this.addToPlaylist(playlistId, trackId)
+        if (playlistId == this.currentPlaylistPlaying.value.id)
             this.queueService.addTrackAtIndex(trackId, 0);
     }
 
     removeFromPlaylist(playlistId: string, trackId: string) {
-        this.getPlaylistById(playlistId).TrackIds
-            .splice(this.getPlaylistById(playlistId)
-                .TrackIds.findIndex(id => id === trackId), 1)
+        this.removeFromPlaylist(playlistId, trackId);
     }
 
-    getLovedTrackState(playlistId: string, trackId: string,): boolean {
-        return this.getPlaylistById(playlistId).TrackIds.findIndex(id => id == trackId) != -1;
+    getLovedTrackState(track: ITrack): boolean {
+        if(this.user.playlists.findIndex(trackId => trackId === track.id) != -1)
+            return true
+        return false;
     }
 
-    getAllPlaylistsUserId(id: string): string[] {
-        return this.userService.getUserInfoById(id).Playlists;
+    getAllPlaylistsUserId(id: string): Observable<IPlaylist[]> {
+        return this.artistService.getArtistById(id).pipe(
+            switchMap((user: IArtist) => {
+                const playlistObservables = user.albums.map((id: string) => this.getPlaylistById(id));
+    
+                return forkJoin(playlistObservables);
+            })
+        )
     }
 
-    createNewPlaylist() {
-        var id = this.getLastPlaylistId();
-        var newPlaylist: IPlaylist = {
-            Id: id.toString(),
-            AuthorId: this.user.Id,
-            Image: '../assets/imgs/image.png',
-            Name: 'Playlist ' + id,
-            Type: PlaylistType.Playlist,
-            TrackIds: []
+    getAllMyPlaylists(): Observable<IPlaylist[]> {
+        return forkJoin(this.user.playlists.map((id: string) => this.getPlaylistById(id)));
+    }
+
+    createNewPlaylist(dto: IPlaylist) {
+
+        this.http.post<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', dto)
+            .subscribe(
+                (response: any) => {
+                    this.userService.addPlaylistToUserById(response.authorId, response.id);
+                },
+                (error: any) => {
+                    console.log(error)
+                }
+            );
+    }
+    createNewLovedPlaylist(userid: string) {
+        const playlist: IPlaylist = {
+            id: "00000000-0000-0000-0000-000000000000",
+            authorId: userid,
+            imagePath: "http://localhost:5283/Image/loved.webp",
+            name: "Loved Songs",
+            types: PlaylistType.Playlist,
+            tracks: [],
+            color: "rgb(61,50,154)"
         }
-        this.playlists.push(newPlaylist);
-        this.userService.addPlaylistToUserById(this.user.Id, newPlaylist.Id);
+
+        const formData = new FormData();
+
+        this.http.post<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', playlist).subscribe({
+            next: ((response: any) => {
+                console.log(response)
+            }),
+            error: ((response: Error) => {
+                console.log(response)
+            })
+        });
+    }
+    
+    createNewEmptyPlaylist() {
+        const playlist: IPlaylist = {
+            id: "",
+            authorId: this.user.id,
+            imagePath: "http://localhost:5283/Image/loved.webp",
+            name: "Loved Songs",
+            types: PlaylistType.Playlist,
+            tracks: [],
+            color: "rgb(15,0,148)"
+        }
+
+        const formData = new FormData();
+
+        this.http.post<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', playlist).subscribe();
     }
 
-    setActiveId(id: string) {
-        this.activePlaylistId.next(id);
+    setActivePlaylist(id: IPlaylist) {
+        this.activePlaylist.next(id);
     }
 
-    getActiveId(): Observable<string> {
-        return this.activePlaylistId.asObservable();
+    getActivePlaylist(): Observable<IPlaylist> {
+        return this.activePlaylist.asObservable();
     }
 
-    setPlayingPlaylistId(id: string) {
-        this.currentPlaylistPlayingId.next(id);
+    setPlayingPlaylist(id: IPlaylist) {
+        this.currentPlaylistPlaying.next(id);
     }
 
-    getPlayingPlaylistId(): Observable<string> {
-        return this.currentPlaylistPlayingId.asObservable();
+    getPlayingPlaylist(): Observable<IPlaylist> {
+        return this.currentPlaylistPlaying.asObservable();
     }
 
     getPlaylistType(type: PlaylistType): string {

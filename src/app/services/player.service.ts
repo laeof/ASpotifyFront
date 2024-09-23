@@ -1,9 +1,11 @@
 import { PlaylistService } from "./playlist.service";
-import { BehaviorSubject, iif, Observable } from "rxjs";
+import { BehaviorSubject, first, iif, Observable } from "rxjs";
 import { AudioService } from "./audio.service";
 import { QueueService } from "./queue.service";
 import { TrackService } from "./track.service";
 import { Injectable } from "@angular/core";
+import { IPlaylist, PlaylistType } from "../dtos/playlist";
+import { ITrack } from "../dtos/track";
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +15,15 @@ export class PlayerService {
     private randomStateObs = new BehaviorSubject<boolean>(false);
     private repeatStateObs = new BehaviorSubject<boolean>(false);
 
-    private nowPlayingPlaylistId: string = '';
+    private nowPlayingPlaylist: IPlaylist = {
+        id: "",
+        authorId: "",
+        imagePath: "",
+        name: "",
+        types: PlaylistType.Playlist,
+        tracks: [],
+        color: ""
+    };
     private nowPlayingTrackId: string = '';
 
     constructor(private audioService: AudioService,
@@ -25,40 +35,38 @@ export class PlayerService {
             this.nowPlayingTrackId = trackId;
         })
 
-        this.playlistService.getPlayingPlaylistId().subscribe(playlistId => {
-            this.nowPlayingPlaylistId = playlistId;
+        this.playlistService.getPlayingPlaylist().subscribe(playlist => {
+            this.nowPlayingPlaylist = playlist;
         })
     }
 
     playBack() {
         this.queueService.prevTrack();
-        this.audioService.playTrack(
-            this.trackService.getTrackById(
-                this.nowPlayingTrackId));
+        this.trackService.getTrackById(this.nowPlayingTrackId).subscribe(
+            (track: ITrack) => {
+                this.audioService.playTrack(track);
+            }
+        )
     }
 
     playNext() {
         this.queueService.nextTrack();
-        this.audioService.playTrack(
-            this.trackService.getTrackById(
-                this.nowPlayingTrackId));
+        this.trackService.getTrackById(this.nowPlayingTrackId).subscribe(
+            (track: ITrack) => {
+                this.audioService.playTrack(track);
+            }
+        )
     }
 
-    toggleAudio(trackId: string, playlistId: string, lockPlaylistCheck: boolean = false) {
-        if (this.nowPlayingPlaylistId != playlistId) {
-            this.queueService.setQueue(
-                this.playlistService.getPlaylistById(
-                    playlistId).TrackIds)
+    toggleAudio(track: ITrack, playlist: IPlaylist, lockPlaylistCheck: boolean = false) {
+        if (this.nowPlayingPlaylist.id != playlist.id) {
+            this.queueService.setQueue(playlist.tracks.map(track => track.id))
         }
-
         this.audioService.toggleAudio(
-            this.trackService.getTrackById(
-                trackId),
-            this.playlistService.getPlaylistById(
-                this.nowPlayingPlaylistId), lockPlaylistCheck);
+            track, this.nowPlayingPlaylist, lockPlaylistCheck);
 
-        if (this.nowPlayingPlaylistId != playlistId)
-            this.playlistService.setPlayingPlaylistId(playlistId)
+        if (this.nowPlayingPlaylist.id != playlist.id)
+            this.playlistService.setPlayingPlaylist(playlist)
     }
 
     toggleRandom() {

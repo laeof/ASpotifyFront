@@ -1,10 +1,10 @@
 export interface ITrack {
-    Id: string,
-    Name: string,
-    ArtistId: string,
-    Date: Date,
-    AlbumId: string,
-    Duration: number,
-    Image: string,
-    Url: string,
+    id: string,
+    name: string,
+    artistId: string,
+    createdDate: number,
+    albumId: string,
+    duration: number,
+    imagePath: string,
+    urlPath: string,
 }

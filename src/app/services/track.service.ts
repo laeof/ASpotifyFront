@@ -1,25 +1,22 @@
-import { TRACKS } from "../data/data";
+import { HttpClient } from "@angular/common/http";
 import { ITrack } from "../dtos/track";
+import { ApiService } from "./api.service";
+import { Injectable } from "@angular/core";
+import { Observable, of, throwError } from "rxjs";
+
+@Injectable({
+    providedIn: 'root'
+})
 
 export class TrackService {
-    private tracks: ITrack[] = TRACKS;
-    private track: ITrack = {
-        Id: "",
-        Name: "",
-        ArtistId: "",
-        Date: new Date,
-        AlbumId: "",
-        Duration: 0,
-        Image: "",
-        Url: ""
-    }
+    constructor(private http: HttpClient,
+        private apiService: ApiService
+    ) { }
 
-    getTracks() {
-        return this.tracks;
-    }
-
-    getTrackById(id: string): ITrack {
-        return this.tracks.find(track => track.Id == id) || this.track;
+    getTrackById(id: string): Observable<ITrack> {
+        if(id === undefined)
+            return throwError(() => new Error('Track ID is undefined'));
+        return this.http.get<ITrack>(this.apiService.getPlaylistApi() + 'Track/' + id)
     }
 
     getDuration(duration: number): string {
@@ -36,5 +33,31 @@ export class TrackService {
         } else {
             return `${minutesStr}:${secondsStr}`;
         }
+    }
+
+    createNewTrack(dto: ITrack[]) {
+        dto.forEach(track => {
+            
+            this.http.post<ITrack>(this.apiService.getPlaylistApi() + 'Track', track)
+                .subscribe(
+                    (response: any) => {
+                        const track: ITrack = {
+                            id: response.id,
+                            artistId: response.artistId,
+                            imagePath: response.imagePath,
+                            name: response.name,
+                            albumId: response.albumId,
+                            urlPath: response.urlPath,
+                            duration: response.duration,
+                            createdDate: response.createdDate
+                        }
+
+                    },
+                    (error: any) => {
+                        console.log(error)
+                    }
+                );
+        });
+
     }
 }

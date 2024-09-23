@@ -1,67 +1,85 @@
-import { BehaviorSubject, Observable } from "rxjs";
-import { USERS } from "../data/data";
+import { BehaviorSubject, debounceTime, first, Observable } from "rxjs";
 import { IUser } from "../dtos/user";
+import { AccountService } from "./account.service";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { ApiService } from "./api.service";
+import { SpotifyCookieService } from "./spotifycookie.service";
+import { ITokens } from "../dtos/tokens";
+import { Injectable } from "@angular/core";
+
+@Injectable({
+    providedIn: 'root'
+})
 
 export class UserService {
-    private users: IUser[] = USERS;
-    private user: IUser = {
-        Id: "",
-        UserName: "",
-        FirstName: null,
-        LastName: null,
-        Email: "",
+    public emptyUser: IUser = {
+        id: "",
+        userName: "",
+        firstName: null,
+        lastName: null,
+        email: "",
+        avatarUrl: "",
         lovedPlaylistId: "",
-        Image: "",
-        latestPlayingPlaylist: '',
-        latestPlayingTrack: '',
-        Playlists: []
+        latestTrackId: "",
+        latestPlaylistId: "",
+        playlists: []
     }
 
-    private currentUser = new BehaviorSubject<IUser>(
-        {
-            Id: "",
-            UserName: "",
-            FirstName: null,
-            LastName: null,
-            Email: "",
-            lovedPlaylistId: "",
-            Image: "",
-            latestPlayingPlaylist: '',
-            latestPlayingTrack: '',
-            Playlists: []
+    private currentUser = new BehaviorSubject<IUser>(this.emptyUser)
+
+    constructor(private accountService: AccountService,
+        private http: HttpClient,
+        private apiService: ApiService,
+        private cookieService: SpotifyCookieService
+    ) {
+        this.cookieService.getAccessToken().subscribe(response => {
+            this.accountService.accessToken = response
+            if (response == '')
+                this.currentUser.next(this.emptyUser)
         })
 
-    constructor() {
-        this.currentUser.next(this.users[0]);
+        this.cookieService.getRefreshToken().subscribe(response => {
+            this.accountService.refreshToken = response
+        })
+    }
+
+    setCurrentUser(user: IUser) {
+        this.currentUser.next(user);
+    }
+
+    getUserInfo(): Observable<IUser> {
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${this.accountService.accessToken}`
+        });
+
+        return this.http.get<IUser>(this.apiService.getAuthApi() + 'User/GetUser/', { headers })
     }
 
     getCurrentUserInfo(): Observable<IUser> {
         return this.currentUser.asObservable();
     }
 
-    getUserInfoById(id: string): IUser {
-        return this.users.find(user => user.Id === id) || this.user
+    getUserInfoById(id: string): IUser | undefined {
+        return this.emptyUser
     }
 
     setLatestTrack(trackId: string) {
-        this.currentUser.value.latestPlayingPlaylist = trackId;
+        this.currentUser.value.latestTrackId = trackId;
     }
 
     setLatestPlaylist(playlistId: string) {
-        this.currentUser.value.latestPlayingPlaylist = playlistId;
+        this.currentUser.value.latestPlaylistId = playlistId;
     }
 
     addPlaylistToUserById(userId: string, playlistId: string) {
-        if (userId == this.currentUser.value.Id) {
+        if (userId == this.currentUser.value.id) {
             this.addPlaylistToCurrentUser(playlistId)
             return
         }
-        
-        this.users.find(user => user.Id === userId)?.Playlists.push(playlistId)
     }
 
     addPlaylistToCurrentUser(playlistId: string) {
-        this.currentUser.value.Playlists.push(playlistId)
+        this.currentUser.value.playlists.push(playlistId)
         this.currentUser.next(this.currentUser.value)
     }
 }

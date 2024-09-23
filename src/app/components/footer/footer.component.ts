@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { ITrack } from '../../dtos/track';
 import { ArtistService } from '../../services/artist.service';
 import { AudioService } from '../../services/audio.service';
-import { map, Observable } from 'rxjs';
 import { IPlaylist, PlaylistType } from '../../dtos/playlist';
 import { CommonModule } from '@angular/common';
 import { PlaylistService } from '../../services/playlist.service';
@@ -13,6 +12,8 @@ import { PlayerService } from '../../services/player.service';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
 import { LocalStorageService } from '../../services/localstorage.service';
+import { UrlService } from '../../services/url.service';
+import { first } from 'rxjs';
 
 @Component({
     selector: 'app-footer',
@@ -23,23 +24,25 @@ import { LocalStorageService } from '../../services/localstorage.service';
 })
 export class FooterComponent {
     track: ITrack = {
-        AlbumId: "",
-        Id: '',
-        Name: '',
-        ArtistId: '',
-        Date: new Date,
-        Duration: 0,
-        Image: '',
-        Url: ''
+        id: '',
+        name: '',
+        artistId: '',
+        createdDate: 0,
+        albumId: '',
+        duration: 0,
+        imagePath: '',
+        urlPath: ''
     };
     playlist: IPlaylist = {
-        Id: '',
-        AuthorId: '',
-        Image: '',
-        Name: '',
-        Type: PlaylistType.Playlist,
-        TrackIds: []
+        id: '',
+        authorId: '',
+        imagePath: '',
+        name: '',
+        types: PlaylistType.Playlist,
+        tracks: [],
+        color: ''
     };
+    playingPlaylistId: string = ''
     volume: number = 0;
     trackPosition: number = 0;
     paused: boolean = true;
@@ -48,16 +51,16 @@ export class FooterComponent {
     repeat: boolean = false;
 
     private user: IUser = {
-        Id: '',
-        UserName: '',
-        FirstName: null,
-        LastName: null,
-        Email: '',
+        id: '',
+        userName: '',
+        firstName: null,
+        lastName: null,
+        email: '',
+        avatarUrl: '',
         lovedPlaylistId: '',
-        Image: '',
-        latestPlayingPlaylist: '',
-        latestPlayingTrack: '',
-        Playlists: []
+        latestTrackId: '',
+        latestPlaylistId: '',
+        playlists: []
     };
 
     constructor(private artistService: ArtistService,
@@ -68,7 +71,8 @@ export class FooterComponent {
         private queueService: QueueService,
         private playerService: PlayerService,
         private userService: UserService,
-        private localStorageService: LocalStorageService
+        private localStorageService: LocalStorageService,
+        private urlService: UrlService
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.user = user;
@@ -77,23 +81,31 @@ export class FooterComponent {
         todo:
             save latest data to user
         */
-        let latestPlayingPlaylist = this.localStorageService.getLatestPlaylistId() ?? this.user.latestPlayingPlaylist;
-        let latestPlayingSong = this.localStorageService.getLatestSongId() ?? this.user.latestPlayingTrack;
+        let latestPlayingPlaylist = this.localStorageService.getLatestPlaylistId() ?? this.user.latestPlaylistId;
+        let latestPlayingSong = this.localStorageService.getLatestSongId() ?? this.user.latestTrackId;
         let latestSongTrackPosition = this.localStorageService.getLatestSongTrackPosition() ?? 0;
 
         console.log("latest song: " + latestPlayingSong)
         console.log("latest playlist: " + latestPlayingPlaylist)
 
         if (latestPlayingSong != null && latestPlayingPlaylist != null) {
-            this.playlistService.setPlayingPlaylistId(latestPlayingPlaylist)
-            this.queueService.setQueue(this.playlistService.getPlaylistById(latestPlayingPlaylist).TrackIds)
-            this.queueService.setCurrentTrack(latestPlayingSong)
-            this.audioService.setTrackPosition(latestSongTrackPosition)
-            this.audioService.setTrackPause();
+            let playlistPlayed: IPlaylist;
+            this.playlistService.getPlaylistById(latestPlayingPlaylist).pipe(first()).subscribe(
+                (playlist: IPlaylist) => {
+                    playlistPlayed = playlist
+                    this.playlistService.setPlayingPlaylist(playlist)
+                    this.queueService.setQueue(playlistPlayed.tracks.map(track => track.id))
+                    this.queueService.setCurrentTrack(latestPlayingSong)
+                    this.audioService.setTrackPosition(latestSongTrackPosition)
+                    this.audioService.setTrackPause();
+                })
         }
 
         this.queueService.getCurrentTrackId().subscribe(track => {
-            this.track = this.trackService.getTrackById(track);
+            this.trackService.getTrackById(track).pipe(first()).subscribe(
+                (response: any) => {
+                    this.track = response;
+                })
         });
 
         this.audioService.getTrackPosition().subscribe(trackpos => {
@@ -108,8 +120,8 @@ export class FooterComponent {
             this.paused = ispaused
         })
 
-        this.playlistService.getPlayingPlaylistId().subscribe((playlist) => {
-            this.playlist = this.playlistService.getPlaylistById(playlist)
+        this.playlistService.getPlayingPlaylist().subscribe((playlist) => {
+            this.playlist = playlist
         })
 
         this.sidebarService.isNowPlayingVisible().subscribe(visible => {
@@ -125,16 +137,22 @@ export class FooterComponent {
         })
     }
 
-    toggleLikedSongs(trackId: string) {
-        if (this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId)) {
-            this.playlistService.removeFromPlaylist(this.user.lovedPlaylistId, trackId);
-            return;
-        }
-        this.playlistService.addToPlaylist(this.user.lovedPlaylistId, trackId);
+    toggleLyrics() {
+        let route = "/lyrics";
+
+        this.urlService.redirect(route);
     }
 
-    getLikedSongsState(trackId: string) {
-        return this.playlistService.getLovedTrackState(this.user.lovedPlaylistId, trackId);
+    toggleLikedSongs(track: ITrack) {
+        if (this.playlistService.getLovedTrackState(track)) {
+            this.playlistService.removeFromPlaylist(this.user.lovedPlaylistId, track.id);
+            return;
+        }
+        this.playlistService.addToPlaylist(this.user.lovedPlaylistId, track.id);
+    }
+
+    getLikedSongsState(track: ITrack) {
+        return this.playlistService.getLovedTrackState(track);
     }
 
     toggleNowPlaying() {
@@ -146,7 +164,7 @@ export class FooterComponent {
     }
 
     isActive(): boolean {
-        return this.track.Id != '';
+        return this.track.id != '' && this.user.id != '';
     }
 
     isPaused(): any {
@@ -154,7 +172,7 @@ export class FooterComponent {
     }
 
     toggleAudio() {
-        this.playerService.toggleAudio(this.track.Id, this.playlist.Id, true);
+        this.playerService.toggleAudio(this.track, this.playlist, true);
     }
 
     toggleRandom(): any {

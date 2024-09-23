@@ -1,0 +1,12 @@
+@import "../../shared/mixin.scss";
+
+.main-wrap {
+    overflow-y: auto;
+    height: 100%;
+    background-color: $main-background;
+    border-radius: 12px;
+    position: relative;
+    user-select: none;
+
+    @include scroll-bar();
+}

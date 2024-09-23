@@ -1,0 +1,222 @@
+@import "../../shared/mixin.scss";
+
+@mixin service-background($background) {
+    background-color: rgba($background, 0.3);
+    box-shadow: 0 0 5px 5px rgba($background, 0.3);
+
+    &:hover {
+        background-color: rgba($background, 0.6);
+        box-shadow: 0 0 7px 7px rgba($background, 0.6);
+    }
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+
+    .auth-wrap {
+        margin-top: 20px;
+
+        .header {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+
+            .logo-wrap {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .title-wrap {
+                display: flex;
+                align-items: center;
+
+                .title {
+                    font-size: 30px;
+                    color: $backcolor;
+                }
+            }
+        }
+
+        .form {
+            form {
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+
+                .input {
+                    border: none;
+                    outline: none;
+                    box-shadow: 0 0 20px rgba(200, 200, 200, 0.1);
+                    background-color: rgba(255, 255, 255, 0.1);
+                    color: $backcolor;
+                    border-radius: 50px;
+                    padding: 10px 20px;
+                    font-size: 18px;
+                    transition: background-color 0.3s;
+
+                    &:focus {
+                        box-shadow: 0 0 20px rgba(200, 200, 200, 0.1);
+                        background-color: rgba(200, 200, 200, 0.1);
+                    }
+
+                    &:hover {
+                        box-shadow: 0 0 20px rgba(200, 200, 200, 0.1);
+                        background-color: rgba(200, 200, 200, 0.1);
+                    }
+
+                    &.ng-invalid {
+                        box-shadow: 0 0 20px rgb(181, 24, 24);
+                        background-color: rgb(123, 23, 23);
+                    }
+                }
+
+                .gender {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    column-gap: 15px;
+                    border-bottom: 1px solid rgba(75, 75, 75);
+                    padding-bottom: 30px;
+
+                    label {
+                        user-select: none;
+                        text-align: center;
+                    }
+
+                    input[type="radio"] {
+                        display: none;
+                    }
+
+                    input[type="radio"]+label {
+                        z-index: 10;
+                        position: relative;
+                        color: $backcolor;
+                        font-weight: bold;
+                        background-color: rgba($maincolor, 0.5);
+                        box-shadow: 0 0 10px $maincolor;
+                        cursor: pointer;
+                        transition: all 200ms;
+
+                        &:hover {
+                            background-color: rgba($maincolor, 0.8);
+                            box-shadow: 0 0 20px $maincolor;
+                        }
+                    }
+
+                    input[type="radio"]:checked+label {
+                        color: $backcolor;
+                        box-shadow: 0 0 20px $maincolor;
+                        background-color: rgba($maincolor, 0.8);
+                    }
+
+                    input[type="radio"]+label {
+                        padding: 10px 30px;
+                        border-radius: 10px;
+                    }
+                }
+
+                .button {
+                    padding: 15px 50px;
+                    margin: auto;
+                    margin-top: 20px;
+                    border-radius: 20px;
+                    border: none;
+                    font-size: 18px;
+                    color: rgba(255, 255, 255, 0.8);
+                    box-shadow: 0 0 10px $maincolor;
+                    background-color: rgba($maincolor, 0.5);
+
+                    transition: background-color 0.3s, box-shadow 0.3s;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: $maincolor;
+                        box-shadow: 0 0 20px $maincolor;
+                    }
+                }
+            }
+        }
+
+        .footer {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+
+            .title-wrap {
+                display: flex;
+                align-items: center;
+
+                .title {
+                    font-size: 30px;
+                    color: $backcolor;
+                }
+            }
+
+            .services {
+                display: grid;
+                width: 100%;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+                padding: 5px 25px;
+
+                .withservice {
+                    display: flex;
+                    justify-content: center;
+                    transition: background-color .3s, box-shadow .3s;
+                    padding: 10px;
+                    border-radius: 20px;
+                    cursor: pointer;
+                    gap: 10px;
+
+                    &.blue {
+                        $background: rgb(36, 123, 223);
+                        @include service-background($background);
+                    }
+
+                    &.orange {
+                        $background: rgb(192, 145, 27);
+                        @include service-background($background);
+                    }
+
+                    .svg-wrap {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        min-width: 30px;
+                    }
+
+                    .servicename {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        p {
+                            color: rgba(255, 255, 255, 0.8)
+                        }
+                    }
+                }
+            }
+
+            .subtitle {
+                margin-top: 20px;
+            }
+
+            a {
+                color: rgba($maincolor, 0.7);
+                transition: color .3s, text-shadow .3s, filter .3s;
+                text-shadow: 0 0 10px $maincolor;
+
+                &:hover {
+                    color: $maincolor;
+                    text-shadow: 0 0 20px $maincolor;
+                    filter: brightness(150%)
+                }
+            }
+        }
+    }
+}

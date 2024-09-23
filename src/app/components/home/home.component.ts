@@ -3,45 +3,59 @@ import { IPlaylist } from '../../dtos/playlist';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
 import { PlaylistService } from '../../services/playlist.service';
-import { Router } from '@angular/router';
 import { ITrack } from '../../dtos/track';
-import { AudioService } from '../../services/audio.service';
 import { UrlService } from '../../services/url.service';
 import { PlayerService } from '../../services/player.service';
+import { FooterInfoComponent } from "../footer-info/footer-info.component";
+import { TrackService } from '../../services/track.service';
+import { first } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [],
+    imports: [FooterInfoComponent, CommonModule],
     templateUrl: './home.component.html',
     styleUrl: './home.component.scss'
 })
 export class HomeComponent {
+    hover: boolean = false;
     playlists: IPlaylist[] = [];
     private user: IUser = {
-        Id: '',
-        UserName: '',
-        FirstName: null,
-        LastName: null,
-        Email: '',
+        id: '',
+        userName: '',
+        firstName: null,
+        lastName: null,
+        email: '',
+        avatarUrl: '',
         lovedPlaylistId: '',
-        Image: '',
-        latestPlayingPlaylist: '',
-        latestPlayingTrack: '',
-        Playlists: []
+        latestTrackId: '',
+        latestPlaylistId: '',
+        playlists: []
     };
     constructor(private userService: UserService,
         private playlistService: PlaylistService,
         private playerService: PlayerService,
-        private urlService: UrlService
+        private urlService: UrlService,
+        private trackService: TrackService
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.user = user;
-            playlistService.getAllPlaylistsUserId(this.user.Id).map(playlist => {
-                if (!this.playlists.includes(this.playlistService.getPlaylistById(playlist)))
-                    this.playlists.push(this.playlistService.getPlaylistById(playlist))
-            });
+            this.playlistService.getAllMyPlaylists().pipe(first()).subscribe(
+                (playlists: IPlaylist[]) => {
+                    this.playlists = playlists;
+                })
         });
+    }
+
+    mouseMove(playlist: IPlaylist) {
+        console.log('moved')
+        document.documentElement.style.setProperty('--custom-bg-color', playlist.color);
+        this.hover = true;
+    }
+
+    mouseLeave() {
+        this.hover = false;
     }
 
     redirectToPlaylist(id: string) {
@@ -50,7 +64,12 @@ export class HomeComponent {
         this.urlService.redirect(route);
     }
 
-    toggleAudio(item: string, playlist: string) {
-        this.playerService.toggleAudio(item, playlist)
+    toggleAudio(item: string, playlist: IPlaylist) {
+        this.trackService.getTrackById(item).pipe(
+            first()
+        ).subscribe(
+            (response: ITrack) => {
+                this.playerService.toggleAudio(response, playlist)
+            })
     }
 }
