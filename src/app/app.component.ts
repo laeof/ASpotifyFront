@@ -70,6 +70,7 @@ export class AppComponent {
                             this.cookieService.setRefreshToken(response.refreshToken);
                         },
                         error: (response: Error) => {
+                            this.accountService.Logout();
                             this.userService.setCurrentUser(this.userService.emptyUser);
                         }
                     });

@@ -21,6 +21,7 @@ import { first } from 'rxjs';
 })
 export class LeftsidebarComponent {
     items: IPlaylist[] = [];
+    playlistTypes: { [key: number]: string } = {}
     user: IUser = {
         id: '',
         userName: '',
@@ -42,11 +43,23 @@ export class LeftsidebarComponent {
         private audioService: AudioService,
         private contextMenuService: ContextMenuService,
     ) {
+        Object.keys(PlaylistType)
+            .filter(key => !isNaN(Number(key)))
+            .forEach(key => {
+                const numKey = Number(key);
+                this.playlistTypes[numKey] = PlaylistType[numKey];
+            });
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.user = user;
-            this.playlistService.getAllMyPlaylists().pipe(first()).subscribe(
-                (playlists: IPlaylist[]) => {
-                    this.items = playlists;
+            this.playlistService.getAllMyPlaylists()
+                .pipe(first())
+                .subscribe({
+                    next: ((response: IPlaylist[]) => {
+                        this.items = response
+                    }),
+                    error: ((response: Error) => {
+                        
+                    })
                 })
         });
 
@@ -66,14 +79,6 @@ export class LeftsidebarComponent {
             (playlists: IPlaylist[]) => {
                 this.items = playlists;
             })
-    }
-
-    getPlaylistType(type: PlaylistType) {
-        return this.playlistService.getPlaylistType(type);
-    }
-
-    getPlaylistLength(item: IPlaylist) {
-        return item.tracks?.length ?? 0;
     }
 
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;

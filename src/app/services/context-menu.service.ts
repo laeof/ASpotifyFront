@@ -4,6 +4,7 @@ import { QueueService } from "./queue.service";
 import { PlaylistService } from "./playlist.service";
 import { UrlService } from "./url.service";
 import { AccountService } from "./account.service";
+import { IPlaylist, PlaylistType } from "../dtos/playlist";
 
 @Injectable({
     providedIn: 'root'
@@ -19,7 +20,7 @@ export class ContextMenuService {
 
     }
 
-    getTrackActions(trackId: string = '', playlistId: string = ''): MenuItem[] {
+    getTrackActions(trackId: string = '', playlists: IPlaylist[] = [], lovedPlaylistId: string = ''): MenuItem[] {
         return [
             {
                 svg: '',
@@ -29,8 +30,13 @@ export class ContextMenuService {
             {
                 svg: '',
                 label:
-                    'Add to playlist',
-                action: () => this.playlistService.addToPlaylist(trackId, playlistId)
+                    'Add to loved',
+                action: () => this.playlistService.addToPlaylist(lovedPlaylistId, trackId)
+            },
+            {
+                svg: '',
+                label: 'Add to playlist',
+                action: () => console.log('Action 3 clicked')
             },
             { svg: '', label: 'Track func 3', action: () => console.log('Action 3 clicked') },
         ];
@@ -60,11 +66,11 @@ export class ContextMenuService {
                 svg: '',
                 label: 'Artist settings',
                 action: () => this.urlService.redirect('/artist')
-            }, 
+            },
             {
                 svg: '',
                 label: 'Log out',
-                action: () => {this.accountService.Logout();}
+                action: () => { this.accountService.Logout(); }
             },
         ];
     }

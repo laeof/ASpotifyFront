@@ -10,7 +10,7 @@ import { IArtist } from '../../dtos/artist';
 import { UserService } from '../../services/user.service';
 import { PlaylistService } from '../../services/playlist.service';
 import { MediaService } from '../../services/media.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, first, Observable } from 'rxjs';
 import { IPlaylist } from '../../dtos/playlist';
 import { TrackService } from '../../services/track.service';
 import { IImage } from '../../dtos/image';
@@ -81,12 +81,16 @@ export class CreateComponent {
                 if (playlist)
                     this.artist.albums.push(playlist)
             })
+            this.playlistService.getAllMyPlaylists().pipe(first()).subscribe(
+                (playlists: IPlaylist[]) => {
+                    let filtered = playlists.filter(playlist => playlist.types === 1)
+                    if (this.albums.length !== filtered.length) {
+                        this.albums = filtered;
+                    }
+                }
+            )
         });
-        this.playlistService.getAllMyPlaylists().subscribe(
-            (playlists: IPlaylist[]) => {
-                this.albums = playlists.filter(playlist => playlist.types === 1);
-            }
-        )
+
     }
 
     chunkArray<T>(array: T[], size: number): T[][] {
@@ -169,7 +173,6 @@ export class CreateComponent {
     }
 
     async getfile(event: any) {
-        console.log('1')
         this.file = event.target.files[0];
         this.iimage = await this.mediaService.uploadImage(this.file!).toPromise() || this.iimage;
         console.log(this.iimage)
@@ -187,21 +190,16 @@ export class CreateComponent {
     }
 
     onSubmitPlaylist() {
-        console.log(this.playlistForm.value.name ?? '')
-        console.log(this.playlistForm.value.types ?? '')
-        console.log(this.image ?? '')
-        console.log(this.artist.id ?? '')
-
-        let img = this.image as any
 
         const playlist: IPlaylist = {
             id: "00000000-0000-0000-0000-000000000000",
             authorId: this.artist.id ?? '',
-            imagePath: img.filePath,
+            imagePath: this.iimage.filePath,
             name: this.playlistForm.value.name ?? '',
             types: this.playlistForm.value.types ?? 0,
             tracks: [],
-            color: ''
+            color: this.iimage.color,
+            trackPlaylists: []
         }
 
         this.playlistService.createNewPlaylist(playlist);
@@ -210,10 +208,10 @@ export class CreateComponent {
     onSubmitTrack() {
         this.tracks.forEach((element: ITrack) => {
             element.albumId = this.trackForm.value.album.id
-            element.imagePath = this.trackForm.value.album.imagePath         
+            element.imagePath = this.trackForm.value.album.imagePath
         });
 
-        
+
         this.trackService.createNewTrack(this.tracks);
     }
 }

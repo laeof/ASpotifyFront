@@ -35,7 +35,7 @@
             <div class="trackinfo">
                 <span class="trackname">
                     <p class="name">{{track.name}}</p>
-                    <p class="author">{{getArtistName(track.artistId)}}</p>
+                    <p class="author">{{this.artist.userName}}</p>
                 </span>
                 <span class="wrap-svg" (click)="toggleLikedSongs(track)">
                     <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -57,7 +57,7 @@
             </span>
             <span class="artist-card">
                 <p style="font-size: 16px; color: rgba(255, 255, 255, 0.9); margin-bottom: 2px">
-                    {{getArtistName(track.artistId)}}</p>
+                    {{this.artist.userName}}</p>
                 <p style="font-size: 14px; color: rgba(255, 255, 255, 0.7)">Main artist</p>
             </span>
         </div>
@@ -97,7 +97,7 @@
                         {{nextTrack.name}}
                     </p>
                     <p class="subtitle">
-                        {{getArtistName(nextTrack.artistId)}}
+                        {{this.nextartist.userName}}
                     </p>
                 </div>
             </span>

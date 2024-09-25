@@ -13,6 +13,7 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { ContextMenuService } from '../../services/context-menu.service';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
+import { IArtist } from '../../dtos/artist';
 
 @Component({
     selector: 'app-nowplayingsidebar',
@@ -26,6 +27,21 @@ import { IUser } from '../../dtos/user';
 export class NowplayingsidebarComponent implements OnDestroy {
     nowPlayingVisible = false;
     toggledContextMenu: boolean = false;
+    artist: IArtist = {
+        id: '',
+        userName: '',
+        firstName: '',
+        lastName: '',
+        albums: []
+    }
+    nextartist: IArtist = {
+        id: '',
+        userName: '',
+        firstName: '',
+        lastName: '',
+        albums: []
+    }
+
     track: ITrack = {
         id: '',
         name: '',
@@ -55,7 +71,8 @@ export class NowplayingsidebarComponent implements OnDestroy {
         name: '',
         types: PlaylistType.Playlist,
         tracks: [],
-        color: ''
+        color: '',
+        trackPlaylists: []
     };
 
     private user: IUser = {
@@ -94,6 +111,9 @@ export class NowplayingsidebarComponent implements OnDestroy {
             ).subscribe(
                 (response: ITrack) => {
                     this.track = response;
+                    this.artistService.getArtistById(response.artistId).pipe(first()).subscribe(
+                        (response: IArtist) => this.artist = response
+                    )
                 })
         })
 
@@ -103,6 +123,9 @@ export class NowplayingsidebarComponent implements OnDestroy {
             ).subscribe(
                 (response: ITrack) => {
                     this.nextTrack = response;
+                    this.artistService.getArtistById(response.artistId).pipe(first()).subscribe(
+                        (response: IArtist) => this.nextartist = response
+                    )
                 })
         })
 
@@ -144,10 +167,6 @@ export class NowplayingsidebarComponent implements OnDestroy {
 
     toggleContextMenu() {
         this.toggledContextMenu = !this.toggledContextMenu;
-    }
-
-    getArtistName(id: string) {
-        return this.artistService.getArtistNameById(id);
     }
 
     toggleSideBar() {

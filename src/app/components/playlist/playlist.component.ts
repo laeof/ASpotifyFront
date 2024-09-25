@@ -41,6 +41,7 @@ export class PlaylistComponent implements OnDestroy {
         latestPlaylistId: '',
         playlists: []
     };
+    private playlists: IPlaylist[] = [];
     toggledContextMenu: boolean = false;
     @ViewChild('imageElement', { static: false }) imageElement!: ElementRef;
 
@@ -52,7 +53,8 @@ export class PlaylistComponent implements OnDestroy {
         name: '',
         types: PlaylistType.Playlist,
         tracks: [],
-        color: ''
+        color: '',
+        trackPlaylists: []
     };
 
     //playing
@@ -63,7 +65,8 @@ export class PlaylistComponent implements OnDestroy {
         name: '',
         types: PlaylistType.Playlist,
         tracks: [],
-        color: ''
+        color: '',
+        trackPlaylists: []
     };
 
     activePlaylist: IPlaylist = {
@@ -73,7 +76,8 @@ export class PlaylistComponent implements OnDestroy {
         name: '',
         types: PlaylistType.Playlist,
         tracks: [],
-        color: ''
+        color: '',
+        trackPlaylists: []
     };
 
     artistNames: { [key: string]: string } = {}
@@ -115,6 +119,8 @@ export class PlaylistComponent implements OnDestroy {
             this.user = user;
         });
 
+        this.playlistService.getAllMyPlaylists().subscribe((response: IPlaylist[]) => this.playlists = response)
+
         this.sub = this.route.paramMap.subscribe(params => {
             let id = params.get('id') || "";
             this.playlistService.getPlaylistById(id).pipe(first()).subscribe((response: IPlaylist) => {
@@ -128,6 +134,7 @@ export class PlaylistComponent implements OnDestroy {
 
             this.playlist.tracks.forEach(element => {
                 this.trackDates[element.id] = (new Date(element.createdDate).toDateString());
+
                 if (!this.albumNames[element.albumId])
                     this.playlistService.getPlaylistById(element.albumId).pipe(first()).subscribe(
                         (response: IPlaylist) => {
@@ -140,7 +147,7 @@ export class PlaylistComponent implements OnDestroy {
                 }
             })
 
-            setTimeout(() => this.extractColor(), 1);
+            this.extractColor()
         })
 
         this.subCurrent0 = this.playlistService.getPlayingPlaylist().subscribe(playlist => {
@@ -168,6 +175,7 @@ export class PlaylistComponent implements OnDestroy {
             imagePath: '',
             name: '',
             types: PlaylistType.Playlist,
+            trackPlaylists: [],
             tracks: [],
             color: ''
         });
@@ -206,7 +214,7 @@ export class PlaylistComponent implements OnDestroy {
     @ViewChild('contextMenu') contextMenu!: ContextMenuComponent;
 
     onTrackClick(event: MouseEvent, id: string) {
-        this.contextMenu.menuItems = this.contextMenuService.getTrackActions(id);
+        this.contextMenu.menuItems = this.contextMenuService.getTrackActions(id, this.playlists, this.user.lovedPlaylistId);
         this.contextMenu.open(event);
     }
 

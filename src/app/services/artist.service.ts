@@ -1,4 +1,4 @@
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable } from "rxjs";
 import { IUser } from "../dtos/user";
 import { ApiService } from "./api.service";
 import { HttpClient } from "@angular/common/http";
@@ -13,17 +13,23 @@ export class ArtistService {
     // getArtistById(id: string): string {
     // }
 
+    private emptyArtist = new BehaviorSubject<IArtist>({
+        id: "",
+        userName: "",
+        firstName: "",
+        lastName: "",
+        albums: []
+    })
+
     constructor(private apiService: ApiService,
         private http: HttpClient
     ) {
         
     }
 
-    getArtistNameById(id: string) {
-        return ""
-    }
-
     getArtistById(id: string): Observable<IArtist> {
+        if(id === undefined || id === '')
+            return this.emptyArtist
         return this.http.get<IArtist>(this.apiService.getPlaylistApi() + 'Artist/' + id);
     }
 }

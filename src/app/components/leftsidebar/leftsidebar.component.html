@@ -34,9 +34,9 @@
             }
             @else {
             <span *ngFor="let item of items;" class="playlist" [ngClass]="{
-                'selected': isActive(item.id),
-                'playing': isPlaying(item.id),
-              }" (click)='redirectToPlaylist(item.id)' (contextmenu)="onPlaylistClick($event)">
+                    'selected': isActive(item.id),
+                    'playing': isPlaying(item.id),
+                }" (click)='redirectToPlaylist(item.id)' (contextmenu)="onPlaylistClick($event)">
                 <div class="play-name">
                     <div class="wrap-img">
                         <img src={{item.imagePath}}>
@@ -46,7 +46,7 @@
                             {{item.name}}
                         </p>
                         <p class="subtitle">
-                            {{getPlaylistType(item.types)}} - {{getPlaylistLength(item)}} tracks
+                            {{playlistTypes[item.types]}} - {{item.tracks.length}} tracks
                         </p>
                     </div>
                 </div>

@@ -21,6 +21,7 @@ export class PlayerService {
         imagePath: "",
         name: "",
         types: PlaylistType.Playlist,
+        trackPlaylists: [],
         tracks: [],
         color: ""
     };

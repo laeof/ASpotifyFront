@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { ITrack } from "../dtos/track";
 import { ApiService } from "./api.service";
 import { Injectable } from "@angular/core";
-import { Observable, of, throwError } from "rxjs";
+import { BehaviorSubject, Observable, of, throwError } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -13,9 +13,20 @@ export class TrackService {
         private apiService: ApiService
     ) { }
 
+    private emptyTrack = new BehaviorSubject<ITrack>({
+        id: "",
+        name: "",
+        artistId: "",
+        createdDate: 0,
+        albumId: "",
+        duration: 0,
+        imagePath: "",
+        urlPath: ""
+    })
+
     getTrackById(id: string): Observable<ITrack> {
         if(id === undefined)
-            return throwError(() => new Error('Track ID is undefined'));
+            return this.emptyTrack;
         return this.http.get<ITrack>(this.apiService.getPlaylistApi() + 'Track/' + id)
     }
 

@@ -15,6 +15,18 @@ import { IArtist } from "../dtos/artist";
 })
 
 export class PlaylistService {
+
+    private emptyPlaylist = new BehaviorSubject<IPlaylist>({
+        id: '',
+        authorId: '',
+        name: '',
+        imagePath: '',
+        types: PlaylistType.Playlist,
+        tracks: [],
+        trackPlaylists: [],
+        color: ''
+    })
+
     private currentPlaylistPlaying = new BehaviorSubject<IPlaylist>({
         id: '',
         authorId: '',
@@ -22,6 +34,7 @@ export class PlaylistService {
         imagePath: '',
         types: PlaylistType.Playlist,
         tracks: [],
+        trackPlaylists: [],
         color: ''
     });
     private activePlaylist = new BehaviorSubject<IPlaylist>({
@@ -30,9 +43,21 @@ export class PlaylistService {
         name: '',
         imagePath: '',
         types: PlaylistType.Playlist,
+        trackPlaylists: [],
         tracks: [],
         color: ''
     });
+
+    private lovedPlaylist: IPlaylist = {
+        id: "",
+        authorId: "",
+        imagePath: "",
+        name: "",
+        types: PlaylistType.Playlist,
+        tracks: [],
+        trackPlaylists: [],
+        color: ""
+    }
 
     private user: IUser = {
         id: "",
@@ -55,27 +80,44 @@ export class PlaylistService {
     ) {
         this.userService.getCurrentUserInfo().subscribe((user: any) => {
             this.user = user;
+            this.getPlaylistById(user.lovedPlaylistId).pipe(first()).subscribe(
+                (response: IPlaylist) => this.lovedPlaylist = response
+            )
         });
     }
 
+    getPopularPlaylists(): Observable<IPlaylist[]> {
+        return this.http.get<IPlaylist[]>(this.apiService.getPlaylistApi() + 'Playlist/popularplaylists');
+    }
+
     getPlaylistById(id: string): Observable<IPlaylist> {
-        if(id === '' || id === undefined)
-            return throwError(() => new Error('Playlist ID is undefined'));
-        return this.http.get<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist/' + id)
+        if (id === '' || id === undefined)
+            return this.emptyPlaylist;
+        return this.http.get<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist/' + id);
     }
 
     addTrackToPlaylist(playlistId: string, trackId: string) {
-        return this.http.put<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', { playlistId, trackId })
+        return this.http.put<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist/addtoplaylist', { playlistId, trackId });
     }
 
     //todo
     //add to backend
     removeTrackFromPlaylist(playlistId: string, trackId: string) {
-        return this.http.put<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', { playlistId, trackId })
+        return this.http.put<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', { playlistId, trackId });
     }
 
     addToPlaylist(playlistId: string, trackId: string) {
-        this.addToPlaylist(playlistId, trackId)
+        this.addTrackToPlaylist(playlistId, trackId).pipe(first()).subscribe(
+            (response: IPlaylist) => {
+                let index = this.user.playlists.findIndex(x => x == playlistId)
+                
+                if(index == -1) return
+                
+                this.user.playlists[index] = response.id
+
+                this.userService.setCurrentUser(this.user)
+            }
+        );
         if (playlistId == this.currentPlaylistPlaying.value.id)
             this.queueService.addTrackAtIndex(trackId, 0);
     }
@@ -85,8 +127,8 @@ export class PlaylistService {
     }
 
     getLovedTrackState(track: ITrack): boolean {
-        if(this.user.playlists.findIndex(trackId => trackId === track.id) != -1)
-            return true
+        if (this.lovedPlaylist.tracks.findIndex(t => t.id === track.id) != -1)
+            return true;
         return false;
     }
 
@@ -94,7 +136,7 @@ export class PlaylistService {
         return this.artistService.getArtistById(id).pipe(
             switchMap((user: IArtist) => {
                 const playlistObservables = user.albums.map((id: string) => this.getPlaylistById(id));
-    
+
                 return forkJoin(playlistObservables);
             })
         )
@@ -124,7 +166,8 @@ export class PlaylistService {
             name: "Loved Songs",
             types: PlaylistType.Playlist,
             tracks: [],
-            color: "rgb(61,50,154)"
+            color: "rgb(61,50,154)",
+            trackPlaylists: []
         }
 
         const formData = new FormData();
@@ -138,7 +181,7 @@ export class PlaylistService {
             })
         });
     }
-    
+
     createNewEmptyPlaylist() {
         const playlist: IPlaylist = {
             id: "",
@@ -147,7 +190,8 @@ export class PlaylistService {
             name: "Loved Songs",
             types: PlaylistType.Playlist,
             tracks: [],
-            color: "rgb(15,0,148)"
+            color: "rgb(15,0,148)",
+            trackPlaylists: []
         }
 
         const formData = new FormData();

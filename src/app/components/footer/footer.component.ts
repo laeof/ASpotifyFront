@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { ITrack } from '../../dtos/track';
 import { ArtistService } from '../../services/artist.service';
 import { AudioService } from '../../services/audio.service';
@@ -14,6 +14,7 @@ import { IUser } from '../../dtos/user';
 import { LocalStorageService } from '../../services/localstorage.service';
 import { UrlService } from '../../services/url.service';
 import { first } from 'rxjs';
+import { IArtist } from '../../dtos/artist';
 
 @Component({
     selector: 'app-footer',
@@ -40,7 +41,8 @@ export class FooterComponent {
         name: '',
         types: PlaylistType.Playlist,
         tracks: [],
-        color: ''
+        color: '',
+        trackPlaylists: []
     };
     playingPlaylistId: string = ''
     volume: number = 0;
@@ -49,6 +51,14 @@ export class FooterComponent {
     toggledNowPlaying = false;
     random: boolean = false;
     repeat: boolean = false;
+
+    artist: IArtist = {
+        id: '',
+        userName: '',
+        firstName: '',
+        lastName: '',
+        albums: []
+    }
 
     private user: IUser = {
         id: '',
@@ -87,6 +97,7 @@ export class FooterComponent {
 
         console.log("latest song: " + latestPlayingSong)
         console.log("latest playlist: " + latestPlayingPlaylist)
+        console.log('latest trackpos: ' + latestSongTrackPosition)
 
         if (latestPlayingSong != null && latestPlayingPlaylist != null) {
             let playlistPlayed: IPlaylist;
@@ -105,6 +116,9 @@ export class FooterComponent {
             this.trackService.getTrackById(track).pipe(first()).subscribe(
                 (response: any) => {
                     this.track = response;
+                    this.artistService.getArtistById(response.artistId).pipe(first()).subscribe(
+                        (response: IArtist) => this.artist = response
+                    )
                 })
         });
 
@@ -209,10 +223,6 @@ export class FooterComponent {
         const input = event.target as HTMLInputElement;
         const volume = +input.value;
         this.audioService.setVolume(volume / 100);
-    }
-
-    getArtistById(id: string) {
-        return this.artistService.getArtistNameById(id);
     }
 
     getDuration(duration: number) {
