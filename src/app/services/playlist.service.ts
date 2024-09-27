@@ -1,14 +1,13 @@
-import { BehaviorSubject, catchError, first, forkJoin, map, Observable, switchMap, throwError } from "rxjs";
+import { BehaviorSubject, first, forkJoin, Observable, switchMap } from "rxjs";
 import { IPlaylist, PlaylistType } from "../dtos/playlist";
 import { QueueService } from "./queue.service";
 import { Injectable } from "@angular/core";
 import { IUser } from "../dtos/user";
 import { UserService } from "./user.service";
-import { HttpClient, HttpContext } from "@angular/common/http";
+import { HttpClient, HttpContext, HttpHeaders } from "@angular/common/http";
 import { ApiService } from "./api.service";
 import { ITrack } from "../dtos/track";
-import { ArtistService } from "./artist.service";
-import { IArtist } from "../dtos/artist";
+import { AccountService } from "./account.service";
 
 @Injectable({
     providedIn: 'root'
@@ -76,7 +75,7 @@ export class PlaylistService {
         private userService: UserService,
         private http: HttpClient,
         private apiService: ApiService,
-        private artistService: ArtistService//temporary, need to use user
+        private accountService: AccountService
     ) {
         this.userService.getCurrentUserInfo().subscribe((user: any) => {
             this.user = user;
@@ -97,22 +96,28 @@ export class PlaylistService {
     }
 
     addTrackToPlaylist(playlistId: string, trackId: string) {
-        return this.http.put<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist/addtoplaylist', { playlistId, trackId });
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${this.accountService.accessToken}`
+        });
+
+        return this.http.put<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist/addtoplaylist', { playlistId, trackId }, { headers });
     }
 
-    //todo
-    //add to backend
     removeTrackFromPlaylist(playlistId: string, trackId: string) {
-        return this.http.put<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', { playlistId, trackId });
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${this.accountService.accessToken}`
+        });
+
+        return this.http.put<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist/removefromplaylist', { playlistId, trackId }, { headers });
     }
 
     addToPlaylist(playlistId: string, trackId: string) {
         this.addTrackToPlaylist(playlistId, trackId).pipe(first()).subscribe(
             (response: IPlaylist) => {
                 let index = this.user.playlists.findIndex(x => x == playlistId)
-                
-                if(index == -1) return
-                
+
+                if (index == -1) return
+
                 this.user.playlists[index] = response.id
 
                 this.userService.setCurrentUser(this.user)
@@ -123,7 +128,7 @@ export class PlaylistService {
     }
 
     removeFromPlaylist(playlistId: string, trackId: string) {
-        this.removeFromPlaylist(playlistId, trackId);
+        this.removeTrackFromPlaylist(playlistId, trackId).pipe(first()).subscribe();
     }
 
     getLovedTrackState(track: ITrack): boolean {
@@ -133,9 +138,9 @@ export class PlaylistService {
     }
 
     getAllPlaylistsUserId(id: string): Observable<IPlaylist[]> {
-        return this.artistService.getArtistById(id).pipe(
-            switchMap((user: IArtist) => {
-                const playlistObservables = user.albums.map((id: string) => this.getPlaylistById(id));
+        return this.userService.getUserInfoById(id).pipe(
+            switchMap((user: IUser) => {
+                const playlistObservables = user.playlists.map((id: string) => this.getPlaylistById(id));
 
                 return forkJoin(playlistObservables);
             })
@@ -147,39 +152,19 @@ export class PlaylistService {
     }
 
     createNewPlaylist(dto: IPlaylist) {
-
-        this.http.post<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', dto)
-            .subscribe(
-                (response: any) => {
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${this.accountService.accessToken}`
+        });
+        this.http.post<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', dto, { headers })
+            .pipe(first())
+            .subscribe({
+                next: (response: any) => {
                     this.userService.addPlaylistToUserById(response.authorId, response.id);
                 },
-                (error: any) => {
+                error: (error: any) => {
                     console.log(error)
                 }
-            );
-    }
-    createNewLovedPlaylist(userid: string) {
-        const playlist: IPlaylist = {
-            id: "00000000-0000-0000-0000-000000000000",
-            authorId: userid,
-            imagePath: "http://localhost:5283/Image/loved.webp",
-            name: "Loved Songs",
-            types: PlaylistType.Playlist,
-            tracks: [],
-            color: "rgb(61,50,154)",
-            trackPlaylists: []
-        }
-
-        const formData = new FormData();
-
-        this.http.post<IPlaylist>(this.apiService.getPlaylistApi() + 'Playlist', playlist).subscribe({
-            next: ((response: any) => {
-                console.log(response)
-            }),
-            error: ((response: Error) => {
-                console.log(response)
-            })
-        });
+            });
     }
 
     createNewEmptyPlaylist() {

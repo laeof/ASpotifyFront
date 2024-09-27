@@ -14,6 +14,8 @@ import { ContextMenuService } from '../../services/context-menu.service';
 import { UserService } from '../../services/user.service';
 import { IUser } from '../../dtos/user';
 import { IArtist } from '../../dtos/artist';
+import { UrlSerializer } from '@angular/router';
+import { UrlService } from '../../services/url.service';
 
 @Component({
     selector: 'app-nowplayingsidebar',
@@ -95,7 +97,8 @@ export class NowplayingsidebarComponent implements OnDestroy {
         private trackService: TrackService,
         private playlistService: PlaylistService,
         private contextMenuService: ContextMenuService,
-        private userService: UserService
+        private userService: UserService,
+        private urlService: UrlService
     ) {
         this.userService.getCurrentUserInfo().subscribe(user => {
             this.user = user;
@@ -131,10 +134,16 @@ export class NowplayingsidebarComponent implements OnDestroy {
 
         this.playlistService.getPlayingPlaylist().subscribe((playlist) => {
             this.playlist = playlist
-        })        
+        })
     }
     ngOnDestroy(): void {
         throw new Error('Method not implemented.');
+    }
+
+    redirectToPlaylist(id: string) {
+        let route = "/playlists/" + id;
+
+        this.urlService.redirect(route);
     }
 
     toggleLikedSongs(track: ITrack) {

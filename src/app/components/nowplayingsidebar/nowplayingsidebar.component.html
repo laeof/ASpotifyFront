@@ -1,7 +1,7 @@
 <div class="sidebar" [ngClass]="{'visible': nowPlayingVisible}">
     <div class="bottom">
         <div class="head">
-            <span class="nameandbutton">
+            <span class="nameandbutton" (click)="redirectToPlaylist(this.playlist.id)">
                 {{this.playlist.name}}
             </span>
             <span class="buttons">

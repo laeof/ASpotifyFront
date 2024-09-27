@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AccountService } from '../../services/account.service';
 import { IRegister } from '../../dtos/register';
-import { debounceTime, first } from 'rxjs';
+import { debounceTime, delay, first } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { IUser } from '../../dtos/user';
 import { ITokens } from '../../dtos/tokens';
@@ -63,14 +63,18 @@ export class SignupComponent {
             gender: this.signUpForm.value.gender,
             username: this.signUpForm.value.Username
         }
-        this.accountService.Register(reg).pipe(first()).subscribe(
+        this.accountService.Register(reg).pipe(
+            delay(2000),
+            first()
+        ).subscribe(
             (response: IUser) => {
                 const login: ILogin = {
                     email: reg.email,
                     password: reg.password
                 }
-                this.playlistService.createNewLovedPlaylist(response.id);
-                this.accountService.Login(reg).pipe(first()).subscribe(
+                this.accountService.Login(reg).pipe(
+                    first()
+                ).subscribe(
                     (response: ITokens) => {
                         this.cookieService.setAccessToken(response.accessToken);
                         this.cookieService.setRefreshToken(response.refreshToken);

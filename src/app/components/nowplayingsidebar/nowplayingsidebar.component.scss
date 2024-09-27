@@ -18,6 +18,10 @@
             .nameandbutton {
                 font-weight: 400;
                 font-size: 20px;
+                &:hover {
+                    cursor: pointer;
+                    text-decoration: underline;
+                }
             }
 
             .buttons {

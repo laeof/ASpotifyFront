@@ -1,8 +1,9 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { ITrack } from "../dtos/track";
 import { ApiService } from "./api.service";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, of, throwError } from "rxjs";
+import { AccountService } from "./account.service";
 
 @Injectable({
     providedIn: 'root'
@@ -10,7 +11,8 @@ import { BehaviorSubject, Observable, of, throwError } from "rxjs";
 
 export class TrackService {
     constructor(private http: HttpClient,
-        private apiService: ApiService
+        private apiService: ApiService,
+        private accountService: AccountService
     ) { }
 
     private emptyTrack = new BehaviorSubject<ITrack>({
@@ -25,7 +27,7 @@ export class TrackService {
     })
 
     getTrackById(id: string): Observable<ITrack> {
-        if(id === undefined)
+        if (id === undefined)
             return this.emptyTrack;
         return this.http.get<ITrack>(this.apiService.getPlaylistApi() + 'Track/' + id)
     }
@@ -47,28 +49,28 @@ export class TrackService {
     }
 
     createNewTrack(dto: ITrack[]) {
-        dto.forEach(track => {
-            
-            this.http.post<ITrack>(this.apiService.getPlaylistApi() + 'Track', track)
-                .subscribe(
-                    (response: any) => {
-                        const track: ITrack = {
-                            id: response.id,
-                            artistId: response.artistId,
-                            imagePath: response.imagePath,
-                            name: response.name,
-                            albumId: response.albumId,
-                            urlPath: response.urlPath,
-                            duration: response.duration,
-                            createdDate: response.createdDate
-                        }
-
-                    },
-                    (error: any) => {
-                        console.log(error)
-                    }
-                );
+        const headers = new HttpHeaders({
+            'Authorization': `Bearer ${this.accountService.accessToken}`
         });
+        this.http.post<ITrack>(this.apiService.getPlaylistApi() + 'Track', dto, { headers })
+            .subscribe(
+                (response: any) => {
+                    const track: ITrack = {
+                        id: response.id,
+                        artistId: response.artistId,
+                        imagePath: response.imagePath,
+                        name: response.name,
+                        albumId: response.albumId,
+                        urlPath: response.urlPath,
+                        duration: response.duration,
+                        createdDate: response.createdDate
+                    }
+
+                },
+                (error: any) => {
+                    console.log(error)
+                }
+            );
 
     }
 }

@@ -59,8 +59,8 @@ export class UserService {
         return this.currentUser.asObservable();
     }
 
-    getUserInfoById(id: string): IUser | undefined {
-        return this.emptyUser
+    getUserInfoById(id: string): Observable<IUser> {
+        return this.http.get<IUser>(this.apiService.getAuthApi() + 'User/GetUserById/' + id)
     }
 
     setLatestTrack(trackId: string) {
