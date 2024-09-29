@@ -120,15 +120,32 @@ export class PlaylistService {
 
                 this.user.playlists[index] = response.id
 
+                if(playlistId == this.activePlaylist.value.id)
+                    this.activePlaylist.next(response)
+
                 this.userService.setCurrentUser(this.user)
             }
         );
+
         if (playlistId == this.currentPlaylistPlaying.value.id)
             this.queueService.addTrackAtIndex(trackId, 0);
     }
 
     removeFromPlaylist(playlistId: string, trackId: string) {
-        this.removeTrackFromPlaylist(playlistId, trackId).pipe(first()).subscribe();
+        this.removeTrackFromPlaylist(playlistId, trackId).pipe(first()).subscribe(
+            (response: IPlaylist) => {
+                let index = this.user.playlists.findIndex(x => x == playlistId)
+
+                if (index == -1) return
+
+                this.user.playlists[index] = response.id
+
+                if(playlistId == this.activePlaylist.value.id)
+                    this.activePlaylist.next(response)
+
+                this.userService.setCurrentUser(this.user)
+            }
+        );
     }
 
     getLovedTrackState(track: ITrack): boolean {
